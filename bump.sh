@@ -16,8 +16,10 @@ echo "Bumping from $OLD_VERSION to $NEW_VERSION"
 # Update version.txt
 echo "$NEW_VERSION" > version.txt
 
-# Update index.html (CSS/JS query strings and version display)
-sed -i '' "s/?v=${OLD_VERSION}/?v=${NEW_VERSION}/g" index.html
-sed -i '' "s/v${OLD_VERSION}/v${NEW_VERSION}/g" index.html
+# Update all HTML files (CSS/JS query strings, OG image URLs, version display)
+find . -name "*.html" -not -path "./node_modules/*" | while read f; do
+    sed -i '' "s/?v=${OLD_VERSION}/?v=${NEW_VERSION}/g" "$f"
+    sed -i '' "s/v${OLD_VERSION}/v${NEW_VERSION}/g" "$f"
+done
 
 echo "Done. Updated to $NEW_VERSION"
