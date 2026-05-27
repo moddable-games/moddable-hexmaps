@@ -90,6 +90,7 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-05-27
+- Sticky nav: site nav stays pinned on scroll
 - Embed API: `boardonly=1`, `bg=`, `mode=view|edit`, `theme=` params for iframe embedding
 - Initial project setup and architecture planning
 - Built Canvas-based hex rendering engine (pointy-top + flat-top)
