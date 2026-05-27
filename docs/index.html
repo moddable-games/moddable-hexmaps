@@ -6,8 +6,8 @@
 <title>Docs — Moddable Hexmaps</title>
 <meta name="description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding guide.">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/shared.css?v=0.1.0">
-<link rel="stylesheet" href="../css/docs.css?v=0.1.0">
+<link rel="stylesheet" href="../css/shared.css?v=0.2.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.2.0">
 </head>
 <body>
 
@@ -19,6 +19,7 @@
     <div class="site-nav__links">
         <a href="../generate/">Generate</a>
         <a href="./" class="active">Docs</a>
+        <a href="api.html">API</a>
         <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
     </div>
 </nav>
@@ -44,19 +45,47 @@
                     <tr><td><code>seed</code></td><td>any integer</td><td>RNG seed for reproducible maps</td></tr>
                     <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman), 3 (twilight)</td><td>Ring count / map size</td></tr>
                     <tr><td><code>players</code></td><td>2–6 (varies by game/size)</td><td>Player count for base placement</td></tr>
+                    <tr><td><code>theme</code></td><td>classic, artistic, ascii</td><td>Visual style (Nukes only)</td></tr>
+                    <tr><td><code>boardonly</code></td><td>1</td><td>Hide all UI chrome, show only the map canvas</td></tr>
+                    <tr><td><code>bg</code></td><td>hex colour (e.g. 1a1a2e or #1a1a2e)</td><td>Background colour for the canvas area</td></tr>
+                    <tr><td><code>mode</code></td><td>view, edit</td><td>view = read-only (no click editing); edit = interactive</td></tr>
                 </tbody>
             </table>
         </section>
 
         <section id="embedding">
             <h2>Embedding</h2>
-            <p>Embed a hex map generator in any page:</p>
+            <p>Embed a hex map in any page using an iframe. Use <code>boardonly=1</code> to strip navigation, sidebar, and footer — leaving just the map canvas that fills the iframe.</p>
+
+            <h3>Basic embed</h3>
             <pre><code>&lt;iframe
-  src="https://hex.moddable.games/generate/?game=nukes&amp;size=4&amp;seed=42"
-  width="800"
+  src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;seed=42&amp;size=4"
+  width="600"
+  height="400"
+  frameborder="0"
+&gt;&lt;/iframe&gt;</code></pre>
+
+            <h3>Custom background</h3>
+            <p>Pass <code>bg=</code> to match your site's background. Hex colours can omit the <code>#</code> prefix for cleaner URLs.</p>
+            <pre><code>&lt;iframe
+  src="https://hex.moddable.games/generate/?game=twilight&amp;boardonly=1&amp;bg=0d1117&amp;players=6"
+  width="600"
   height="600"
   frameborder="0"
 &gt;&lt;/iframe&gt;</code></pre>
+
+            <h3>Read-only vs interactive</h3>
+            <p>By default, <code>boardonly=1</code> embeds are read-only. Add <code>mode=edit</code> to allow click-to-cycle terrain editing inside the embed.</p>
+            <pre><code>&lt;iframe
+  src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;mode=edit&amp;size=3"
+  width="500"
+  height="400"
+  frameborder="0"
+&gt;&lt;/iframe&gt;</code></pre>
+
+            <h3>Full page (no embed)</h3>
+            <p>Without <code>boardonly</code>, the full UI is shown — useful for linking users to the generator directly:</p>
+            <pre><code>https://hex.moddable.games/generate/?game=nukes&amp;size=4&amp;seed=42</code></pre>
         </section>
 
         <section id="games">
@@ -91,7 +120,7 @@ data/              — Game configs and hex coordinate data</code></pre>
 
 <footer class="site-footer">
     <a href="https://moddable.games" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.1.0</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.2.0</p>
 </footer>
 
 </body>

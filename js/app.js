@@ -7,16 +7,30 @@ var HexApp = (function() {
     var currentStyle = 'classic';
     var hexData = [];
 
+    var embedMode = false;
+    var viewOnly = false;
+
     function init() {
         var params = new URLSearchParams(window.location.search);
         var game = params.get('game') || 'nukes';
         var seed = params.get('seed') || String(Math.floor(Date.now() / 9876));
         var size = parseInt(params.get('size')) || null;
         var players = parseInt(params.get('players')) || 0;
-        currentStyle = params.get('style') || 'classic';
+        currentStyle = params.get('theme') || params.get('style') || 'classic';
+
+        var boardOnly = params.get('boardonly') === '1';
+        var bgColor = params.get('bg');
+        var mode = params.get('mode');
+
+        embedMode = boardOnly;
+        viewOnly = mode === 'view' || (boardOnly && mode !== 'edit');
 
         currentGame = game;
         currentSeed = seed;
+
+        if (embedMode) {
+            applyEmbedMode(bgColor);
+        }
 
         document.getElementById('seed-input').value = seed;
 
@@ -29,6 +43,28 @@ var HexApp = (function() {
         if (game !== 'nukes') {
             document.getElementById('style-group').style.display = 'none';
             document.querySelector('[data-tab="editor"]').style.display = 'none';
+        }
+    }
+
+    function applyEmbedMode(bgColor) {
+        document.body.classList.add('embed-mode');
+
+        var nav = document.querySelector('.site-nav');
+        var sidebar = document.querySelector('.sidebar');
+        var footer = document.querySelector('.site-footer');
+        var gameTabs = document.querySelector('.game-tabs-bar');
+        var canvasFooter = document.querySelector('.canvas-footer');
+
+        if (nav) nav.style.display = 'none';
+        if (sidebar) sidebar.style.display = 'none';
+        if (footer) footer.style.display = 'none';
+        if (gameTabs) gameTabs.style.display = 'none';
+        if (canvasFooter) canvasFooter.style.display = 'none';
+
+        if (bgColor) {
+            var color = bgColor.match(/^[0-9a-fA-F]{3,8}$/) ? '#' + bgColor : bgColor;
+            document.body.style.background = color;
+            document.querySelector('.canvas-area').style.background = color;
         }
     }
 
@@ -606,8 +642,8 @@ var HexApp = (function() {
     }
 
     function onHexClick(hex) {
+        if (viewOnly) return;
         if (currentGame === 'nukes') {
-            var terrain = NukesHexData.terrains;
             var editTypes = ['water', 'grass', 'trees', 'mount', 'sand', 'base'];
             var currentIdx = editTypes.indexOf(hex.type);
             var nextIdx = (currentIdx + 1) % editTypes.length;
@@ -654,6 +690,7 @@ var HexApp = (function() {
     }
 
     function updateUrl() {
+        if (embedMode) return;
         var params = new URLSearchParams();
         params.set('game', currentGame);
         params.set('seed', currentSeed);

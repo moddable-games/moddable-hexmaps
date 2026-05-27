@@ -257,6 +257,23 @@ body {
     border-color: var(--accent);
 }
 
+body.embed-mode {
+    min-height: auto;
+    overflow: hidden;
+}
+
+body.embed-mode .main-content {
+    height: 100vh;
+}
+
+body.embed-mode .canvas-area {
+    height: 100%;
+}
+
+body.embed-mode .canvas-area canvas {
+    cursor: default;
+}
+
 @media (max-width: 768px) {
     .main-content {
         flex-direction: column;

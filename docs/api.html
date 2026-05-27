@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Reference — Moddable Hexmaps</title>
+<meta name="description" content="Complete API reference for the Moddable Hexmaps engine. HexRenderer, HexMath, XorShift, and embed parameters.">
+<link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/shared.css?v=0.2.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.2.0">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="../" class="site-nav__brand">
+        <img src="../assets/cube.svg" class="site-nav__cube" alt="">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="../generate/">Generate</a>
+        <a href="./">Docs</a>
+        <a href="api.html" class="active">API</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+<main class="docs">
+    <div class="docs__inner">
+        <h1>API Reference</h1>
+
+        <section id="hex-renderer">
+            <h2>HexRenderer</h2>
+            <p>Canvas-based hexagonal grid renderer. All methods are on the <code>HexRenderer</code> global object.</p>
+
+            <h3>HexRenderer.create(canvasId, options)</h3>
+            <p>Creates a renderer instance bound to a canvas element. Only one renderer can be active at a time — creating a new one cleans up the previous.</p>
+            <pre><code>var renderer = HexRenderer.create('hex-canvas', {
+  hexSize: 40,
+  flat: false,
+  colors: { water: '#2196F3', trees: '#4CAF50' },
+  labels: true,
+  onHexClick: function(hex) { },
+  onHexHover: function(hex) { }
+});</code></pre>
+            <table>
+                <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>hexSize</code></td><td>number</td><td>Base hex radius in pixels (auto-scaled to fit)</td></tr>
+                    <tr><td><code>flat</code></td><td>boolean</td><td>Flat-top (true) or pointy-top (false) orientation</td></tr>
+                    <tr><td><code>colors</code></td><td>object</td><td>Map of terrain type → CSS colour string</td></tr>
+                    <tr><td><code>labels</code></td><td>boolean</td><td>Show single-character labels inside hexes</td></tr>
+                    <tr><td><code>onHexClick</code></td><td>function</td><td>Callback when a hex is clicked. Receives hex object</td></tr>
+                    <tr><td><code>onHexHover</code></td><td>function</td><td>Callback when mouse enters a hex. Receives hex object</td></tr>
+                </tbody>
+            </table>
+
+            <h3>HexRenderer.setHexes(renderer, hexes)</h3>
+            <p>Sets the hex data array and triggers a re-render. Automatically fits the grid to the canvas.</p>
+            <pre><code>HexRenderer.setHexes(renderer, [
+  { id: 'R0', q: 0, r: 0, type: 'grass', label: 'G' },
+  { id: 'R1D1', q: 1, r: 0, type: 'water', label: 'W' }
+]);</code></pre>
+
+            <h3>HexRenderer.render(renderer)</h3>
+            <p>Redraws the current hex data without recalculating layout. Use after modifying hex properties (type, label).</p>
+
+            <h3>HexRenderer.resize(renderer)</h3>
+            <p>Recalculates canvas dimensions from parent element and re-fits the grid. Called automatically on window resize.</p>
+
+            <h3>HexRenderer.fitToCanvas(renderer)</h3>
+            <p>Recalculates hex size and offset to fit all hexes within the current canvas dimensions. Called automatically by <code>setHexes</code> and <code>resize</code>.</p>
+
+            <h3>Hex object shape</h3>
+            <table>
+                <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>id</code></td><td>string</td><td>Unique identifier (e.g. "R0", "R2D5")</td></tr>
+                    <tr><td><code>q</code></td><td>number</td><td>Axial column coordinate</td></tr>
+                    <tr><td><code>r</code></td><td>number</td><td>Axial row coordinate</td></tr>
+                    <tr><td><code>type</code></td><td>string</td><td>Terrain type key (maps to colours)</td></tr>
+                    <tr><td><code>label</code></td><td>string</td><td>Single character displayed in hex centre</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="hex-math">
+            <h2>HexMath</h2>
+            <p>Coordinate math and grid generation utilities on the <code>HexMath</code> global object.</p>
+
+            <h3>HexMath.axialToPixelPointy(q, r, size)</h3>
+            <p>Converts axial coordinates to pixel position for pointy-top orientation. Returns <code>{ x, y }</code>.</p>
+
+            <h3>HexMath.axialToPixelFlat(q, r, size)</h3>
+            <p>Converts axial coordinates to pixel position for flat-top orientation. Returns <code>{ x, y }</code>.</p>
+
+            <h3>HexMath.getHexCorners(cx, cy, size, flat)</h3>
+            <p>Returns an array of 6 corner points <code>[{ x, y }, ...]</code> for a hex centred at (cx, cy).</p>
+
+            <h3>HexMath.generateRing(ring)</h3>
+            <p>Generates axial coordinates for all hexes in a given ring. Ring 0 returns the centre hex.</p>
+            <pre><code>HexMath.generateRing(0);  // [{ q: 0, r: 0 }]
+HexMath.generateRing(1);  // 6 hexes around centre
+HexMath.generateRing(2);  // 12 hexes</code></pre>
+
+            <h3>HexMath.generateHexGrid(rings)</h3>
+            <p>Generates a complete hex grid from ring 0 to the given ring count. Each hex includes a <code>ring</code> property.</p>
+            <pre><code>var grid = HexMath.generateHexGrid(3);
+// Returns: [{ q, r, ring }, ...] — 37 hexes total</code></pre>
+
+            <h3>HexMath.axialDistance(a, b)</h3>
+            <p>Returns the hex-grid distance between two axial coordinates.</p>
+            <pre><code>HexMath.axialDistance({ q: 0, r: 0 }, { q: 2, r: -1 }); // 2</code></pre>
+
+            <h3>HexMath.getNeighbors(q, r)</h3>
+            <p>Returns an array of 6 neighbouring axial coordinates.</p>
+        </section>
+
+        <section id="xorshift">
+            <h2>XorShift128 (Seeded RNG)</h2>
+            <p>Deterministic pseudo-random number generator for reproducible map generation.</p>
+
+            <h3>new XorShift128(seed)</h3>
+            <p>Creates an RNG instance. Seed is an unsigned 32-bit integer.</p>
+
+            <h3>rng.next()</h3>
+            <p>Returns the next raw 32-bit integer from the sequence.</p>
+
+            <h3>rng.unit()</h3>
+            <p>Returns a float in [0, 1).</p>
+
+            <h3>rng.integer(min, max)</h3>
+            <p>Returns a random integer in [min, max] inclusive.</p>
+
+            <h3>rng.reseed(seed)</h3>
+            <p>Resets the internal state to a new seed.</p>
+
+            <h3>createSeededRng(seed)</h3>
+            <p>Helper that accepts a string or number seed and returns an <code>XorShift128</code> instance. Strings are hashed to a numeric seed.</p>
+            <pre><code>var rng = createSeededRng('hello');
+rng.integer(0, 5);  // deterministic result</code></pre>
+
+            <h3>seededRandom(id, seed, min, max)</h3>
+            <p>One-shot deterministic random for a given hex ID + map seed combination. Used internally for terrain assignment.</p>
+            <pre><code>seededRandom('R2D3', '42', 0, 4); // always the same result</code></pre>
+        </section>
+
+        <section id="embedding">
+            <h2>Embedding API</h2>
+            <p>Embed hex maps in any page via iframe. Parameters control game, appearance, and interactivity.</p>
+
+            <h3>Core parameters</h3>
+            <table>
+                <thead><tr><th>Parameter</th><th>Values</th><th>Effect</th></tr></thead>
+                <tbody>
+                    <tr><td><code>game</code></td><td>nukes, talisman, twilight</td><td>Which game config to use</td></tr>
+                    <tr><td><code>seed</code></td><td>any integer or string</td><td>RNG seed for reproducible generation</td></tr>
+                    <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman), 3 (twilight)</td><td>Ring count / map size</td></tr>
+                    <tr><td><code>players</code></td><td>2–6 (varies by game/size)</td><td>Player count for base placement</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Display parameters</h3>
+            <table>
+                <thead><tr><th>Parameter</th><th>Values</th><th>Effect</th></tr></thead>
+                <tbody>
+                    <tr><td><code>boardonly</code></td><td><code>1</code></td><td>Hide all UI chrome (nav, sidebar, footer, tabs). Map canvas fills the iframe</td></tr>
+                    <tr><td><code>bg</code></td><td>hex colour (e.g. <code>1a1a2e</code> or <code>#1a1a2e</code>)</td><td>Background colour for canvas area. Omit <code>#</code> for cleaner URLs</td></tr>
+                    <tr><td><code>theme</code></td><td>classic, artistic, ascii</td><td>Visual style (Nukes only). Alias: <code>style</code></td></tr>
+                    <tr><td><code>mode</code></td><td>view, edit</td><td>view = read-only (default for boardonly); edit = click-to-cycle terrain</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Examples</h3>
+            <p>Board-only Nukes map on a dark background:</p>
+            <pre><code>&lt;iframe
+  src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;seed=42&amp;size=4&amp;bg=0d1117"
+  width="600" height="400" frameborder="0"
+&gt;&lt;/iframe&gt;</code></pre>
+
+            <p>Twilight Imperium galaxy, 6 players, read-only:</p>
+            <pre><code>&lt;iframe
+  src="https://hex.moddable.games/generate/?game=twilight&amp;boardonly=1&amp;players=6&amp;bg=000000"
+  width="600" height="600" frameborder="0"
+&gt;&lt;/iframe&gt;</code></pre>
+
+            <p>Interactive embed with editing enabled:</p>
+            <pre><code>&lt;iframe
+  src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;mode=edit&amp;size=3"
+  width="500" height="400" frameborder="0"
+&gt;&lt;/iframe&gt;</code></pre>
+
+            <p>Full UI link (no embed — opens the generator directly):</p>
+            <pre><code>https://hex.moddable.games/generate/?game=talisman&amp;size=5&amp;seed=999</code></pre>
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <a href="https://moddable.games" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.2.0</p>
+</footer>
+
+</body>
+</html>

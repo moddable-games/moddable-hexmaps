@@ -13,7 +13,7 @@ Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: He
 - Multiple terrain/tile palettes per game
 - Click-to-edit individual hexes
 - Export/import map data as JSON
-- Embeddable via iframe with URL params (`game=`, `players=`, `seed=`, `size=`)
+- Embeddable via iframe with full URL param API (`boardonly`, `bg`, `mode`, `theme`)
 
 ---
 
@@ -78,12 +78,17 @@ GitHub Pages at `hex.moddable.games`
 | `seed` | any integer | RNG seed for reproducible maps |
 | `size` | 2–6 | Ring count |
 | `players` | 2–8 | Player count for base placement |
+| `theme` | classic, artistic, ascii | Visual style (Nukes only) |
+| `boardonly` | 1 | Hide UI, show only the map canvas |
+| `bg` | hex colour (e.g. 1a1a2e) | Background colour for embedding |
+| `mode` | view, edit | view = read-only; edit = interactive |
 
 ---
 
 ### Changelog
 
 #### 2026-05-27
+- Embed API: `boardonly=1`, `bg=`, `mode=view|edit`, `theme=` params for iframe embedding
 - Initial project setup and architecture planning
 - Built Canvas-based hex rendering engine (pointy-top + flat-top)
 - Ported all 3 games from WordPress tools (Nukes, Talisman, Twilight)
