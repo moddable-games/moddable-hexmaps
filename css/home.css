@@ -19,6 +19,9 @@ a { color: inherit; text-decoration: none; }
     padding: 120px 24px 80px;
     text-align: center;
     overflow: hidden;
+    background-image: url('../assets/hex-grid-green.svg');
+    background-size: 56px 64px;
+    background-repeat: repeat;
 }
 
 .hx-hero__glow {
@@ -164,6 +167,9 @@ a { color: inherit; text-decoration: none; }
 
 .hx-features {
     background: var(--hx-deep);
+    background-image: url('../assets/hex-grid-green.svg');
+    background-size: 56px 64px;
+    background-repeat: repeat;
     padding: 80px 24px;
 }
 

@@ -239,6 +239,12 @@ var HexApp = (function() {
         updateInfo();
     }
 
+    function offsetToAxial(col, row) {
+        var q = col - Math.floor((row - (row & 1)) / 2);
+        var r = row;
+        return { q: q, r: r };
+    }
+
     function generateNukesMap() {
         var mapDef = NukesHexData.maps['r' + currentSize];
         if (!mapDef) return [];
@@ -250,6 +256,9 @@ var HexApp = (function() {
         if (currentPlayers > 0 && mapDef.bases['p' + currentPlayers]) {
             baseIds = mapDef.bases['p' + currentPlayers];
         }
+
+        var centreHex = mapDef.hexes.R0;
+        var centreAxial = offsetToAxial(centreHex.q, centreHex.r);
 
         var keys = Object.keys(mapDef.hexes);
         for (var i = 0; i < keys.length; i++) {
@@ -263,10 +272,12 @@ var HexApp = (function() {
                 type = terrains[seededRandom(id, currentSeed, 0, terrains.length - 1)];
             }
 
+            var axial = offsetToAxial(coords.q, coords.r);
+
             hexes.push({
                 id: id,
-                q: coords.q,
-                r: coords.r,
+                q: axial.q - centreAxial.q,
+                r: axial.r - centreAxial.r,
                 type: type,
                 label: type.charAt(0).toUpperCase()
             });
