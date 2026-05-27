@@ -85,10 +85,17 @@ GitHub Pages at `hex.moddable.games`
 
 #### 2026-05-27
 - Initial project setup and architecture planning
-- Built Canvas-based hex rendering engine
+- Built Canvas-based hex rendering engine (pointy-top + flat-top)
 - Ported all 3 games from WordPress tools (Nukes, Talisman, Twilight)
 - Landing page, generator app, and docs following moddable-chess structure
 - Green-themed design (distinct from moddable-chess blue)
+- Brand assets: cube.svg favicon, moddable-logo footer, hex-grid-green background
 - Seeded RNG (XorShift128) for reproducible maps
-- URL parameter support for embedding
+- URL parameter support for embedding (`game`, `seed`, `size`, `players`, `style`)
 - Version system with bump script
+- Sidebar tabs: Random (controls), Editor (per-ring terrain reset), Data (export/import JSON)
+- Style selector: Classic, Artistic (placeholder), ASCII
+- Click-to-cycle terrain editing (Nukes)
+- Fixed coordinate conversion: offset→axial for Nukes (odd-r) and Twilight (odd-q)
+- Event listener cleanup on game switch (prevents double-fire bug)
+- Talisman size labels: "Standard" vs "Dungeon Expansion"
