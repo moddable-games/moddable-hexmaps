@@ -1,0 +1,195 @@
+:root {
+    --bg-primary: #0a1a0d;
+    --bg-secondary: #0d1f12;
+    --bg-tertiary: #1a3322;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --accent: #4cdf7a;
+    --accent-hover: #6bff9a;
+    --border: #1a3322;
+    --canvas-bg: #060e08;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--mg-font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.canvas-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--canvas-bg);
+    position: relative;
+}
+
+.game-tabs-bar {
+    display: flex;
+    gap: 0;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+}
+
+.game-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    cursor: pointer;
+    font-family: var(--mg-font-body, inherit);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.game-tab:hover {
+    color: var(--text-primary);
+}
+
+.game-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.canvas-area canvas {
+    flex: 1;
+    display: block;
+    cursor: crosshair;
+}
+
+.canvas-footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-family: var(--mg-font-mono, monospace);
+}
+
+.sidebar {
+    width: 260px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.control-group label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    font-family: var(--mg-font-mono, monospace);
+}
+
+.control-group select,
+.control-group input[type="text"],
+.control-group input[type="number"] {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    width: 100%;
+    font-family: var(--mg-font-body, inherit);
+}
+
+.control-group select:focus,
+.control-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.btn {
+    background: var(--accent);
+    border: none;
+    color: #0a1a0d;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.15s;
+    width: 100%;
+    font-family: var(--mg-font-body, inherit);
+}
+
+.btn:hover {
+    background: var(--accent-hover);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.export-area textarea {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 4px;
+    font-family: var(--mg-font-mono, monospace);
+    font-size: 0.7rem;
+    width: 100%;
+    height: 100px;
+    resize: vertical;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 12px;
+    }
+
+    .control-group {
+        flex: 1;
+        min-width: 120px;
+    }
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Generate — Moddable Hexmaps</title>
+    <meta name="description" content="Generate randomised hex maps for Nukes, Talisman, and Twilight Imperium. Seeded RNG, editable, exportable.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Moddable Hexmaps">
+    <meta property="og:title" content="Generate — Moddable Hexmaps">
+    <meta property="og:description" content="Generate randomised hex maps for Nukes, Talisman, and Twilight Imperium.">
+    <meta property="og:url" content="https://hex.moddable.games/generate/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Generate — Moddable Hexmaps">
+    <meta name="twitter:description" content="Generate randomised hex maps for Nukes, Talisman, and Twilight Imperium.">
+    <link rel="stylesheet" href="../css/shared.css?v=0.1.0">
+    <link rel="stylesheet" href="../css/style.css?v=0.1.0">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="../" class="site-nav__brand">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="./" class="active">Generate</a>
+        <a href="../docs/">Docs</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+<div class="main-content">
+    <div class="canvas-area">
+        <div class="game-tabs-bar">
+            <button data-game="nukes" class="game-tab active">Nukes</button>
+            <button data-game="talisman" class="game-tab">Talisman</button>
+            <button data-game="twilight" class="game-tab">Twilight</button>
+        </div>
+        <canvas id="hex-canvas"></canvas>
+        <div class="canvas-footer">
+            <span id="hex-info">Hover over a hex</span>
+            <span id="map-info"></span>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="control-group">
+            <label>Map Size</label>
+            <select id="size-select"></select>
+        </div>
+
+        <div class="control-group">
+            <label>Players</label>
+            <select id="players-select">
+                <option value="0">No bases</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Seed</label>
+            <input type="number" id="seed-input" placeholder="Random seed...">
+        </div>
+
+        <button class="btn" id="random-btn">Randomise</button>
+
+        <div class="control-group export-area">
+            <label>Export Data</label>
+            <textarea id="export-data" readonly placeholder="Click Export to get JSON..."></textarea>
+            <button class="btn btn-outline" id="export-btn">Export JSON</button>
+        </div>
+    </aside>
+</div>
+
+<footer class="site-footer">
+    <p>v0.1.0 · <a href="https://moddable.games" target="_blank" rel="noopener">moddable.games</a> · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a></p>
+</footer>
+
+<script src="../js/xorshift.js?v=0.1.0"></script>
+<script src="../js/hex-math.js?v=0.1.0"></script>
+<script src="../js/hex-renderer.js?v=0.1.0"></script>
+<script src="../data/nukes-hexes.js?v=0.1.0"></script>
+<script src="../js/app.js?v=0.1.0"></script>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moddable Hexmaps — One engine, three worlds</title>
+<meta name="description" content="Shared hex map engine for board game tools. Generates, renders, and edits hex grids for Nukes, Talisman, and Twilight Imperium.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Moddable Hexmaps">
+<meta property="og:title" content="Moddable Hexmaps — One engine, three worlds">
+<meta property="og:description" content="Shared hex map engine for board game tools. Generates, renders, and edits hex grids for Nukes, Talisman, and Twilight Imperium.">
+<meta property="og:url" content="https://hex.moddable.games/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Moddable Hexmaps — One engine, three worlds">
+<meta name="twitter:description" content="Shared hex map engine for board game tools. Generates, renders, and edits hex grids.">
+<link rel="stylesheet" href="css/shared.css?v=0.1.0">
+<link rel="stylesheet" href="css/home.css?v=0.1.0">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="./" class="site-nav__brand">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="generate/">Generate</a>
+        <a href="docs/">Docs</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+<section class="hx-hero">
+    <div class="hx-hero__glow"></div>
+    <div class="hx-hero__eyebrow">MODDABLE HEXMAPS</div>
+    <h1 class="hx-hero__title">One engine.<br><em>Three worlds.</em></h1>
+    <p class="hx-hero__lede">A shared hex map rendering engine and randomiser framework. Generate, edit, and export hex boards for Nukes, Talisman, and Twilight Imperium.</p>
+    <div class="hx-hero__btns">
+        <a href="generate/" class="hx-btn hx-btn--primary">Generate a map</a>
+        <a href="docs/" class="hx-btn hx-btn--outline">Documentation</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener" class="hx-btn hx-btn--outline">GitHub</a>
+    </div>
+</section>
+
+<section class="hx-games">
+    <div class="hx-games__inner">
+        <div class="hx-games__header">
+            <div class="hx-games__eyebrow">3 GAMES</div>
+            <h2 class="hx-games__title">Every map. One framework.</h2>
+        </div>
+        <div class="hx-games__grid">
+            <a href="generate/?game=nukes" class="hx-game-card">
+                <div class="hx-game-card__name">Nukes</div>
+                <p class="hx-game-card__desc">Nuclear war hex maps with terrain variety. Water, forests, mountains, deserts, and player HQ placement.</p>
+                <div class="hx-game-card__stats">
+                    <span class="hx-game-card__stat"><strong>5</strong> map sizes</span>
+                    <span class="hx-game-card__stat"><strong>6</strong> terrain types</span>
+                    <span class="hx-game-card__stat"><strong>2–6</strong> players</span>
+                </div>
+            </a>
+            <a href="generate/?game=talisman" class="hx-game-card">
+                <div class="hx-game-card__name">Talisman: Hexed</div>
+                <p class="hx-game-card__desc">Hex adaptation of the classic Talisman board. Inner, middle, river, and outer rings with unique terrain per region.</p>
+                <div class="hx-game-card__stats">
+                    <span class="hx-game-card__stat"><strong>4</strong> ring types</span>
+                    <span class="hx-game-card__stat"><strong>10</strong> terrains</span>
+                    <span class="hx-game-card__stat"><strong>2–6</strong> players</span>
+                </div>
+            </a>
+            <a href="generate/?game=twilight" class="hx-game-card">
+                <div class="hx-game-card__name">Twilight Imperium</div>
+                <p class="hx-game-card__desc">Galaxy generator for TI4. Mecatol Rex centre, planet systems, anomalies, lanes, and wormholes.</p>
+                <div class="hx-game-card__stats">
+                    <span class="hx-game-card__stat"><strong>6</strong> tile types</span>
+                    <span class="hx-game-card__stat"><strong>70+</strong> tiles</span>
+                    <span class="hx-game-card__stat"><strong>3–8</strong> players</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="hx-features">
+    <div class="hx-features__inner">
+        <div class="hx-features__eyebrow">ENGINE</div>
+        <h2 class="hx-features__title">Built for board games.</h2>
+        <div class="hx-features__grid">
+            <div class="hx-feature">
+                <div class="hx-feature__title">Canvas Rendering</div>
+                <p class="hx-feature__text">Hardware-accelerated hex grids. Flat-top or pointy-top, any ring count.</p>
+            </div>
+            <div class="hx-feature">
+                <div class="hx-feature__title">Seeded RNG</div>
+                <p class="hx-feature__text">Reproducible maps from a seed string. Same seed, same map, every time.</p>
+            </div>
+            <div class="hx-feature">
+                <div class="hx-feature__title">Click to Edit</div>
+                <p class="hx-feature__text">Cycle terrain types on any hex. Build custom scenarios by hand.</p>
+            </div>
+            <div class="hx-feature">
+                <div class="hx-feature__title">JSON Export</div>
+                <p class="hx-feature__text">Export map data as JSON. Import into other tools or share via URL.</p>
+            </div>
+            <div class="hx-feature">
+                <div class="hx-feature__title">Embeddable</div>
+                <p class="hx-feature__text">Drop into any page via iframe with URL params for game, seed, and players.</p>
+            </div>
+            <div class="hx-feature">
+                <div class="hx-feature__title">Zero Dependencies</div>
+                <p class="hx-feature__text">Vanilla JS, no build step. Works everywhere, deploys to GitHub Pages.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="hx-embed">
+    <div class="hx-embed__inner">
+        <h2 class="hx-embed__title">Embed anywhere.</h2>
+        <p class="hx-embed__text">Use URL parameters to control the embedded map generator.</p>
+        <div class="hx-embed__code">
+            &lt;iframe src="https://hex.moddable.games/generate/?game=nukes&amp;size=4&amp;seed=42&amp;players=4"<br>
+            &nbsp;&nbsp;width="800" height="600" frameborder="0"&gt;&lt;/iframe&gt;
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <p>v0.1.0 · <a href="https://moddable.games" target="_blank" rel="noopener">moddable.games</a> · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs — Moddable Hexmaps</title>
+<meta name="description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding guide.">
+<link rel="stylesheet" href="../css/shared.css?v=0.1.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.1.0">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="../" class="site-nav__brand">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="../generate/">Generate</a>
+        <a href="./" class="active">Docs</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+<main class="docs">
+    <div class="docs__inner">
+        <h1>Documentation</h1>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>Moddable Hexmaps is a shared hex map rendering engine and randomiser framework. It supports three board games out of the box and can be extended with custom game configs.</p>
+        </section>
+
+        <section id="url-params">
+            <h2>URL Parameters</h2>
+            <p>Control the generator via query parameters:</p>
+            <table>
+                <thead>
+                    <tr><th>Parameter</th><th>Values</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>game</code></td><td>nukes, talisman, twilight</td><td>Which game to generate</td></tr>
+                    <tr><td><code>seed</code></td><td>any integer</td><td>RNG seed for reproducible maps</td></tr>
+                    <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman), 3 (twilight)</td><td>Ring count / map size</td></tr>
+                    <tr><td><code>players</code></td><td>2–6 (varies by game/size)</td><td>Player count for base placement</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="embedding">
+            <h2>Embedding</h2>
+            <p>Embed a hex map generator in any page:</p>
+            <pre><code>&lt;iframe
+  src="https://hex.moddable.games/generate/?game=nukes&amp;size=4&amp;seed=42"
+  width="800"
+  height="600"
+  frameborder="0"
+&gt;&lt;/iframe&gt;</code></pre>
+        </section>
+
+        <section id="games">
+            <h2>Games</h2>
+
+            <h3>Nukes</h3>
+            <p>Nuclear war hex maps with 5 map sizes (2–6 rings). Terrain types: water, forest, mountain, plains, desert, and player HQ bases. Supports 2–6 players with pre-defined base positions per map size.</p>
+
+            <h3>Talisman: Hexed</h3>
+            <p>Hex adaptation of the Talisman board game. Uses concentric rings: inner (crown), middle, river, outer, and optional dungeon ring. Each ring has its own terrain palette.</p>
+
+            <h3>Twilight Imperium</h3>
+            <p>Galaxy generator for TI4. Fixed 3-ring layout with Mecatol Rex at centre. Tile types: blue (planet systems), red (anomalies), green (home systems), lanes (hyperlanes), and legends.</p>
+        </section>
+
+        <section id="architecture">
+            <h2>Architecture</h2>
+            <pre><code>js/xorshift.js     — Seeded PRNG (XorShift128)
+js/hex-math.js     — Axial coordinate math, grid generation
+js/hex-renderer.js — Canvas-based hex rendering
+js/app.js          — Application controller, game switching
+data/              — Game configs and hex coordinate data</code></pre>
+        </section>
+
+        <section id="coordinate-system">
+            <h2>Coordinate System</h2>
+            <p>Uses axial coordinates (q, r) with ring-based generation. The centre hex is always (0, 0). Each ring N contains 6×N hexes arranged around the centre.</p>
+            <p>Supports both pointy-top (Nukes, Talisman) and flat-top (Twilight) orientations.</p>
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <p>v0.1.0 · <a href="https://moddable.games" target="_blank" rel="noopener">moddable.games</a></p>
+</footer>
+
+</body>
+</html>
