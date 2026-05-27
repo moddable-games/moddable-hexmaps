@@ -239,17 +239,22 @@ body {
     background: transparent;
 }
 
-.export-area textarea {
+.sidebar-panel textarea {
     background: var(--bg-primary);
     border: 1px solid var(--border);
     color: var(--text-primary);
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
     font-family: var(--mg-font-mono, monospace);
     font-size: 0.7rem;
     width: 100%;
     height: 100px;
     resize: vertical;
+}
+
+.sidebar-panel textarea:focus {
+    outline: none;
+    border-color: var(--accent);
 }
 
 @media (max-width: 768px) {
