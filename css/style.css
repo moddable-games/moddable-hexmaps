@@ -25,6 +25,8 @@ body {
     flex-direction: column;
 }
 
+h1, h2, h3, p, li { text-wrap: pretty; }
+
 .main-content {
     display: flex;
     flex: 1;
