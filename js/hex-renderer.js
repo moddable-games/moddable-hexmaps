@@ -1,8 +1,15 @@
 var HexRenderer = (function() {
 
+    var activeRenderer = null;
+
     function create(canvasId, options) {
         var canvas = document.getElementById(canvasId);
         if (!canvas) return null;
+
+        if (activeRenderer && activeRenderer.cleanup) {
+            activeRenderer.cleanup();
+        }
+
         var ctx = canvas.getContext('2d');
 
         var renderer = {
@@ -18,11 +25,13 @@ var HexRenderer = (function() {
             onHexClick: options.onHexClick || null,
             onHexHover: options.onHexHover || null,
             colors: options.colors || {},
-            labels: options.labels || false
+            labels: options.labels || false,
+            cleanup: null
         };
 
         setupCanvas(renderer);
         setupEvents(renderer);
+        activeRenderer = renderer;
 
         return renderer;
     }
@@ -196,7 +205,7 @@ var HexRenderer = (function() {
     }
 
     function setupEvents(renderer) {
-        renderer.canvas.addEventListener('mousemove', function(e) {
+        var onMouseMove = function(e) {
             var rect = renderer.canvas.getBoundingClientRect();
             var x = e.clientX - rect.left;
             var y = e.clientY - rect.top;
@@ -209,14 +218,14 @@ var HexRenderer = (function() {
                     renderer.onHexHover(hex);
                 }
             }
-        });
+        };
 
-        renderer.canvas.addEventListener('mouseleave', function() {
+        var onMouseLeave = function() {
             renderer.hoveredHex = null;
             render(renderer);
-        });
+        };
 
-        renderer.canvas.addEventListener('click', function(e) {
+        var onClick = function(e) {
             var rect = renderer.canvas.getBoundingClientRect();
             var x = e.clientX - rect.left;
             var y = e.clientY - rect.top;
@@ -229,11 +238,23 @@ var HexRenderer = (function() {
                     renderer.onHexClick(hex);
                 }
             }
-        });
+        };
 
-        window.addEventListener('resize', function() {
+        var onResize = function() {
             resize(renderer);
-        });
+        };
+
+        renderer.canvas.addEventListener('mousemove', onMouseMove);
+        renderer.canvas.addEventListener('mouseleave', onMouseLeave);
+        renderer.canvas.addEventListener('click', onClick);
+        window.addEventListener('resize', onResize);
+
+        renderer.cleanup = function() {
+            renderer.canvas.removeEventListener('mousemove', onMouseMove);
+            renderer.canvas.removeEventListener('mouseleave', onMouseLeave);
+            renderer.canvas.removeEventListener('click', onClick);
+            window.removeEventListener('resize', onResize);
+        };
     }
 
     function pixelToHex(renderer, px, py) {

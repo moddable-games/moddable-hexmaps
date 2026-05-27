@@ -321,6 +321,12 @@ var HexApp = (function() {
         return hexes;
     }
 
+    function oddqOffsetToAxial(col, row) {
+        var q = col;
+        var r = row - Math.floor((col + (col & 1)) / 2);
+        return { q: q, r: r };
+    }
+
     function generateTwilightMap() {
         var hexes = [];
         var layout = getTwilightLayout();
@@ -332,8 +338,6 @@ var HexApp = (function() {
             var type = def.type;
 
             if (type !== 'rex' && id.indexOf('R1') !== 0) {
-                var typeIndex = seededRandom(id, currentSeed, 0, 2);
-                var possibleTypes = ['blue', 'red', 'green'];
                 if (def.type === 'lanes') {
                     type = 'lanes';
                 } else if (def.type === 'legends') {
@@ -341,10 +345,12 @@ var HexApp = (function() {
                 }
             }
 
+            var axial = oddqOffsetToAxial(def.q, def.r);
+
             hexes.push({
                 id: id,
-                q: def.q,
-                r: def.r,
+                q: axial.q,
+                r: axial.r,
                 type: type,
                 label: def.label || type.charAt(0).toUpperCase()
             });
