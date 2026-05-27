@@ -245,28 +245,12 @@ var HexApp = (function() {
         }
 
         hexData = [];
-        var centreHex = null;
-        if (currentGame === 'nukes') {
-            var mapDef = NukesHexData.maps['r' + currentSize];
-            if (mapDef) centreHex = mapDef.hexes.R0;
-        }
-
         for (var i = 0; i < data.hexes.length; i++) {
             var h = data.hexes[i];
-            var q = h.q;
-            var r = h.r;
-
-            if (centreHex) {
-                var axial = offsetToAxial(h.q + centreHex.q, h.r + centreHex.r);
-                var centreAxial = offsetToAxial(centreHex.q, centreHex.r);
-                q = axial.q - centreAxial.q;
-                r = axial.r - centreAxial.r;
-            }
-
             hexData.push({
                 id: h.id,
-                q: q,
-                r: r,
+                q: h.q,
+                r: h.r,
                 type: h.type,
                 label: h.type.charAt(0).toUpperCase()
             });
