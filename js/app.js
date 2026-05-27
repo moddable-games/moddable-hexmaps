@@ -44,6 +44,11 @@ var HexApp = (function() {
             document.getElementById('style-group').style.display = 'none';
             document.querySelector('[data-tab="editor"]').style.display = 'none';
         }
+
+        if (embedMode) {
+            setTimeout(function() { HexRenderer.resize(renderer); }, 50);
+            window.addEventListener('load', function() { HexRenderer.resize(renderer); });
+        }
     }
 
     function applyEmbedMode(bgColor) {

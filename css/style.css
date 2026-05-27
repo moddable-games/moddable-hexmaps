@@ -260,17 +260,25 @@ body {
 body.embed-mode {
     min-height: auto;
     overflow: hidden;
+    height: 100vh;
+    width: 100vw;
 }
 
 body.embed-mode .main-content {
-    height: 100vh;
+    position: absolute;
+    inset: 0;
 }
 
 body.embed-mode .canvas-area {
-    height: 100%;
+    position: absolute;
+    inset: 0;
 }
 
 body.embed-mode .canvas-area canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     cursor: default;
 }
 
