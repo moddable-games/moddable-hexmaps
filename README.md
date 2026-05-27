@@ -34,10 +34,15 @@ index.html          — Landing page (marketing site)
 generate/           — Map generator app
 docs/               — Documentation
 js/                 — Engine source
+  game-registry.js  — Plugin registry (HexApp.registerGame API)
+  app.js            — Framework controller (sidebar, tabs, URL, embed bridge)
   xorshift.js       — Seeded PRNG (XorShift128)
   hex-math.js       — Axial coordinate math, grid generation
   hex-renderer.js   — Canvas-based hex rendering
-  app.js            — Application controller
+  games/            — Game plugins (one file per game)
+    nukes.js        — Nukes: terrain gen, editor, ring-format export
+    talisman.js     — Talisman: ring-based terrain pools
+    twilight.js     — Twilight Imperium: tile draw from pools
 css/                — Stylesheets
   shared.css        — Shared nav/footer (matches moddable-chess)
   home.css          — Landing page styles (green theme)
@@ -90,6 +95,10 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-05-27
+- Plugin architecture: `HexApp.registerGame()` API — each game is a self-contained file in `js/games/`
+- Embed bridge: postMessage API (`hexmap:getMap`, `hexmap:setMap`, `hexmap:regenerate`) with game-level export hooks
+- Game tabs dynamically generated from registry (drop in a file, game auto-appears)
+- Nukes ring-format export for parent app integration (replaces PR #20)
 - Sticky nav: site nav stays pinned on scroll
 - Embed API: `boardonly=1`, `bg=`, `mode=view|edit`, `theme=` params for iframe embedding
 - Initial project setup and architecture planning
