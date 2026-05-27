@@ -156,13 +156,15 @@ var HexApp = (function() {
     }
 
     function loadTalisman(size, players, sizeSelect, playersSelect) {
-        var sizes = [4, 5];
-        for (var i = 0; i < sizes.length; i++) {
-            var opt = document.createElement('option');
-            opt.value = sizes[i];
-            opt.textContent = sizes[i] + ' Rings';
-            sizeSelect.appendChild(opt);
-        }
+        var opt4 = document.createElement('option');
+        opt4.value = 4;
+        opt4.textContent = '4 Rings (Standard)';
+        sizeSelect.appendChild(opt4);
+
+        var opt5 = document.createElement('option');
+        opt5.value = 5;
+        opt5.textContent = '5 Rings (Dungeon Expansion)';
+        sizeSelect.appendChild(opt5);
 
         currentSize = size || 4;
         sizeSelect.value = currentSize;
