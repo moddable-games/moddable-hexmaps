@@ -49,6 +49,11 @@ var HexApp = (function() {
             setTimeout(function() { HexRenderer.resize(renderer); }, 50);
             window.addEventListener('load', function() { HexRenderer.resize(renderer); });
         }
+
+        // Small bridge for embedding apps (e.g. Nukes) to import map JSON.
+        // Parent can postMessage({ type: 'hexmaps:requestExport' }) and receive
+        // { type: 'hexmaps:export', mapData: <nukes ring-format> }.
+        initEmbedBridge();
     }
 
     function applyEmbedMode(bgColor) {
@@ -841,6 +846,85 @@ var HexApp = (function() {
         if (textarea) {
             textarea.value = json;
         }
+    }
+
+    function normalizeNukesTerrain(type) {
+        if (!type) return 'fields';
+        var t = String(type).toLowerCase();
+        if (t === 'grass') return 'fields';
+        if (t === 'trees') return 'forests';
+        if (t === 'mount') return 'mountains';
+        if (t === 'sand') return 'desert';
+        if (t === 'forest') return 'forests';
+        return t;
+    }
+
+    function exportNukesRingFormat() {
+        // Nukes app expects: [ [ {id:'R0',t:'water'} ], [..ring1..], [..ring2..], [..ring3..] ]
+        var maxRing = 0;
+        for (var i = 0; i < hexData.length; i++) {
+            var id = hexData[i].id;
+            if (id === 'R0') continue;
+            var m = id.match(/^R(\d+)D/);
+            if (m) {
+                var r = parseInt(m[1], 10);
+                if (r > maxRing) maxRing = r;
+            }
+        }
+
+        var rings = [];
+        for (var ring = 0; ring <= maxRing; ring++) rings.push([]);
+
+        for (var i = 0; i < hexData.length; i++) {
+            var h = hexData[i];
+            var ringNum = 0;
+            var pos = 0;
+            if (h.id !== 'R0') {
+                var m = h.id.match(/^R(\d+)D(\d+)$/);
+                if (!m) continue;
+                ringNum = parseInt(m[1], 10);
+                pos = parseInt(m[2], 10);
+            }
+
+            var terrain = normalizeNukesTerrain(h.type);
+            if (terrain === 'base') terrain = 'base';
+            if (ringNum === 0) {
+                rings[0] = [{ id: 'R0', t: terrain }];
+            } else {
+                // Ensure stable ordering by filling index (pos-1)
+                rings[ringNum][pos - 1] = { id: h.id, t: terrain };
+            }
+        }
+
+        // Fill any gaps (shouldn't happen, but keep shape consistent)
+        for (var ring = 1; ring <= maxRing; ring++) {
+            var expected = ring * 6;
+            for (var i = 0; i < expected; i++) {
+                if (!rings[ring][i]) {
+                    rings[ring][i] = { id: 'R' + ring + 'D' + (i + 1), t: 'fields' };
+                }
+            }
+        }
+
+        return rings;
+    }
+
+    function initEmbedBridge() {
+        if (!embedMode) return;
+        if (window.__hexmapsBridgeAttached) return;
+        window.__hexmapsBridgeAttached = true;
+
+        window.addEventListener('message', function(ev) {
+            var data = ev && ev.data;
+            if (!data || typeof data !== 'object') return;
+            if (data.type !== 'hexmaps:requestExport') return;
+
+            // Only support Nukes ring format right now (that's what the Nukes app imports).
+            var mapData = exportNukesRingFormat();
+            try {
+                window.parent.postMessage({ type: 'hexmaps:export', mapData: mapData }, '*');
+            } catch (_) {}
+        });
     }
 
     return { init: init };
