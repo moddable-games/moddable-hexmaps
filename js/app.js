@@ -4,6 +4,7 @@ var HexApp = (function() {
     var currentSeed = null;
     var currentSize = null;
     var currentPlayers = 0;
+    var currentStyle = 'classic';
     var hexData = [];
 
     function init() {
@@ -12,6 +13,7 @@ var HexApp = (function() {
         var seed = params.get('seed') || String(Math.floor(Date.now() / 9876));
         var size = parseInt(params.get('size')) || null;
         var players = parseInt(params.get('players')) || 0;
+        currentStyle = params.get('style') || 'classic';
 
         currentGame = game;
         currentSeed = seed;
@@ -21,6 +23,13 @@ var HexApp = (function() {
         setupGameSelector(game);
         loadGame(game, size, players);
         setupControls();
+        buildEditorPanel();
+        applyStyle();
+
+        if (game !== 'nukes') {
+            document.getElementById('style-group').style.display = 'none';
+            document.querySelector('[data-tab="editor"]').style.display = 'none';
+        }
     }
 
     function setupGameSelector(activeGame) {
@@ -38,6 +47,8 @@ var HexApp = (function() {
     }
 
     function setupControls() {
+        setupSidebarTabs();
+
         var seedInput = document.getElementById('seed-input');
         seedInput.addEventListener('input', function() {
             currentSeed = this.value || String(Math.floor(Date.now() / 9876));
@@ -52,12 +63,21 @@ var HexApp = (function() {
             updatePlayersForSize();
             regenerateMap();
             updateUrl();
+            buildEditorPanel();
         });
 
         var playersSelect = document.getElementById('players-select');
         playersSelect.addEventListener('change', function() {
             currentPlayers = parseInt(this.value) || 0;
             regenerateMap();
+            updateUrl();
+        });
+
+        var styleSelect = document.getElementById('style-select');
+        styleSelect.value = currentStyle;
+        styleSelect.addEventListener('change', function() {
+            currentStyle = this.value;
+            applyStyle();
             updateUrl();
         });
 
@@ -73,6 +93,188 @@ var HexApp = (function() {
         exportBtn.addEventListener('click', function() {
             exportMap();
         });
+
+        var importBtn = document.getElementById('import-btn');
+        importBtn.addEventListener('click', function() {
+            importMap();
+        });
+
+        var copyBtn = document.getElementById('copy-btn');
+        copyBtn.addEventListener('click', function() {
+            var textarea = document.getElementById('export-data');
+            if (textarea.value) {
+                navigator.clipboard.writeText(textarea.value);
+            }
+        });
+    }
+
+    function setupSidebarTabs() {
+        var tabs = document.querySelectorAll('.sidebar-tab');
+        var panels = document.querySelectorAll('.sidebar-panel');
+
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].addEventListener('click', function() {
+                var target = this.getAttribute('data-tab');
+                for (var j = 0; j < tabs.length; j++) {
+                    tabs[j].classList.remove('active');
+                }
+                for (var j = 0; j < panels.length; j++) {
+                    panels[j].classList.remove('active');
+                }
+                this.classList.add('active');
+                document.getElementById('panel-' + target).classList.add('active');
+            });
+        }
+    }
+
+    function buildEditorPanel() {
+        var container = document.getElementById('ring-resets');
+        container.innerHTML = '';
+
+        if (currentGame !== 'nukes') {
+            container.innerHTML = '<p class="editor-hint">Click hexes to cycle terrain type.</p>';
+            return;
+        }
+
+        var terrainOptions = [
+            { value: '', label: 'No change' },
+            { value: 'grass', label: 'Fields' },
+            { value: 'trees', label: 'Forests' },
+            { value: 'mount', label: 'Mountains' },
+            { value: 'water', label: 'Water' },
+            { value: 'sand', label: 'Desert' }
+        ];
+
+        for (var ring = 0; ring <= currentSize; ring++) {
+            var group = document.createElement('div');
+            group.className = 'ring-reset-group';
+
+            var label = document.createElement('label');
+            label.textContent = ring === 0 ? 'Centre Hex' : 'Ring ' + ring;
+
+            var select = document.createElement('select');
+            select.setAttribute('data-ring', ring);
+
+            for (var t = 0; t < terrainOptions.length; t++) {
+                var opt = document.createElement('option');
+                opt.value = terrainOptions[t].value;
+                opt.textContent = terrainOptions[t].label;
+                select.appendChild(opt);
+            }
+
+            select.addEventListener('change', function() {
+                var ringNum = parseInt(this.getAttribute('data-ring'));
+                var terrain = this.value;
+                if (terrain) {
+                    resetRingTerrain(ringNum, terrain);
+                }
+            });
+
+            group.appendChild(label);
+            group.appendChild(select);
+            container.appendChild(group);
+        }
+    }
+
+    function resetRingTerrain(ring, terrain) {
+        for (var i = 0; i < hexData.length; i++) {
+            var hex = hexData[i];
+            var hexRing = getHexRing(hex.id);
+            if (hexRing === ring) {
+                hex.type = terrain;
+                hex.label = terrain.charAt(0).toUpperCase();
+            }
+        }
+        if (renderer) {
+            HexRenderer.render(renderer);
+        }
+    }
+
+    function getHexRing(id) {
+        if (id === 'R0') return 0;
+        var match = id.match(/^R(\d+)D/);
+        return match ? parseInt(match[1]) : -1;
+    }
+
+    function importMap() {
+        var textarea = document.getElementById('import-data');
+        var json = textarea.value.trim();
+        if (!json) return;
+
+        try {
+            var data = JSON.parse(json);
+            if (Array.isArray(data)) {
+                importRingFormat(data);
+            } else if (data.hexes && Array.isArray(data.hexes)) {
+                importHexFormat(data);
+            }
+        } catch (e) {
+            textarea.style.borderColor = '#C62828';
+            setTimeout(function() { textarea.style.borderColor = ''; }, 1500);
+        }
+    }
+
+    function importRingFormat(data) {
+        for (var ring = 0; ring < data.length; ring++) {
+            if (!Array.isArray(data[ring])) continue;
+            for (var h = 0; h < data[ring].length; h++) {
+                var entry = data[ring][h];
+                for (var i = 0; i < hexData.length; i++) {
+                    if (hexData[i].id === entry.id) {
+                        hexData[i].type = entry.t;
+                        hexData[i].label = entry.t.charAt(0).toUpperCase();
+                        break;
+                    }
+                }
+            }
+        }
+        if (renderer) {
+            HexRenderer.render(renderer);
+        }
+    }
+
+    function importHexFormat(data) {
+        if (data.game) currentGame = data.game;
+        if (data.seed) {
+            currentSeed = data.seed;
+            document.getElementById('seed-input').value = currentSeed;
+        }
+        if (data.size) {
+            currentSize = data.size;
+            document.getElementById('size-select').value = currentSize;
+        }
+
+        hexData = [];
+        var centreHex = null;
+        if (currentGame === 'nukes') {
+            var mapDef = NukesHexData.maps['r' + currentSize];
+            if (mapDef) centreHex = mapDef.hexes.R0;
+        }
+
+        for (var i = 0; i < data.hexes.length; i++) {
+            var h = data.hexes[i];
+            var q = h.q;
+            var r = h.r;
+
+            if (centreHex) {
+                var axial = offsetToAxial(h.q + centreHex.q, h.r + centreHex.r);
+                var centreAxial = offsetToAxial(centreHex.q, centreHex.r);
+                q = axial.q - centreAxial.q;
+                r = axial.r - centreAxial.r;
+            }
+
+            hexData.push({
+                id: h.id,
+                q: q,
+                r: r,
+                type: h.type,
+                label: h.type.charAt(0).toUpperCase()
+            });
+        }
+
+        if (renderer) {
+            HexRenderer.setHexes(renderer, hexData);
+        }
     }
 
     function switchGame(game) {
@@ -88,7 +290,23 @@ var HexApp = (function() {
             }
         }
 
+        var editorTab = document.querySelector('[data-tab="editor"]');
+        var styleGroup = document.getElementById('style-group');
+
+        if (game === 'nukes') {
+            editorTab.style.display = '';
+            styleGroup.style.display = '';
+        } else {
+            editorTab.style.display = 'none';
+            styleGroup.style.display = 'none';
+            var activeTab = document.querySelector('.sidebar-tab.active');
+            if (activeTab && activeTab.getAttribute('data-tab') === 'editor') {
+                document.querySelector('[data-tab="random"]').click();
+            }
+        }
+
         loadGame(game, null, 0);
+        buildEditorPanel();
         updateUrl();
     }
 
@@ -457,8 +675,80 @@ var HexApp = (function() {
         params.set('seed', currentSeed);
         if (currentSize) params.set('size', currentSize);
         if (currentPlayers) params.set('players', currentPlayers);
+        if (currentStyle && currentStyle !== 'classic') params.set('style', currentStyle);
         var newUrl = window.location.pathname + '?' + params.toString();
         window.history.replaceState({}, '', newUrl);
+    }
+
+    function applyStyle() {
+        if (!renderer) return;
+
+        if (currentStyle === 'classic') {
+            renderer.colors = getClassicColors();
+            renderer.labels = true;
+        } else if (currentStyle === 'ascii') {
+            renderer.colors = getAsciiColors();
+            renderer.labels = true;
+        } else if (currentStyle === 'artistic') {
+            renderer.colors = getClassicColors();
+            renderer.labels = false;
+        }
+
+        HexRenderer.render(renderer);
+    }
+
+    function getClassicColors() {
+        if (currentGame === 'nukes') {
+            return {
+                water: '#2196F3',
+                trees: '#4CAF50',
+                mount: '#795548',
+                grass: '#8BC34A',
+                sand: '#FFC107',
+                base: '#F44336'
+            };
+        } else if (currentGame === 'talisman') {
+            return {
+                inner: '#CE93D8',
+                middle: '#90CAF9',
+                river: '#42A5F5',
+                outer: '#A5D6A7',
+                dungeon: '#616161',
+                ending: '#FFD700'
+            };
+        } else {
+            return {
+                rex: '#FFD700',
+                blue: '#1565C0',
+                red: '#C62828',
+                green: '#2E7D32',
+                lanes: '#37474F',
+                legends: '#FF8F00'
+            };
+        }
+    }
+
+    function getAsciiColors() {
+        return {
+            water: '#1a1a2e',
+            trees: '#1a2e1a',
+            mount: '#2e2a1a',
+            grass: '#1a2e20',
+            sand: '#2e2e1a',
+            base: '#2e1a1a',
+            inner: '#2a1a2e',
+            middle: '#1a2a2e',
+            river: '#1a1a2e',
+            outer: '#1a2e1a',
+            dungeon: '#1a1a1a',
+            ending: '#2e2e1a',
+            rex: '#2e2e1a',
+            blue: '#0a1a2e',
+            red: '#2e0a0a',
+            green: '#0a2e0a',
+            lanes: '#1a1a1a',
+            legends: '#2e1a0a'
+        };
     }
 
     function exportMap() {
@@ -476,8 +766,6 @@ var HexApp = (function() {
         var textarea = document.getElementById('export-data');
         if (textarea) {
             textarea.value = json;
-            textarea.select();
-            document.execCommand('copy');
         }
     }
 

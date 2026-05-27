@@ -46,29 +46,63 @@
     </div>
 
     <aside class="sidebar">
-        <div class="control-group">
-            <label>Map Size</label>
-            <select id="size-select"></select>
+        <div class="sidebar-tabs">
+            <button class="sidebar-tab active" data-tab="random">Random</button>
+            <button class="sidebar-tab" data-tab="editor">Editor</button>
+            <button class="sidebar-tab" data-tab="data">Data</button>
         </div>
 
-        <div class="control-group">
-            <label>Players</label>
-            <select id="players-select">
-                <option value="0">No bases</option>
-            </select>
+        <div class="sidebar-panel active" id="panel-random">
+            <div class="control-group">
+                <label>Map Size</label>
+                <select id="size-select"></select>
+            </div>
+
+            <div class="control-group" id="style-group">
+                <label>Style</label>
+                <select id="style-select">
+                    <option value="classic">Classic</option>
+                    <option value="artistic">Artistic</option>
+                    <option value="ascii">ASCII</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Players</label>
+                <select id="players-select">
+                    <option value="0">No bases</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Seed</label>
+                <input type="number" id="seed-input" placeholder="Random seed...">
+            </div>
+
+            <button class="btn" id="random-btn">Randomise</button>
         </div>
 
-        <div class="control-group">
-            <label>Seed</label>
-            <input type="number" id="seed-input" placeholder="Random seed...">
+        <div class="sidebar-panel" id="panel-editor">
+            <div id="editor-content">
+                <p class="editor-hint">Click any hex to cycle terrain.</p>
+                <div id="ring-resets"></div>
+            </div>
         </div>
 
-        <button class="btn" id="random-btn">Randomise</button>
+        <div class="sidebar-panel" id="panel-data">
+            <div class="control-group">
+                <label>Export</label>
+                <textarea id="export-data" readonly placeholder="Click Export to generate JSON..."></textarea>
+                <button class="btn btn-outline" id="export-btn">Export JSON</button>
+            </div>
 
-        <div class="control-group export-area">
-            <label>Export Data</label>
-            <textarea id="export-data" readonly placeholder="Click Export to get JSON..."></textarea>
-            <button class="btn btn-outline" id="export-btn">Export JSON</button>
+            <div class="control-group">
+                <label>Import</label>
+                <textarea id="import-data" placeholder="Paste JSON map data here..."></textarea>
+                <button class="btn" id="import-btn">Import</button>
+            </div>
+
+            <button class="btn btn-outline" id="copy-btn">Copy to Clipboard</button>
         </div>
     </aside>
 </div>
