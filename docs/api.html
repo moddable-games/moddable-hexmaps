@@ -24,9 +24,11 @@
     </div>
 </nav>
 
-<main class="docs">
-    <div class="docs__inner">
+<div class="docs-layout">
+<nav class="docs-toc" id="docs-toc"></nav>
+<div class="docs-body">
         <h1>API Reference</h1>
+        <p class="docs-lede">Public methods on the <code>HexRenderer</code>, <code>HexMath</code>, and <code>XorShift128</code> globals, plus the iframe embed API.</p>
 
         <section id="hex-renderer">
             <h2>HexRenderer</h2>
@@ -192,13 +194,13 @@ rng.integer(0, 5);  // deterministic result</code></pre>
             <p>Full UI link (no embed — opens the generator directly):</p>
             <pre><code>https://hex.moddable.games/generate/?game=talisman&amp;size=5&amp;seed=999</code></pre>
         </section>
-    </div>
-</main>
+</div>
+</div>
 
 <footer class="site-footer">
     <a href="https://moddable.games" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
     <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.2.0</p>
 </footer>
-
+<script src="../js/docs-toc.js?v=0.2.0"></script>
 </body>
 </html>

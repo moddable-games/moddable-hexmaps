@@ -24,8 +24,9 @@
     </div>
 </nav>
 
-<main class="docs">
-    <div class="docs__inner">
+<div class="docs-layout">
+<nav class="docs-toc" id="docs-toc"></nav>
+<div class="docs-body">
         <h1>Documentation</h1>
 
         <section id="overview">
@@ -115,13 +116,13 @@ data/              — Game configs and hex coordinate data</code></pre>
             <p>Uses axial coordinates (q, r) with ring-based generation. The centre hex is always (0, 0). Each ring N contains 6×N hexes arranged around the centre.</p>
             <p>Supports both pointy-top (Nukes, Talisman) and flat-top (Twilight) orientations.</p>
         </section>
-    </div>
-</main>
+</div>
+</div>
 
 <footer class="site-footer">
     <a href="https://moddable.games" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
     <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.2.0</p>
 </footer>
-
+<script src="../js/docs-toc.js?v=0.2.0"></script>
 </body>
 </html>
