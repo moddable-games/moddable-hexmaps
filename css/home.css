@@ -252,8 +252,76 @@ a { color: inherit; text-decoration: none; }
     overflow-x: auto;
 }
 
+.hx-sister {
+    background: var(--hx-deep);
+    padding: 60px 24px 80px;
+}
+
+.hx-sister__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hx-sister__eyebrow {
+    font-family: var(--mg-font-pixel, 'Press Start 2P', monospace);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--hx-glow);
+    margin-bottom: 12px;
+}
+
+.hx-sister__title {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.hx-sister__text {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 540px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+}
+
+.hx-sister__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    text-align: left;
+}
+
+.hx-sister-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(76,223,122,0.2);
+    border-radius: 10px;
+    padding: 24px 20px;
+    transition: transform 120ms, border-color 120ms;
+}
+
+.hx-sister-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--hx-glow);
+}
+
+.hx-sister-card__name {
+    font-family: var(--mg-font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.hx-sister-card__desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+}
+
 @media (max-width: 640px) {
     .hx-hero { padding: 80px 16px 60px; }
     .hx-games { padding: 48px 16px; }
     .hx-features { padding: 48px 16px; }
+    .hx-sister { padding: 48px 16px 60px; }
 }
