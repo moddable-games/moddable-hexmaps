@@ -104,11 +104,82 @@
 
         <section id="architecture">
             <h2>Architecture</h2>
-            <pre><code>js/xorshift.js     — Seeded PRNG (XorShift128)
-js/hex-math.js     — Axial coordinate math, grid generation
-js/hex-renderer.js — Canvas-based hex rendering
-js/app.js          — Application controller, game switching
-data/              — Game configs and hex coordinate data</code></pre>
+            <pre><code>js/game-registry.js  — Plugin registry (HexApp.registerGame API)
+js/app.js            — Framework controller (sidebar, tabs, URL, embed bridge)
+js/games/            — Game plugins (one file per game)
+  nukes.js           — Nukes: terrain gen, editor, ring-format export
+  talisman.js        — Talisman: ring-based terrain pools
+  twilight.js        — Twilight Imperium: tile draw from pools
+js/xorshift.js       — Seeded PRNG (XorShift128)
+js/hex-math.js       — Axial coordinate math, grid generation
+js/hex-renderer.js   — Canvas-based hex rendering
+data/                — Game data files (coordinate maps, tile pools)</code></pre>
+            <p>Each game is a self-contained plugin file that calls <code>HexApp.registerGame(key, config)</code>. The framework auto-generates the game selector tabs from the registry and delegates all game-specific behaviour to plugin hooks.</p>
+        </section>
+
+        <section id="plugin-system">
+            <h2>Plugin System</h2>
+            <p>Add a new hex game by creating a file in <code>js/games/</code> that calls <code>HexApp.registerGame()</code>. The game auto-appears in the tab bar with zero changes to framework code.</p>
+
+            <h3>Minimal game plugin</h3>
+            <pre><code>HexApp.registerGame('mygame', {
+    label: 'My Game',
+    orientation: 'pointy',
+    sizes: [{ value: 3, label: '3 Rings' }],
+    defaultSize: 3,
+    defaultPlayers: 0,
+    styles: null,
+    hasEditor: false,
+
+    playerCounts: function(size) { return []; },
+
+    generate: function(size, players, seed) {
+        var rng = createSeededRng(seed + '_mygame');
+        var grid = HexMath.generateHexGrid(size);
+        return grid.map(function(h, i) {
+            return {
+                id: 'R' + h.ring + 'D' + i,
+                q: h.q, r: h.r,
+                type: 'default',
+                label: 'D'
+            };
+        });
+    },
+
+    getColors: function(style) {
+        return { default: '#4CAF50' };
+    }
+});</code></pre>
+
+            <h3>Available hooks</h3>
+            <table>
+                <thead><tr><th>Hook</th><th>Required</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>generate(size, players, seed)</code></td><td>Yes</td><td>Return hex data array for the given params</td></tr>
+                    <tr><td><code>getColors(style)</code></td><td>Yes</td><td>Return terrain→colour map for given visual style</td></tr>
+                    <tr><td><code>playerCounts(size)</code></td><td>Yes</td><td>Return array of valid player counts for size</td></tr>
+                    <tr><td><code>onHexClick(hex)</code></td><td>No</td><td>Handle click on a hex (e.g. cycle terrain). Return modified hex</td></tr>
+                    <tr><td><code>editorPanel(container, state)</code></td><td>No</td><td>Build custom editor UI. <code>state.resetRing(ring, terrain)</code> available</td></tr>
+                    <tr><td><code>exportForParent(hexData, meta)</code></td><td>No</td><td>Custom export format for postMessage embed bridge</td></tr>
+                    <tr><td><code>importFromParent(data)</code></td><td>No</td><td>Parse incoming data from parent app</td></tr>
+                    <tr><td><code>importMap(data, hexData)</code></td><td>No</td><td>Handle non-standard import format (e.g. ring-format)</td></tr>
+                    <tr><td><code>rendererOptions(size)</code></td><td>No</td><td>Return <code>{ hexSize, flat }</code> overrides</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Config properties</h3>
+            <table>
+                <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>label</code></td><td>string</td><td>Display name in the game tab bar</td></tr>
+                    <tr><td><code>orientation</code></td><td>'pointy' | 'flat'</td><td>Hex orientation for this game</td></tr>
+                    <tr><td><code>sizes</code></td><td>array</td><td><code>[{ value: N, label: 'text' }]</code> — available map sizes</td></tr>
+                    <tr><td><code>defaultSize</code></td><td>number</td><td>Initial map size</td></tr>
+                    <tr><td><code>defaultPlayers</code></td><td>number</td><td>Initial player count</td></tr>
+                    <tr><td><code>styles</code></td><td>array | null</td><td><code>['classic', 'artistic', 'ascii']</code> or null to hide style selector</td></tr>
+                    <tr><td><code>hasEditor</code></td><td>boolean</td><td>Show the Editor sidebar tab for this game</td></tr>
+                </tbody>
+            </table>
         </section>
 
         <section id="coordinate-system">
