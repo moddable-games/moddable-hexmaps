@@ -416,7 +416,18 @@ var HexApp = (function() {
                 river: '#42A5F5',
                 outer: '#A5D6A7',
                 dungeon: '#616161',
-                ending: '#FFD700'
+                ending: '#FFD700',
+                plains: '#C8E6C9',
+                desert: '#FFE0B2',
+                ruins: '#BCAAA4',
+                temple: '#E1BEE7',
+                glade: '#81C784',
+                castle: '#B0BEC5',
+                oasis: '#80DEEA',
+                fields: '#DCEDC8',
+                runes: '#D1C4E9',
+                forest: '#388E3C',
+                treasure: '#FFC107'
             },
             labels: true,
             onHexClick: onHexClick,
@@ -538,7 +549,15 @@ var HexApp = (function() {
 
     function buildTalismanHexes(rings) {
         var ringTypes = { 1: 'inner', 2: 'middle', 3: 'river', 4: 'outer', 5: 'dungeon' };
+        var terrainPools = {
+            inner: ['plains', 'desert', 'ruins', 'temple', 'glade', 'castle'],
+            middle: ['plains', 'desert', 'ruins', 'oasis', 'fields', 'runes'],
+            river: ['river'],
+            outer: ['plains', 'forest', 'desert', 'ruins', 'fields', 'treasure'],
+            dungeon: ['dungeon']
+        };
         var hexes = [];
+        var rng = createSeededRng(currentSeed + '_talisman_' + rings);
 
         var grid = HexMath.generateHexGrid(rings);
         for (var i = 0; i < grid.length; i++) {
@@ -547,7 +566,9 @@ var HexApp = (function() {
             if (h.ring === 0) {
                 type = 'ending';
             } else {
-                type = ringTypes[h.ring] || 'outer';
+                var ringName = ringTypes[h.ring] || 'outer';
+                var pool = terrainPools[ringName];
+                type = pool[rng.integer(0, pool.length - 1)];
             }
             hexes.push({
                 id: 'R' + h.ring + 'D' + i,
@@ -572,16 +593,30 @@ var HexApp = (function() {
         var layout = getTwilightLayout();
         var keys = Object.keys(layout);
 
+        var rng = createSeededRng(currentSeed + '_twilight');
+        var pools = {
+            blue: TwilightTiles.blue.slice(),
+            red: TwilightTiles.red.slice(),
+            green: TwilightTiles.green.slice(),
+            lanes: TwilightTiles.lanes.slice()
+        };
+
+        function drawTile(pool) {
+            if (pool.length === 0) return null;
+            var idx = rng.integer(0, pool.length - 1);
+            return pool.splice(idx, 1)[0];
+        }
+
         for (var i = 0; i < keys.length; i++) {
             var id = keys[i];
             var def = layout[id];
             var type = def.type;
+            var label = def.label || type.charAt(0).toUpperCase();
 
-            if (type !== 'rex' && id.indexOf('R1') !== 0) {
-                if (def.type === 'lanes') {
-                    type = 'lanes';
-                } else if (def.type === 'legends') {
-                    type = 'legends';
+            if (type !== 'rex' && pools[type]) {
+                var tileName = drawTile(pools[type]);
+                if (tileName) {
+                    label = tileName.split('/')[0].split(' ')[0].substring(0, 3);
                 }
             }
 
@@ -592,7 +627,8 @@ var HexApp = (function() {
                 q: axial.q,
                 r: axial.r,
                 type: type,
-                label: def.label || type.charAt(0).toUpperCase()
+                label: label,
+                tileName: type === 'rex' ? 'Mecatol Rex' : (pools[type] ? label : type)
             });
         }
 
@@ -657,7 +693,8 @@ var HexApp = (function() {
     function onHexHover(hex) {
         var info = document.getElementById('hex-info');
         if (info) {
-            info.textContent = hex.id + ' (' + hex.q + ',' + hex.r + ') — ' + hex.type;
+            var name = hex.tileName || hex.type;
+            info.textContent = hex.id + ' (' + hex.q + ',' + hex.r + ') — ' + name;
         }
     }
 
@@ -735,7 +772,18 @@ var HexApp = (function() {
                 river: '#42A5F5',
                 outer: '#A5D6A7',
                 dungeon: '#616161',
-                ending: '#FFD700'
+                ending: '#FFD700',
+                plains: '#C8E6C9',
+                desert: '#FFE0B2',
+                ruins: '#BCAAA4',
+                temple: '#E1BEE7',
+                glade: '#81C784',
+                castle: '#B0BEC5',
+                oasis: '#80DEEA',
+                fields: '#DCEDC8',
+                runes: '#D1C4E9',
+                forest: '#388E3C',
+                treasure: '#FFC107'
             };
         } else {
             return {
