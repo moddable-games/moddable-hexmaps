@@ -3,10 +3,20 @@ var HexRenderer = (function() {
     var activeRenderer = null;
     var imageCache = {};
 
+    function getVersionParam() {
+        var link = document.querySelector('link[rel="stylesheet"][href*="?v="]');
+        if (link) {
+            var match = link.href.match(/\?v=([0-9.]+)/);
+            if (match) return '?v=' + match[1];
+        }
+        return '';
+    }
+
     function preloadImages(imagePaths, callback) {
         var keys = Object.keys(imagePaths);
         var remaining = keys.length;
         if (remaining === 0) { if (callback) callback(); return; }
+        var vParam = getVersionParam();
 
         keys.forEach(function(key) {
             if (imageCache[imagePaths[key]]) {
@@ -24,7 +34,7 @@ var HexRenderer = (function() {
                 remaining--;
                 if (remaining === 0 && callback) callback();
             };
-            img.src = imagePaths[key];
+            img.src = imagePaths[key] + (imagePaths[key].indexOf('?') === -1 ? vParam : '');
         });
     }
 
