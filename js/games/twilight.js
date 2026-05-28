@@ -73,10 +73,14 @@
         defaultPlayers: 6,
         styles: ['classic', 'artistic'],
         hasEditor: false,
+        layouts: [
+            { value: 'hyper8', label: '8 Players (Hyper Imperium)' }
+        ],
+        defaultLayout: 'hyper8',
 
         playerCounts: function() { return [3, 4, 5, 6]; },
 
-        generate: function(size, players, seed) {
+        generate: function(size, players, seed, selectedLayout) {
             var hexes = [];
             var keys = Object.keys(layout);
             var rng = createSeededRng(seed + '_twilight');

@@ -65,7 +65,7 @@
         }
 
         function drawTile(pool) {
-            if (pool.length === 0) return pool[0] || 'plains';
+            if (pool.length === 0) return 'plains';
             var idx = rng.integer(0, pool.length - 1);
             return pool.splice(idx, 1)[0];
         }

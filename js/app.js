@@ -5,6 +5,7 @@
     var currentSize = null;
     var currentPlayers = 0;
     var currentStyle = 'classic';
+    var currentLayout = null;
     var hexData = [];
 
     var embedMode = false;
@@ -17,6 +18,7 @@
         var size = parseInt(params.get('size')) || null;
         var players = parseInt(params.get('players')) || 0;
         currentStyle = params.get('theme') || params.get('style') || 'artistic';
+        currentLayout = params.get('layout') || null;
 
         var boardOnly = params.get('boardonly') === '1';
         var bgColor = params.get('bg');
@@ -43,6 +45,9 @@
         var config = HexApp.getGameConfig(game);
         if (!config || !config.styles) {
             document.getElementById('style-group').style.display = 'none';
+        }
+        if (!config || !config.layouts) {
+            document.getElementById('layout-group').style.display = 'none';
         }
         if (!config || !config.hasEditor) {
             document.querySelector('[data-tab="editor"]').style.display = 'none';
@@ -124,6 +129,13 @@
             updateUrl();
         });
 
+        var layoutSelect = document.getElementById('layout-select');
+        layoutSelect.addEventListener('change', function() {
+            currentLayout = this.value;
+            regenerateMap();
+            updateUrl();
+        });
+
         var styleSelect = document.getElementById('style-select');
         styleSelect.value = currentStyle;
         styleSelect.addEventListener('change', function() {
@@ -176,8 +188,24 @@
 
         var sizeSelect = document.getElementById('size-select');
         var playersSelect = document.getElementById('players-select');
+        var layoutSelect = document.getElementById('layout-select');
         sizeSelect.innerHTML = '';
         playersSelect.innerHTML = '<option value="0">No bases</option>';
+        layoutSelect.innerHTML = '';
+
+        if (config.layouts) {
+            for (var i = 0; i < config.layouts.length; i++) {
+                var l = config.layouts[i];
+                var opt = document.createElement('option');
+                opt.value = l.value;
+                opt.textContent = l.label;
+                layoutSelect.appendChild(opt);
+            }
+            currentLayout = currentLayout || config.defaultLayout || config.layouts[0].value;
+            layoutSelect.value = currentLayout;
+        } else {
+            currentLayout = null;
+        }
 
         for (var i = 0; i < config.sizes.length; i++) {
             var s = config.sizes[i];
@@ -246,6 +274,14 @@
             styleGroup.style.display = 'none';
         }
 
+        var layoutGroup = document.getElementById('layout-group');
+        if (config && config.layouts) {
+            layoutGroup.style.display = '';
+        } else {
+            layoutGroup.style.display = 'none';
+            currentLayout = null;
+        }
+
         loadGame(game, null, config ? config.defaultPlayers : 0);
         buildEditorPanel();
         updateUrl();
@@ -255,7 +291,15 @@
         var config = HexApp.getGameConfig(currentGame);
         if (!config) return;
 
-        hexData = config.generate(currentSize, currentPlayers, currentSeed);
+        hexData = config.generate(currentSize, currentPlayers, currentSeed, currentLayout);
+
+        if (config.constraints) {
+            var attempts = 0;
+            while (!config.constraints(hexData) && attempts < 100) {
+                attempts++;
+                hexData = config.generate(currentSize, currentPlayers, currentSeed + '_' + attempts, currentLayout);
+            }
+        }
 
         if (!renderer) { updateInfo(); return; }
 
@@ -542,6 +586,7 @@
         if (currentSize) params.set('size', currentSize);
         if (currentPlayers) params.set('players', currentPlayers);
         if (currentStyle && currentStyle !== 'classic') params.set('style', currentStyle);
+        if (currentLayout) params.set('layout', currentLayout);
         var newUrl = window.location.pathname + '?' + params.toString();
         window.history.replaceState({}, '', newUrl);
     }

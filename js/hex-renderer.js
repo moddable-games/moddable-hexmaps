@@ -201,7 +201,22 @@ var HexRenderer = (function() {
         }
         ctx.stroke();
 
-        if (renderer.labels && hex.label) {
+        if (hex.overlay) {
+            var radius = renderer.hexSize * (hex.overlay.size || 0.4);
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = hex.overlay.color || '#FFF8E1';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            var textColor = hex.overlay.textColor || ((hex.overlay.color === '#C62828' || hex.overlay.color === '#D32F2F') ? '#fff' : '#000');
+            ctx.fillStyle = textColor;
+            ctx.font = 'bold ' + Math.round(radius * 1.1) + 'px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(hex.overlay.text, center.x, center.y);
+        } else if (renderer.labels && hex.label) {
             ctx.fillStyle = getTextColor(fillColor);
             ctx.font = Math.round(renderer.hexSize * 0.35) + 'px sans-serif';
             ctx.textAlign = 'center';
