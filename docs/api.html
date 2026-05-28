@@ -73,6 +73,23 @@
             <h3>HexRenderer.fitToCanvas(renderer)</h3>
             <p>Recalculates hex size and offset to fit all hexes within the current canvas dimensions. Called automatically by <code>setHexes</code> and <code>resize</code>.</p>
 
+            <h3>HexRenderer.preloadImages(imagePaths, callback)</h3>
+            <p>Preloads tile images for artistic rendering. <code>imagePaths</code> is an object mapping keys to URL strings. Callback fires when all images are loaded (or failed). Images are cached globally — calling twice with the same paths is a no-op.</p>
+            <pre><code>HexRenderer.preloadImages({
+  water: 'img/tiles/nukes/water.png',
+  trees: 'img/tiles/nukes/trees.png'
+}, function() {
+  HexRenderer.render(renderer);
+});</code></pre>
+
+            <h3>Image rendering</h3>
+            <p>When <code>renderer.images</code> is set, the renderer clips each hex path and draws the corresponding tile image instead of a flat colour fill. Two image modes are supported:</p>
+            <ul>
+                <li><strong>Type-level images:</strong> Set <code>renderer.images = { terrain: 'path.png' }</code> — each hex of that terrain type uses the same image.</li>
+                <li><strong>Per-hex images:</strong> Set <code>hex.imagePath = 'path.png'</code> on individual hexes — each hex gets a unique image (used by Twilight for per-system artwork).</li>
+            </ul>
+            <p>Per-hex <code>imagePath</code> takes priority over the type-level map. If no image is found (or not yet loaded), the renderer falls back to flat colour fill.</p>
+
             <h3>Hex object shape</h3>
             <table>
                 <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
@@ -82,6 +99,8 @@
                     <tr><td><code>r</code></td><td>number</td><td>Axial row coordinate</td></tr>
                     <tr><td><code>type</code></td><td>string</td><td>Terrain type key (maps to colours)</td></tr>
                     <tr><td><code>label</code></td><td>string</td><td>Single character displayed in hex centre</td></tr>
+                    <tr><td><code>imagePath</code></td><td>string (optional)</td><td>Per-hex tile image URL — overrides type-level image when in artistic mode</td></tr>
+                    <tr><td><code>tileName</code></td><td>string (optional)</td><td>Human-readable tile name (shown on hover)</td></tr>
                 </tbody>
             </table>
         </section>
