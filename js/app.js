@@ -16,7 +16,7 @@
         var seed = params.get('seed') || String(Math.floor(Date.now() / 9876));
         var size = parseInt(params.get('size')) || null;
         var players = parseInt(params.get('players')) || 0;
-        currentStyle = params.get('theme') || params.get('style') || 'classic';
+        currentStyle = params.get('theme') || params.get('style') || 'artistic';
 
         var boardOnly = params.get('boardonly') === '1';
         var bgColor = params.get('bg');
@@ -257,9 +257,33 @@
 
         hexData = config.generate(currentSize, currentPlayers, currentSeed);
 
-        if (renderer) {
+        if (!renderer) { updateInfo(); return; }
+
+        if (config.getImages) {
+            var images = config.getImages(currentStyle);
+            if (images && images._perHex) {
+                renderer.images = images;
+                var perHexPaths = {};
+                for (var i = 0; i < hexData.length; i++) {
+                    if (hexData[i].imagePath) perHexPaths[hexData[i].imagePath] = hexData[i].imagePath;
+                }
+                HexRenderer.preloadImages(perHexPaths, function() {
+                    HexRenderer.setHexes(renderer, hexData);
+                });
+            } else if (images) {
+                renderer.images = images;
+                HexRenderer.preloadImages(images, function() {
+                    HexRenderer.setHexes(renderer, hexData);
+                });
+            } else {
+                renderer.images = null;
+                HexRenderer.setHexes(renderer, hexData);
+            }
+        } else {
+            renderer.images = null;
             HexRenderer.setHexes(renderer, hexData);
         }
+
         updateInfo();
     }
 
