@@ -59,7 +59,13 @@ h1, h2, h3, p, li { text-wrap: pretty; }
     border-bottom-color: var(--hx-glow);
 }
 
-.canvas-area canvas {
+.canvas-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+}
+
+.canvas-wrap canvas {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -267,7 +273,7 @@ body.embed-mode .canvas-area {
     inset: 0;
 }
 
-body.embed-mode .canvas-area canvas {
+body.embed-mode .canvas-wrap canvas {
     position: absolute;
     inset: 0;
     width: 100%;
