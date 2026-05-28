@@ -59,16 +59,25 @@
         var rng = createSeededRng(seed + '_talisman_' + rings);
         var grid = HexMath.generateHexGrid(rings);
 
+        var pools = {};
+        for (var key in terrainPools) {
+            pools[key] = terrainPools[key].slice();
+        }
+
+        function drawTile(pool) {
+            if (pool.length === 0) return pool[0] || 'plains';
+            var idx = rng.integer(0, pool.length - 1);
+            return pool.splice(idx, 1)[0];
+        }
+
         for (var i = 0; i < grid.length; i++) {
             var h = grid[i];
             var type;
             if (h.ring === 0) {
-                var endingPool = terrainPools.ending;
-                type = endingPool[rng.integer(0, endingPool.length - 1)];
+                type = drawTile(pools.ending);
             } else {
                 var ringName = ringTypes[h.ring] || 'outer';
-                var pool = terrainPools[ringName];
-                type = pool[rng.integer(0, pool.length - 1)];
+                type = drawTile(pools[ringName]);
             }
             hexes.push({
                 id: 'R' + h.ring + 'D' + i,
