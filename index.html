@@ -92,16 +92,22 @@
         <h2 class="hx-dev__title">Load. Register. Generate.</h2>
         <p class="hx-dev__text">Load the scripts, register a game, and generate maps. Or embed a board-only iframe in any page — no setup needed.</p>
 
-        <h3 class="hx-dev__subtitle">Script loading</h3>
-        <div class="hx-dev__code">
+        <div class="dev-tabs">
+            <div class="dev-tabs__bar">
+                <button class="dev-tabs__tab active" data-tab="0">Script loading</button>
+                <button class="dev-tabs__tab" data-tab="1">Register a game</button>
+                <button class="dev-tabs__tab" data-tab="2">Embed via iframe</button>
+            </div>
+            <div class="dev-tabs__panel active" data-panel="0">
+                <div class="hx-dev__code">
 &lt;script src="https://hex.moddable.games/js/xorshift.js"&gt;&lt;/script&gt;<br>
 &lt;script src="https://hex.moddable.games/js/hex-math.js"&gt;&lt;/script&gt;<br>
 &lt;script src="https://hex.moddable.games/js/hex-renderer.js"&gt;&lt;/script&gt;<br>
 &lt;script src="https://hex.moddable.games/js/game-registry.js"&gt;&lt;/script&gt;
-        </div>
-
-        <h3 class="hx-dev__subtitle">Register a game</h3>
-        <div class="hx-dev__code">
+                </div>
+            </div>
+            <div class="dev-tabs__panel" data-panel="1">
+                <div class="hx-dev__code">
 HexApp.registerGame('mygame', {<br>
 &nbsp;&nbsp;label: 'My Game',<br>
 &nbsp;&nbsp;orientation: 'pointy',<br>
@@ -111,12 +117,14 @@ HexApp.registerGame('mygame', {<br>
 &nbsp;&nbsp;},<br>
 &nbsp;&nbsp;getColors: function() { return { default: '#4CAF50' }; }<br>
 });
-        </div>
-
-        <h3 class="hx-dev__subtitle">Embed via iframe</h3>
-        <div class="hx-dev__code">
+                </div>
+            </div>
+            <div class="dev-tabs__panel" data-panel="2">
+                <div class="hx-dev__code">
 &lt;iframe src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;size=4&amp;seed=42&amp;bg=0d1117"<br>
 &nbsp;&nbsp;width="600" height="400" frameborder="0"&gt;&lt;/iframe&gt;
+                </div>
+            </div>
         </div>
 
         <div class="hx-dev__btns">
@@ -149,5 +157,7 @@ HexApp.registerGame('mygame', {<br>
     <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.3.0</p>
 </footer>
 
+<script src="js/dev-tabs.js?v=0.3.0"></script>
+<script src="js/parallax.js?v=0.3.0"></script>
 </body>
 </html>
