@@ -1,5 +1,5 @@
 .site-nav {
-    background: var(--mg-cosmic-deep);
+    background: var(--hx-deep);
     padding: 0 24px;
     display: flex;
     align-items: center;
@@ -52,7 +52,7 @@
 
 .site-nav__links a.active {
     color: #fff;
-    border-bottom-color: var(--mg-cosmic-glow);
+    border-bottom-color: var(--hx-glow);
 }
 
 .site-footer {
