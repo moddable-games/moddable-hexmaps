@@ -86,46 +86,42 @@
     </div>
 </section>
 
-<section class="hx-features">
-    <div class="hx-features__inner">
-        <div class="hx-features__eyebrow">ENGINE</div>
-        <h2 class="hx-features__title">Built for board games.</h2>
-        <div class="hx-features__grid">
-            <div class="hx-feature">
-                <div class="hx-feature__title">Canvas Rendering</div>
-                <p class="hx-feature__text">Hardware-accelerated hex grids. Flat-top or pointy-top, any ring count.</p>
-            </div>
-            <div class="hx-feature">
-                <div class="hx-feature__title">Seeded RNG</div>
-                <p class="hx-feature__text">Reproducible maps from a seed string. Same seed, same map, every time.</p>
-            </div>
-            <div class="hx-feature">
-                <div class="hx-feature__title">Click to Edit</div>
-                <p class="hx-feature__text">Cycle terrain types on any hex. Build custom scenarios by hand.</p>
-            </div>
-            <div class="hx-feature">
-                <div class="hx-feature__title">JSON Export</div>
-                <p class="hx-feature__text">Export map data as JSON. Import into other tools or share via URL.</p>
-            </div>
-            <div class="hx-feature">
-                <div class="hx-feature__title">Embeddable</div>
-                <p class="hx-feature__text">Drop into any page via iframe with URL params for game, seed, and players.</p>
-            </div>
-            <div class="hx-feature">
-                <div class="hx-feature__title">Zero Dependencies</div>
-                <p class="hx-feature__text">Vanilla JS, no build step. Works everywhere, deploys to GitHub Pages.</p>
-            </div>
-        </div>
-    </div>
-</section>
+<section class="hx-dev">
+    <div class="hx-dev__inner">
+        <div class="hx-dev__eyebrow">FOR DEVELOPERS</div>
+        <h2 class="hx-dev__title">Load. Register. Generate.</h2>
+        <p class="hx-dev__text">Load the scripts, register a game, and generate maps. Or embed a board-only iframe in any page — no setup needed.</p>
 
-<section class="hx-embed">
-    <div class="hx-embed__inner">
-        <h2 class="hx-embed__title">Embed anywhere.</h2>
-        <p class="hx-embed__text">Use URL parameters to control the embedded map generator.</p>
-        <div class="hx-embed__code">
-            &lt;iframe src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;size=4&amp;seed=42&amp;bg=0d1117"<br>
-            &nbsp;&nbsp;width="600" height="400" frameborder="0"&gt;&lt;/iframe&gt;
+        <h3 class="hx-dev__subtitle">Script loading</h3>
+        <div class="hx-dev__code">
+&lt;script src="https://hex.moddable.games/js/xorshift.js"&gt;&lt;/script&gt;<br>
+&lt;script src="https://hex.moddable.games/js/hex-math.js"&gt;&lt;/script&gt;<br>
+&lt;script src="https://hex.moddable.games/js/hex-renderer.js"&gt;&lt;/script&gt;<br>
+&lt;script src="https://hex.moddable.games/js/game-registry.js"&gt;&lt;/script&gt;
+        </div>
+
+        <h3 class="hx-dev__subtitle">Register a game</h3>
+        <div class="hx-dev__code">
+HexApp.registerGame('mygame', {<br>
+&nbsp;&nbsp;label: 'My Game',<br>
+&nbsp;&nbsp;orientation: 'pointy',<br>
+&nbsp;&nbsp;sizes: [{ value: 3, label: '3 Rings' }],<br>
+&nbsp;&nbsp;generate: function(size, players, seed) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return HexMath.generateHexGrid(size);<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;getColors: function() { return { default: '#4CAF50' }; }<br>
+});
+        </div>
+
+        <h3 class="hx-dev__subtitle">Embed via iframe</h3>
+        <div class="hx-dev__code">
+&lt;iframe src="https://hex.moddable.games/generate/?game=nukes&amp;boardonly=1&amp;size=4&amp;seed=42&amp;bg=0d1117"<br>
+&nbsp;&nbsp;width="600" height="400" frameborder="0"&gt;&lt;/iframe&gt;
+        </div>
+
+        <div class="hx-dev__btns">
+            <a href="docs/" class="hx-btn hx-btn--primary">Read the docs</a>
+            <a href="docs/api.html" class="hx-btn hx-btn--outline">API reference</a>
         </div>
     </div>
 </section>
@@ -138,7 +134,7 @@
         <div class="hx-sister__grid">
             <a href="https://chess.moddable.games" target="_blank" rel="noopener" class="hx-sister-card">
                 <div class="hx-sister-card__name">Moddable Chess</div>
-                <p class="hx-sister-card__desc">Chess engine supporting 30+ variants — Standard, Atomic, Fog of War, King of the Hill, and more. Full move generation, AI, and embeddable board renderer.</p>
+                <p class="hx-sister-card__desc">Chess engine with 54 variants — Standard, Atomic, Fog of War, King of the Hill, and more. Full move generation, AI, and plugin architecture for custom rulesets.</p>
             </a>
             <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener" class="hx-sister-card">
                 <div class="hx-sister-card__name">All Engines</div>
