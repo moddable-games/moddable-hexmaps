@@ -195,7 +195,7 @@
         ],
         defaultSize: 3,
         defaultPlayers: 6,
-        styles: ['classic', 'artistic'],
+        styles: ['artistic', 'classic'],
         hasEditor: false,
         layouts: [
             { value: '6p', label: '6 Players (Standard)' },

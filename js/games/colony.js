@@ -100,7 +100,7 @@
         ],
         defaultSize: 2,
         defaultPlayers: 0,
-        styles: ['artistic', 'classic'],
+        styles: ['classic', 'kenney'],
         labels: false,
         hasEditor: false,
         layouts: [
@@ -204,7 +204,7 @@
         },
 
         getImages: function(style) {
-            if (style !== 'artistic') return null;
+            if (style === 'classic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
             return {
                 forest: base + 'img/tiles/colony/forest.png',

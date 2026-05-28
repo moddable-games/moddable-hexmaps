@@ -101,7 +101,7 @@
         ],
         defaultSize: 4,
         defaultPlayers: 0,
-        styles: ['classic', 'artistic'],
+        styles: ['artistic', 'classic'],
         hasEditor: false,
 
         playerCounts: function() { return []; },

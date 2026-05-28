@@ -6,6 +6,7 @@
     var currentPlayers = 0;
     var currentStyle = 'classic';
     var currentLayout = null;
+    var gameStyles = {};
     var hexData = [];
 
     var embedMode = false;
@@ -17,7 +18,7 @@
         var seed = params.get('seed') || String(Math.floor(Date.now() / 9876));
         var size = parseInt(params.get('size')) || null;
         var players = parseInt(params.get('players')) || 0;
-        currentStyle = params.get('theme') || params.get('style') || 'artistic';
+        currentStyle = params.get('theme') || params.get('style') || null;
         currentLayout = params.get('layout') || null;
 
         var boardOnly = params.get('boardonly') === '1';
@@ -43,7 +44,21 @@
         applyStyle();
 
         var config = HexApp.getGameConfig(game);
-        if (!config || !config.styles) {
+        if (config && config.styles) {
+            var styleSelect = document.getElementById('style-select');
+            styleSelect.innerHTML = '';
+            for (var i = 0; i < config.styles.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = config.styles[i];
+                opt.textContent = config.styles[i].charAt(0).toUpperCase() + config.styles[i].slice(1);
+                styleSelect.appendChild(opt);
+            }
+            if (config.styles.indexOf(currentStyle) === -1) {
+                currentStyle = config.styles[0];
+            }
+            styleSelect.value = currentStyle;
+            gameStyles[game] = currentStyle;
+        } else {
             document.getElementById('style-group').style.display = 'none';
         }
         if (!config || !config.layouts) {
@@ -142,6 +157,7 @@
         styleSelect.value = currentStyle;
         styleSelect.addEventListener('change', function() {
             currentStyle = this.value;
+            gameStyles[currentGame] = currentStyle;
             applyStyle();
             updateUrl();
         });
@@ -236,7 +252,7 @@
             hexSize: opts.hexSize || 40,
             flat: opts.flat || false,
             colors: config.getColors(currentStyle),
-            labels: currentStyle !== 'artistic',
+            labels: currentStyle === 'classic',
             onHexClick: onHexClick,
             onHexHover: onHexHover
         });
@@ -272,6 +288,16 @@
 
         if (config && config.styles) {
             styleGroup.style.display = '';
+            var styleSelect = document.getElementById('style-select');
+            styleSelect.innerHTML = '';
+            for (var i = 0; i < config.styles.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = config.styles[i];
+                opt.textContent = config.styles[i].charAt(0).toUpperCase() + config.styles[i].slice(1);
+                styleSelect.appendChild(opt);
+            }
+            currentStyle = gameStyles[game] || config.styles[0];
+            styleSelect.value = currentStyle;
         } else {
             styleGroup.style.display = 'none';
         }
@@ -405,7 +431,7 @@
         if (!config) return;
 
         renderer.colors = config.getColors(currentStyle);
-        renderer.labels = currentStyle !== 'artistic' && !(config.labels === false);
+        renderer.labels = currentStyle === 'classic' && !(config.labels === false);
 
         if (config.getImages) {
             var images = config.getImages(currentStyle);

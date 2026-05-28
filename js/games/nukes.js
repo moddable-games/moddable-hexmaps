@@ -34,7 +34,7 @@
         ],
         defaultSize: 6,
         defaultPlayers: 0,
-        styles: ['artistic', 'classic'],
+        styles: ['artistic', 'classic', 'kenney'],
         labels: false,
         hasEditor: true,
 
@@ -201,15 +201,16 @@
         },
 
         getImages: function(style) {
-            if (style !== 'artistic') return null;
+            if (style === 'classic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            var folder = style === 'kenney' ? 'nukes-kenney' : 'nukes';
             return {
-                water: base + 'img/tiles/nukes/water.png',
-                trees: base + 'img/tiles/nukes/trees.png',
-                mount: base + 'img/tiles/nukes/mount.png',
-                grass: base + 'img/tiles/nukes/grass.png',
-                sand: base + 'img/tiles/nukes/sand.png',
-                base: base + 'img/tiles/nukes/base.png'
+                water: base + 'img/tiles/' + folder + '/water.png',
+                trees: base + 'img/tiles/' + folder + '/trees.png',
+                mount: base + 'img/tiles/' + folder + '/mount.png',
+                grass: base + 'img/tiles/' + folder + '/grass.png',
+                sand: base + 'img/tiles/' + folder + '/sand.png',
+                base: base + 'img/tiles/' + folder + '/base.png'
             };
         },
 
