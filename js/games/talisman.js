@@ -75,7 +75,8 @@
                 q: h.q,
                 r: h.r,
                 type: type,
-                label: type.charAt(0).toUpperCase()
+                label: type.substring(0, 3).charAt(0).toUpperCase() + type.substring(1, 3),
+                tileName: type.charAt(0).toUpperCase() + type.slice(1)
             });
         }
 

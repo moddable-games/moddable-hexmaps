@@ -356,7 +356,7 @@
         if (!config) return;
 
         renderer.colors = config.getColors(currentStyle);
-        renderer.labels = currentStyle !== 'artistic';
+        renderer.labels = currentStyle !== 'artistic' && !(config.labels === false);
 
         if (config.getImages) {
             var images = config.getImages(currentStyle);

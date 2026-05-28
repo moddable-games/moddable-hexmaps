@@ -34,7 +34,8 @@
         ],
         defaultSize: 6,
         defaultPlayers: 0,
-        styles: ['classic', 'artistic'],
+        styles: ['artistic', 'classic'],
+        labels: false,
         hasEditor: true,
 
         playerCounts: function(size) {
