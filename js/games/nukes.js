@@ -34,7 +34,7 @@
         ],
         defaultSize: 6,
         defaultPlayers: 0,
-        styles: ['classic', 'artistic', 'ascii'],
+        styles: ['classic', 'artistic'],
         hasEditor: true,
 
         playerCounts: function(size) {
@@ -88,17 +88,7 @@
             return hexes;
         },
 
-        getColors: function(style) {
-            if (style === 'ascii') {
-                return {
-                    water: '#1a1a2e',
-                    trees: '#1a2e1a',
-                    mount: '#2e2a1a',
-                    grass: '#1a2e20',
-                    sand: '#2e2e1a',
-                    base: '#2e1a1a'
-                };
-            }
+        getColors: function() {
             return {
                 water: '#2196F3',
                 trees: '#4CAF50',
@@ -210,26 +200,16 @@
         },
 
         getImages: function(style) {
+            if (style !== 'artistic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
-            if (style === 'artistic') {
-                return {
-                    water: base + 'img/tiles/nukes/water.png',
-                    trees: base + 'img/tiles/nukes/trees.png',
-                    mount: base + 'img/tiles/nukes/mount.png',
-                    grass: base + 'img/tiles/nukes/grass.png',
-                    sand: base + 'img/tiles/nukes/sand.png'
-                };
-            }
-            if (style === 'ascii') {
-                return {
-                    water: base + 'img/tiles/nukes/ascii-water.png',
-                    trees: base + 'img/tiles/nukes/ascii-trees.png',
-                    mount: base + 'img/tiles/nukes/ascii-mount.png',
-                    grass: base + 'img/tiles/nukes/ascii-grass.png',
-                    sand: base + 'img/tiles/nukes/ascii-sand.png'
-                };
-            }
-            return null;
+            return {
+                water: base + 'img/tiles/nukes/water.png',
+                trees: base + 'img/tiles/nukes/trees.png',
+                mount: base + 'img/tiles/nukes/mount.png',
+                grass: base + 'img/tiles/nukes/grass.png',
+                sand: base + 'img/tiles/nukes/sand.png',
+                base: base + 'img/tiles/nukes/base.png'
+            };
         },
 
         rendererOptions: function() {
