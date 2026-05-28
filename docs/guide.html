@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plugin Guide — Moddable Hexmaps</title>
+<link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/variables.css?v=0.3.10">
+<link rel="stylesheet" href="../css/shared.css?v=0.3.10">
+<link rel="stylesheet" href="../css/docs.css?v=0.3.10">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="../" class="site-nav__brand">
+        <img src="../assets/cube.svg" class="site-nav__cube" alt="">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="../generate/">Generate</a>
+        <a href="./">Docs</a>
+        <a href="api.html">API</a>
+        <a href="guide.html" class="active">Guide</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+<div class="docs-layout">
+<nav class="docs-toc" id="docs-toc"></nav>
+<div class="docs-body">
+    <h1>Building a Game Plugin: Colony</h1>
+    <p>This guide walks through creating a complete game plugin from scratch. We will build Colony (a Catan-style hex board generator) step by step, using every major engine feature: layouts, tile images, number token overlays, and placement constraints.</p>
+
+    <section id="prerequisites">
+        <h2>Prerequisites</h2>
+        <p>You need a local copy of the moddable-hexmaps repository and a browser. No build tools required.</p>
+        <pre><code>git clone https://github.com/Moddable-Games/moddable-hexmaps.git
+cd moddable-hexmaps</code></pre>
+    </section>
+
+    <section id="step1">
+        <h2>Step 1: Create the Plugin File</h2>
+        <p>Create <code>js/games/colony.js</code>. Every plugin is an IIFE that calls <code>HexApp.registerGame()</code>:</p>
+        <pre><code>(function() {
+    HexApp.registerGame('colony', {
+        label: 'Colony',
+        orientation: 'pointy',
+        sizes: [{ value: 2, label: 'Standard' }],
+        defaultSize: 2,
+        defaultPlayers: 0,
+        styles: ['classic'],
+        hasEditor: false,
+
+        playerCounts: function() { return []; },
+
+        generate: function(size, players, seed, layout) {
+            return [{ id: 'R0', q: 0, r: 0, type: 'desert', label: 'D' }];
+        },
+
+        getColors: function() {
+            return { desert: '#FFF8E1' };
+        },
+
+        rendererOptions: function() {
+            return { hexSize: 50, flat: false };
+        }
+    });
+})();</code></pre>
+        <p>Add a script tag in <code>generate/index.html</code> before <code>app.js</code>:</p>
+        <pre><code>&lt;script src="../js/games/colony.js?v=0.3.10"&gt;&lt;/script&gt;</code></pre>
+        <p>Reload the page. A "Colony" tab now appears, showing a single desert hex.</p>
+    </section>
+
+    <section id="step2">
+        <h2>Step 2: Generate the Board</h2>
+        <p>Colony uses a standard hex grid built from concentric rings. Ring 0 is the centre hex, ring 1 has 6 hexes, ring 2 has 12. A standard Catan board is 2 rings (19 hexes total).</p>
+        <pre><code>function generateRing(radius) {
+    if (radius === 0) return [{ q: 0, r: 0 }];
+    var results = [];
+    var directions = [
+        { q: 1, r: 0 }, { q: 0, r: 1 }, { q: -1, r: 1 },
+        { q: -1, r: 0 }, { q: 0, r: -1 }, { q: 1, r: -1 }
+    ];
+    var q = 0, r = -radius;
+    for (var d = 0; d &lt; 6; d++) {
+        for (var step = 0; step &lt; radius; step++) {
+            results.push({ q: q, r: r });
+            q += directions[d].q;
+            r += directions[d].r;
+        }
+    }
+    return results;
+}</code></pre>
+        <p>The key insight: start at position <code>(0, -radius)</code> and walk each of the 6 hex directions for <code>radius</code> steps. This traces the ring perimeter.</p>
+        <p>Build the full board by iterating rings 0 through N:</p>
+        <pre><code>var positions = [];
+for (var ring = 0; ring &lt;= size; ring++) {
+    var hexes = generateRing(ring);
+    for (var i = 0; i &lt; hexes.length; i++) {
+        positions.push({ q: hexes[i].q, r: hexes[i].r, ring: ring });
+    }
+}</code></pre>
+    </section>
+
+    <section id="step3">
+        <h2>Step 3: Terrain Distribution</h2>
+        <p>Catan has a fixed pool of terrain tiles that are shuffled and placed randomly:</p>
+        <pre><code>var terrainPool = [
+    { type: 'forest', count: 4 },
+    { type: 'pasture', count: 4 },
+    { type: 'fields', count: 4 },
+    { type: 'hills', count: 3 },
+    { type: 'mountains', count: 3 },
+    { type: 'desert', count: 1 }
+];</code></pre>
+        <p>Build a flat array from the pool, then shuffle using the seeded RNG:</p>
+        <pre><code>var tiles = [];
+for (var i = 0; i &lt; terrainPool.length; i++) {
+    for (var j = 0; j &lt; terrainPool[i].count; j++) {
+        tiles.push(terrainPool[i].type);
+    }
+}
+
+var rng = createSeededRng(seed + '_colony');
+for (var i = tiles.length - 1; i &gt; 0; i--) {
+    var j = rng.integer(0, i);
+    var tmp = tiles[i]; tiles[i] = tiles[j]; tiles[j] = tmp;
+}</code></pre>
+        <p>Assign tiles to positions in order. Define colours so each terrain is visually distinct:</p>
+        <pre><code>getColors: function() {
+    return {
+        forest: '#2E7D32',
+        pasture: '#8BC34A',
+        fields: '#FDD835',
+        hills: '#D84315',
+        mountains: '#616161',
+        desert: '#FFF8E1'
+    };
+}</code></pre>
+    </section>
+
+    <section id="step4">
+        <h2>Step 4: Number Token Overlays</h2>
+        <p>The engine supports an <code>overlay</code> property on each hex object. When present, the renderer draws a circular token with text on top of the hex:</p>
+        <pre><code>hex.overlay = {
+    text: '8',
+    color: '#C62828',
+    size: 0.35
+};</code></pre>
+        <p>For Colony, we distribute number tokens (2–12, no 7) across all non-desert hexes. The values 6 and 8 are highlighted in red as high-probability rolls:</p>
+        <pre><code>var numberTokens = [2,3,3,4,4,5,5,6,6,8,8,9,9,10,10,11,11,12];
+var tokenColors = { 6: '#C62828', 8: '#C62828' };
+
+// Shuffle tokens same way as tiles...
+var tokenIdx = 0;
+for (var i = 0; i &lt; hexData.length; i++) {
+    if (hexData[i].type !== 'desert' &amp;&amp; tokenIdx &lt; tokens.length) {
+        var num = tokens[tokenIdx];
+        hexData[i].overlay = {
+            text: String(num),
+            color: tokenColors[num] || '#FFF8E1',
+            size: 0.35
+        };
+        tokenIdx++;
+    }
+}</code></pre>
+    </section>
+
+    <section id="step5">
+        <h2>Step 5: Placement Constraints</h2>
+        <p>In Catan, the 6 and 8 tokens (highest probability) must not be placed on adjacent hexes. The engine supports a <code>constraints</code> hook — if it returns false, the framework re-generates with an incremented seed (up to 100 retries).</p>
+        <pre><code>constraints: function(hexData) {
+    var hexMap = {};
+    for (var i = 0; i &lt; hexData.length; i++) {
+        hexMap[hexData[i].q + ',' + hexData[i].r] = hexData[i];
+    }
+
+    var dirs = [
+        { q: 1, r: 0 }, { q: 0, r: 1 }, { q: -1, r: 1 },
+        { q: -1, r: 0 }, { q: 0, r: -1 }, { q: 1, r: -1 }
+    ];
+
+    for (var i = 0; i &lt; hexData.length; i++) {
+        var hex = hexData[i];
+        if (!hex.overlay) continue;
+        var num = parseInt(hex.overlay.text);
+        if (num !== 6 &amp;&amp; num !== 8) continue;
+
+        for (var d = 0; d &lt; dirs.length; d++) {
+            var nKey = (hex.q + dirs[d].q) + ',' + (hex.r + dirs[d].r);
+            var neighbor = hexMap[nKey];
+            if (neighbor &amp;&amp; neighbor.overlay) {
+                var nNum = parseInt(neighbor.overlay.text);
+                if (nNum === 6 || nNum === 8) return false;
+            }
+        }
+    }
+    return true;
+}</code></pre>
+        <p>The framework automatically handles retries — your generate function just needs to produce candidates, and constraints validates them.</p>
+    </section>
+
+    <section id="step6">
+        <h2>Step 6: Layout Variants</h2>
+        <p>Colony has two board sizes: standard (19 hexes, 2 rings) and expanded (37 hexes, 3 rings). The engine's layout system lets you define variants without changing the generate logic:</p>
+        <pre><code>layouts: [
+    { value: 'standard', label: 'Standard (3-4 Players)' },
+    { value: 'expanded', label: 'Expanded (5-6 Players)' }
+],
+defaultLayout: 'standard',</code></pre>
+        <p>When <code>layouts</code> is defined, the framework shows a Layout dropdown and passes the selected value as the fourth argument to <code>generate()</code>. The size selector is automatically hidden.</p>
+        <p>In your generate function, use the layout to determine ring count and tile pool:</p>
+        <pre><code>generate: function(size, players, seed, selectedLayout) {
+    var layouts = {
+        standard: { rings: 2, pool: basePool, tokens: baseTokens },
+        expanded: { rings: 3, pool: expandedPool, tokens: expandedTokens }
+    };
+    var def = layouts[selectedLayout] || layouts.standard;
+    // Build board with def.rings, shuffle def.pool...
+}</code></pre>
+    </section>
+
+    <section id="step7">
+        <h2>Step 7: Tile Images</h2>
+        <p>Add visual tile artwork by implementing <code>getImages()</code>. Place PNG files in <code>img/tiles/colony/</code> named by terrain type:</p>
+        <pre><code>getImages: function(style) {
+    if (style === 'classic') return null;
+    var base = (window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+    var folder = style === 'realistic' ? 'colony-realistic' : 'colony';
+    return {
+        forest: base + 'img/tiles/' + folder + '/forest.png',
+        pasture: base + 'img/tiles/' + folder + '/pasture.png',
+        fields: base + 'img/tiles/' + folder + '/fields.png',
+        hills: base + 'img/tiles/' + folder + '/hills.png',
+        mountains: base + 'img/tiles/' + folder + '/mountains.png',
+        desert: base + 'img/tiles/' + folder + '/desert.png'
+    };
+}</code></pre>
+        <p>The renderer clips images to the hex shape automatically. Any square-ish PNG will work — the engine handles pointy-top and flat-top clipping.</p>
+        <p>Style names must be alphabetically sorted in the <code>styles</code> array:</p>
+        <pre><code>styles: ['classic', 'kenney', 'realistic'],</code></pre>
+    </section>
+
+    <section id="summary">
+        <h2>Summary</h2>
+        <p>A complete game plugin uses these hooks:</p>
+        <table>
+            <thead><tr><th>Hook</th><th>Purpose</th></tr></thead>
+            <tbody>
+                <tr><td><code>generate()</code></td><td>Build the hex array with terrain, overlays, and positions</td></tr>
+                <tr><td><code>getColors()</code></td><td>Map terrain types to flat colours for classic mode</td></tr>
+                <tr><td><code>getImages()</code></td><td>Map terrain types to image paths for artistic modes</td></tr>
+                <tr><td><code>constraints()</code></td><td>Validate placement rules, trigger re-generation if invalid</td></tr>
+                <tr><td><code>layouts</code></td><td>Define board variants (hides size selector automatically)</td></tr>
+                <tr><td><code>rendererOptions()</code></td><td>Set hex size and orientation</td></tr>
+            </tbody>
+        </table>
+        <p>See the full <a href="api.html">API Reference</a> for all available hooks and config properties.</p>
+    </section>
+</div>
+</div>
+
+<footer class="site-footer">
+    <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.3.10</p>
+</footer>
+<script src="../js/docs-toc.js?v=0.3.10"></script>
+</body>
+</html>
