@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Press+Start+2P&display=swap');
+
+:root {
+    /* Brand (shared across Moddable projects) */
+    --mg-red: #d11a1a;
+    --mg-green: #3a9928;
+    --mg-blue: #0c4f8d;
+    --mg-cosmic-deep: #0a0d2a;
+    --mg-cosmic-mid: #1a3680;
+    --mg-cosmic-glow: #6fb5ff;
+    --mg-canvas: #f5f4ef;
+    --mg-ink: #14161c;
+    --mg-hairline: #e6e3d8;
+    --mg-mute: #4f5764;
+    --mg-font-display: "Rajdhani", system-ui, sans-serif;
+    --mg-font-body: "Barlow", system-ui, sans-serif;
+    --mg-font-mono: "JetBrains Mono", monospace;
+    --mg-font-pixel: "Press Start 2P", monospace;
+
+    /* Hexmaps project theme */
+    --hx-deep: #0a1a0d;
+    --hx-mid: #1a4a2e;
+    --hx-glow: #4cdf7a;
+    --hx-glow-hover: #6bff9a;
+    --hx-accent: #3a9928;
+    --hx-canvas: #f5f4ef;
+    --hx-ink: #14161c;
+    --hx-hairline: #e6e3d8;
+
+    /* App UI (dark theme for /generate/) */
+    --hx-surface: #0d1f12;
+    --hx-border: #1a3322;
+    --hx-canvas-dark: #060e08;
+    --hx-text: #e0e0e0;
+    --hx-text-mute: #a0a0a0;
+}
