@@ -2,7 +2,7 @@
 
 **A shared hexagonal map framework for board game tools.**
 
-Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: Hexed, and Twilight Imperium (Hyper Imperium) — and available for any hex-based game.
+Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: Hexed, Twilight Imperium, and Colony — and available for any hex-based game.
 
 ---
 
@@ -22,8 +22,9 @@ Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: He
 | Game | Terrain types | Map sizes | Players |
 |------|--------------|-----------|---------|
 | Nukes | Water, Forest, Desert, Mountain, Plains, HQ | 2–6 rings | 2–6 |
-| Talisman: Hexed | Inner, Middle, River, Outer, Dungeon, Ending | 4–5 rings | 2–6 |
-| Twilight Imperium | Blue (planets), Red (anomalies), Green (home), Lanes, Legends, Rex | 3 rings (fixed) | 3–8 |
+| Talisman: Hexed | Inner, Middle, River, Outer, Dungeon, Ending | 4–5 rings | — |
+| Twilight Imperium | Blue (planets), Red (anomalies), Green (home), Lanes, Rex | 7 layouts (3–8p) | 3–8 |
+| Colony | Forest, Pasture, Fields, Hills, Mountains, Desert | Standard / Expanded | — |
 
 ---
 
@@ -42,7 +43,8 @@ js/                 — Engine source
   games/            — Game plugins (one file per game)
     nukes.js        — Nukes: terrain gen, editor, ring-format export
     talisman.js     — Talisman: ring-based terrain pools
-    twilight.js     — Twilight Imperium: tile draw from pools
+    twilight.js     — Twilight Imperium: multi-layout tile draw
+    colony.js       — Colony: terrain + number tokens with constraints
 css/                — Stylesheets
   shared.css        — Shared nav/footer (matches moddable-chess)
   home.css          — Landing page styles (green theme)
@@ -81,11 +83,12 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 
 | Param | Values | Description |
 |-------|--------|-------------|
-| `game` | nukes, talisman, twilight | Game to generate |
-| `seed` | any integer | RNG seed for reproducible maps |
-| `size` | 2–6 | Ring count |
+| `game` | nukes, talisman, twilight, colony | Game to generate |
+| `seed` | any string | RNG seed for reproducible maps |
+| `size` | 2–6 | Ring count (hidden when layouts used) |
 | `players` | 2–8 | Player count for base placement |
-| `theme` | classic, artistic, ascii | Visual style (Nukes only) |
+| `style` | artistic, classic, kenney, realistic | Visual style (varies per game) |
+| `layout` | varies per game | Board layout variant |
 | `boardonly` | 1 | Hide UI, show only the map canvas |
 | `bg` | hex colour (e.g. 1a1a2e) | Background colour for embedding |
 | `mode` | view, edit | view = read-only; edit = interactive |

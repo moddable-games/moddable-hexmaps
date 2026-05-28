@@ -32,7 +32,7 @@
 
         <section id="overview">
             <h2>Overview</h2>
-            <p>Moddable Hexmaps is a shared hex map rendering engine and randomiser framework. It supports three board games out of the box and can be extended with custom game configs.</p>
+            <p>Moddable Hexmaps is a shared hex map rendering engine and randomiser framework. It supports four board games out of the box and can be extended with custom game configs.</p>
         </section>
 
         <section id="url-params">
@@ -43,11 +43,12 @@
                     <tr><th>Parameter</th><th>Values</th><th>Description</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><code>game</code></td><td>nukes, talisman, twilight</td><td>Which game to generate</td></tr>
-                    <tr><td><code>seed</code></td><td>any integer</td><td>RNG seed for reproducible maps</td></tr>
-                    <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman), 3 (twilight)</td><td>Ring count / map size</td></tr>
-                    <tr><td><code>players</code></td><td>2–6 (varies by game/size)</td><td>Player count for base placement</td></tr>
-                    <tr><td><code>theme</code></td><td>classic, artistic, ascii</td><td>Visual style (Nukes only)</td></tr>
+                    <tr><td><code>game</code></td><td>nukes, talisman, twilight, colony</td><td>Which game to generate</td></tr>
+                    <tr><td><code>seed</code></td><td>any string</td><td>RNG seed for reproducible maps</td></tr>
+                    <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman)</td><td>Ring count / map size (hidden when layouts used)</td></tr>
+                    <tr><td><code>players</code></td><td>2–8 (varies by game)</td><td>Player count for base placement</td></tr>
+                    <tr><td><code>style</code></td><td>artistic, classic, kenney, realistic</td><td>Visual style (varies per game)</td></tr>
+                    <tr><td><code>layout</code></td><td>varies per game</td><td>Board layout variant (Twilight: 3p–8p; Colony: standard, expanded)</td></tr>
                     <tr><td><code>boardonly</code></td><td>1</td><td>Hide all UI chrome, show only the map canvas</td></tr>
                     <tr><td><code>bg</code></td><td>hex colour (e.g. 1a1a2e or #1a1a2e)</td><td>Background colour for the canvas area</td></tr>
                     <tr><td><code>mode</code></td><td>view, edit</td><td>view = read-only (no click editing); edit = interactive</td></tr>
@@ -100,7 +101,10 @@
             <p>Hex adaptation of the Talisman board game. Uses concentric rings: inner (crown), middle, river, outer, and optional dungeon ring. Each ring has its own terrain palette.</p>
 
             <h3>Twilight Imperium</h3>
-            <p>Galaxy generator for TI4. Fixed 3-ring layout with Mecatol Rex at centre. Tile types: blue (planet systems), red (anomalies), green (home systems), lanes (hyperlanes), and legends.</p>
+            <p>Galaxy generator for TI4. Seven layout variants from 3-player to 8-player (including Prophecy of Kings expansion and Hyper Imperium). Tile types: blue (planet systems), red (anomalies), green (home systems), lanes (hyperlanes), and legends.</p>
+
+            <h3>Colony</h3>
+            <p>Hex board generator inspired by Settlers of Catan. Standard (19 hex, 3-4 players) and expanded (37 hex, 5-6 players) layouts. Number token overlays with 6/8 non-adjacency constraint enforcement. Terrain: forest, pasture, fields, hills, mountains, desert.</p>
         </section>
 
         <section id="architecture">
@@ -110,7 +114,8 @@ js/app.js            — Framework controller (sidebar, tabs, URL, embed bridge)
 js/games/            — Game plugins (one file per game)
   nukes.js           — Nukes: terrain gen, editor, ring-format export
   talisman.js        — Talisman: ring-based terrain pools
-  twilight.js        — Twilight Imperium: tile draw from pools
+  twilight.js        — Twilight Imperium: multi-layout tile draw
+  colony.js          — Colony: terrain + number tokens with constraints
 js/xorshift.js       — Seeded PRNG (XorShift128)
 js/hex-math.js       — Axial coordinate math, grid generation
 js/hex-renderer.js   — Canvas-based hex rendering
@@ -156,7 +161,7 @@ data/                — Game data files (coordinate maps, tile pools)</code></p
             <table>
                 <thead><tr><th>Hook</th><th>Required</th><th>Description</th></tr></thead>
                 <tbody>
-                    <tr><td><code>generate(size, players, seed)</code></td><td>Yes</td><td>Return hex data array for the given params</td></tr>
+                    <tr><td><code>generate(size, players, seed, layout)</code></td><td>Yes</td><td>Return hex data array for the given params</td></tr>
                     <tr><td><code>getColors(style)</code></td><td>Yes</td><td>Return terrain→colour map for given visual style</td></tr>
                     <tr><td><code>playerCounts(size)</code></td><td>Yes</td><td>Return array of valid player counts for size</td></tr>
                     <tr><td><code>onHexClick(hex)</code></td><td>No</td><td>Handle click on a hex (e.g. cycle terrain). Return modified hex</td></tr>
@@ -164,7 +169,8 @@ data/                — Game data files (coordinate maps, tile pools)</code></p
                     <tr><td><code>exportForParent(hexData, meta)</code></td><td>No</td><td>Custom export format for postMessage embed bridge</td></tr>
                     <tr><td><code>importFromParent(data)</code></td><td>No</td><td>Parse incoming data from parent app</td></tr>
                     <tr><td><code>importMap(data, hexData)</code></td><td>No</td><td>Handle non-standard import format (e.g. ring-format)</td></tr>
-                    <tr><td><code>getImages(style)</code></td><td>No</td><td>Return terrain→image path map for artistic rendering, or null for flat colours</td></tr>
+                    <tr><td><code>getImages(style)</code></td><td>No</td><td>Return terrain→image path map for tile rendering, or null for flat colours</td></tr>
+                    <tr><td><code>constraints(hexData)</code></td><td>No</td><td>Return true if valid, false to re-generate with incremented seed (max 100 retries)</td></tr>
                     <tr><td><code>rendererOptions(size)</code></td><td>No</td><td>Return <code>{ hexSize, flat }</code> overrides</td></tr>
                 </tbody>
             </table>
@@ -178,7 +184,9 @@ data/                — Game data files (coordinate maps, tile pools)</code></p
                     <tr><td><code>sizes</code></td><td>array</td><td><code>[{ value: N, label: 'text' }]</code> — available map sizes</td></tr>
                     <tr><td><code>defaultSize</code></td><td>number</td><td>Initial map size</td></tr>
                     <tr><td><code>defaultPlayers</code></td><td>number</td><td>Initial player count</td></tr>
-                    <tr><td><code>styles</code></td><td>array | null</td><td><code>['classic', 'artistic', 'ascii']</code> or null to hide style selector</td></tr>
+                    <tr><td><code>styles</code></td><td>array | null</td><td><code>['artistic', 'classic', 'kenney']</code> — alphabetically sorted, or null to hide style selector</td></tr>
+                    <tr><td><code>layouts</code></td><td>array | null</td><td><code>[{ value: '6p', label: '6 Players' }]</code> — layout variants (hides size selector when present)</td></tr>
+                    <tr><td><code>defaultLayout</code></td><td>string</td><td>Initial layout value when layouts defined</td></tr>
                     <tr><td><code>hasEditor</code></td><td>boolean</td><td>Show the Editor sidebar tab for this game</td></tr>
                     <tr><td><code>labels</code></td><td>boolean</td><td>Set to <code>false</code> to hide hex labels in classic mode (default: true)</td></tr>
                 </tbody>
