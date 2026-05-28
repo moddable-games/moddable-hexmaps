@@ -166,10 +166,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hx-dev {
-    background: var(--hx-deep);
-    background-image: url('../assets/hex-grid-green.svg');
-    background-size: 56px 64px;
-    background-repeat: repeat;
+    background: var(--hx-canvas);
     padding: 80px 24px;
 }
 
@@ -183,33 +180,33 @@ a { color: inherit; text-decoration: none; }
     font-family: var(--mg-font-pixel, 'Press Start 2P', monospace);
     font-size: 10px;
     letter-spacing: 0.1em;
-    color: var(--hx-glow);
+    color: var(--hx-accent);
     margin-bottom: 12px;
 }
 
 .hx-dev__title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--hx-ink);
     margin-bottom: 16px;
 }
 
 .hx-dev__text {
     font-size: 1rem;
-    color: rgba(255,255,255,0.7);
+    color: var(--mg-mute, #4f5764);
     line-height: 1.6;
     margin-bottom: 32px;
 }
 
 .hx-dev__code {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--hx-deep);
+    border: 1px solid rgba(0,0,0,0.1);
     border-radius: 12px;
     padding: 20px;
     text-align: left;
     font-family: var(--mg-font-mono, 'JetBrains Mono', monospace);
     font-size: 13px;
-    color: rgba(255,255,255,0.8);
+    color: var(--hx-glow);
     line-height: 1.7;
     overflow-x: auto;
     margin-bottom: 32px;
@@ -220,14 +217,18 @@ a { color: inherit; text-decoration: none; }
     gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 8px;
+    margin-top: 32px;
 }
+
+.hx-dev__btns .hx-btn--primary { background: var(--hx-accent); color: #fff; }
+.hx-dev__btns .hx-btn--outline { color: var(--hx-ink); border-color: rgba(0,0,0,0.2); }
 
 .dev-tabs__bar {
     display: flex;
     gap: 4px;
+    justify-content: center;
     margin-bottom: 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid var(--hx-hairline);
     padding-bottom: 0;
 }
 
@@ -238,7 +239,7 @@ a { color: inherit; text-decoration: none; }
     padding: 10px 16px;
     background: none;
     border: none;
-    color: rgba(255,255,255,0.5);
+    color: var(--mg-mute, #4f5764);
     cursor: pointer;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
@@ -246,12 +247,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .dev-tabs__tab:hover {
-    color: rgba(255,255,255,0.8);
+    color: var(--hx-ink);
 }
 
 .dev-tabs__tab.active {
-    color: var(--hx-glow);
-    border-bottom-color: var(--hx-glow);
+    color: var(--hx-accent);
+    border-bottom-color: var(--hx-accent);
 }
 
 .dev-tabs__panel {
