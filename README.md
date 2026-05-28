@@ -98,11 +98,18 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-05-28
+- New game: Colony (Catan-style) with standard and expanded layouts, number overlays, 6/8 constraint
+- Twilight Imperium: 7 official layout variants (3p–8p including PoK with hyperlanes)
+- Engine: layout selector system, overlay/token rendering, placement constraints with retry
+- Engine: per-game style persistence (switching games preserves each game's style choice)
+- New styles: Kenney and Realistic for Nukes and Colony (CC0 tilesets)
+- Players dropdown hidden for games without player options
+- Step-by-step plugin guide (docs/guide.html) using Colony as worked example
 - Homepage: "For Developers" section with tabbed code blocks (script loading, register game, embed)
 - Homepage: "Moddable Engines" sister section matching chess
 - Hero parallax scroll effect (title lag, button fade, glow drift)
 - Section colour banding: no adjacent sections share similar colours
-- Updated docs with plugin system guide and postMessage bridge API reference
+- Updated docs, README, and homepage for 4 games
 - Bump script updated to major/minor/patch syntax
 
 #### 2026-05-27
