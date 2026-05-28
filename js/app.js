@@ -237,11 +237,17 @@
         sizeSelect.value = currentSize;
 
         var playerOptions = config.playerCounts(currentSize);
-        for (var i = 0; i < playerOptions.length; i++) {
-            var opt = document.createElement('option');
-            opt.value = playerOptions[i];
-            opt.textContent = playerOptions[i] + ' Players';
-            playersSelect.appendChild(opt);
+        var playersGroup = document.getElementById('players-group');
+        if (playerOptions.length === 0) {
+            playersGroup.style.display = 'none';
+        } else {
+            playersGroup.style.display = '';
+            for (var i = 0; i < playerOptions.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = playerOptions[i];
+                opt.textContent = playerOptions[i] + ' Players';
+                playersSelect.appendChild(opt);
+            }
         }
 
         currentPlayers = players || config.defaultPlayers;
@@ -390,16 +396,22 @@
 
     function updatePlayersForSize() {
         var playersSelect = document.getElementById('players-select');
+        var playersGroup = document.getElementById('players-group');
         playersSelect.innerHTML = '<option value="0">No bases</option>';
 
         var config = HexApp.getGameConfig(currentGame);
         if (config) {
             var playerOptions = config.playerCounts(currentSize);
-            for (var i = 0; i < playerOptions.length; i++) {
-                var opt = document.createElement('option');
-                opt.value = playerOptions[i];
-                opt.textContent = playerOptions[i] + ' Players';
-                playersSelect.appendChild(opt);
+            if (playerOptions.length === 0) {
+                playersGroup.style.display = 'none';
+            } else {
+                playersGroup.style.display = '';
+                for (var i = 0; i < playerOptions.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = playerOptions[i];
+                    opt.textContent = playerOptions[i] + ' Players';
+                    playersSelect.appendChild(opt);
+                }
             }
         }
         playersSelect.value = '0';
