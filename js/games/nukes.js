@@ -34,7 +34,7 @@
         ],
         defaultSize: 6,
         defaultPlayers: 0,
-        styles: ['artistic', 'classic', 'kenney'],
+        styles: ['artistic', 'classic', 'kenney', 'realistic'],
         labels: false,
         hasEditor: true,
 
@@ -203,7 +203,8 @@
         getImages: function(style) {
             if (style === 'classic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
-            var folder = style === 'kenney' ? 'nukes-kenney' : 'nukes';
+            var folders = { artistic: 'nukes', kenney: 'nukes-kenney', realistic: 'nukes-realistic' };
+            var folder = folders[style] || 'nukes';
             return {
                 water: base + 'img/tiles/' + folder + '/water.png',
                 trees: base + 'img/tiles/' + folder + '/trees.png',

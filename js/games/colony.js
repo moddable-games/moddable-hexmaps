@@ -100,7 +100,7 @@
         ],
         defaultSize: 2,
         defaultPlayers: 0,
-        styles: ['classic', 'kenney'],
+        styles: ['classic', 'kenney', 'realistic'],
         labels: false,
         hasEditor: false,
         layouts: [
@@ -139,7 +139,6 @@
                 tokens[j] = tmp;
             }
 
-            var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
             var hexData = [];
             var tokenIdx = 0;
 
@@ -155,8 +154,7 @@
                     r: pos.r,
                     type: type,
                     label: type.charAt(0).toUpperCase(),
-                    tileName: type,
-                    imagePath: base + 'img/tiles/colony/' + type + '.png'
+                    tileName: type
                 };
 
                 if (type !== 'desert' && tokenIdx < tokens.length) {
@@ -206,13 +204,14 @@
         getImages: function(style) {
             if (style === 'classic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            var folder = style === 'realistic' ? 'colony-realistic' : 'colony';
             return {
-                forest: base + 'img/tiles/colony/forest.png',
-                pasture: base + 'img/tiles/colony/pasture.png',
-                fields: base + 'img/tiles/colony/fields.png',
-                hills: base + 'img/tiles/colony/hills.png',
-                mountains: base + 'img/tiles/colony/mountains.png',
-                desert: base + 'img/tiles/colony/desert.png'
+                forest: base + 'img/tiles/' + folder + '/forest.png',
+                pasture: base + 'img/tiles/' + folder + '/pasture.png',
+                fields: base + 'img/tiles/' + folder + '/fields.png',
+                hills: base + 'img/tiles/' + folder + '/hills.png',
+                mountains: base + 'img/tiles/' + folder + '/mountains.png',
+                desert: base + 'img/tiles/' + folder + '/desert.png'
             };
         },
 
