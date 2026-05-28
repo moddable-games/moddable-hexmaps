@@ -1,25 +1,29 @@
 #!/bin/bash
-# Bump version across all files that reference it
-# Usage: ./bump.sh 0.2.0
+# Bump version and propagate to all CSS/JS query strings
+# Usage: ./bump.sh [major|minor|patch]  (default: patch)
 
-if [ -z "$1" ]; then
-    echo "Usage: ./bump.sh <new-version>"
-    echo "Current version: $(cat version.txt)"
-    exit 1
-fi
+set -e
 
-NEW_VERSION="$1"
-OLD_VERSION=$(cat version.txt | tr -d '\n')
+VERSION_FILE="version.txt"
+CURRENT=$(cat "$VERSION_FILE" | tr -d '[:space:]')
 
-echo "Bumping from $OLD_VERSION to $NEW_VERSION"
+IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
 
-# Update version.txt
-echo "$NEW_VERSION" > version.txt
+case "${1:-patch}" in
+  major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+  minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+  patch) PATCH=$((PATCH + 1)) ;;
+  *) echo "Usage: $0 [major|minor|patch]"; exit 1 ;;
+esac
 
-# Update all HTML files (CSS/JS query strings, OG image URLs, version display)
-find . -name "*.html" -not -path "./node_modules/*" | while read f; do
-    sed -i '' "s/?v=${OLD_VERSION}/?v=${NEW_VERSION}/g" "$f"
-    sed -i '' "s/v${OLD_VERSION}/v${NEW_VERSION}/g" "$f"
+NEW="${MAJOR}.${MINOR}.${PATCH}"
+echo "$NEW" > "$VERSION_FILE"
+
+# Update all ?v= query strings in HTML files
+find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" | while read -r file; do
+  sed -i '' "s/\?v=[0-9][0-9.]*/?v=${NEW}/g" "$file"
+  sed -i '' "s/· v[0-9][0-9.]*/· v${NEW}/g" "$file"
 done
 
-echo "Done. Updated to $NEW_VERSION"
+echo "Bumped: ${CURRENT} → ${NEW}"
+echo "Updated all ?v= query strings and footer versions in HTML files."
