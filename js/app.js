@@ -48,6 +48,8 @@
         }
         if (!config || !config.layouts) {
             document.getElementById('layout-group').style.display = 'none';
+        } else {
+            document.getElementById('size-group').style.display = 'none';
         }
         if (!config || !config.hasEditor) {
             document.querySelector('[data-tab="editor"]').style.display = 'none';
@@ -275,10 +277,13 @@
         }
 
         var layoutGroup = document.getElementById('layout-group');
+        var sizeGroup = document.getElementById('size-group');
         if (config && config.layouts) {
             layoutGroup.style.display = '';
+            sizeGroup.style.display = 'none';
         } else {
             layoutGroup.style.display = 'none';
+            sizeGroup.style.display = '';
             currentLayout = null;
         }
 

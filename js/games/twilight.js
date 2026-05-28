@@ -1,42 +1,122 @@
 (function() {
-    var layout = {
-        R0: { q: 0, r: 0, type: 'rex', label: 'Rex' },
-        R1D1: { q: 0, r: 1, type: 'red' },
-        R1D2: { q: 1, r: 1, type: 'red' },
-        R1D3: { q: 1, r: 0, type: 'red' },
-        R1D4: { q: 0, r: -1, type: 'red' },
-        R1D5: { q: -1, r: 0, type: 'red' },
-        R1D6: { q: -1, r: 1, type: 'red' },
-        R2D1: { q: 0, r: 2, type: 'lanes' },
-        R2D2: { q: 1, r: 2, type: 'blue' },
-        R2D3: { q: 2, r: 1, type: 'lanes' },
-        R2D4: { q: 2, r: 0, type: 'blue' },
-        R2D5: { q: 2, r: -1, type: 'lanes' },
-        R2D6: { q: 1, r: -1, type: 'blue' },
-        R2D7: { q: 0, r: -2, type: 'lanes' },
-        R2D8: { q: -1, r: -1, type: 'blue' },
-        R2D9: { q: -2, r: -1, type: 'lanes' },
-        R2D10: { q: -2, r: 0, type: 'blue' },
-        R2D11: { q: -2, r: 1, type: 'lanes' },
-        R2D12: { q: -1, r: 2, type: 'blue' },
-        R3D1: { q: 0, r: 3, type: 'green' },
-        R3D2: { q: 1, r: 3, type: 'blue' },
-        R3D3: { q: 2, r: 2, type: 'red' },
-        R3D4: { q: 3, r: 2, type: 'green' },
-        R3D5: { q: 3, r: 1, type: 'blue' },
-        R3D6: { q: 3, r: 0, type: 'red' },
-        R3D7: { q: 3, r: -1, type: 'green' },
-        R3D8: { q: 2, r: -2, type: 'blue' },
-        R3D9: { q: 1, r: -2, type: 'red' },
-        R3D10: { q: 0, r: -3, type: 'green' },
-        R3D11: { q: -1, r: -2, type: 'blue' },
-        R3D12: { q: -2, r: -2, type: 'red' },
-        R3D13: { q: -3, r: -1, type: 'green' },
-        R3D14: { q: -3, r: 0, type: 'blue' },
-        R3D15: { q: -3, r: 1, type: 'red' },
-        R3D16: { q: -3, r: 2, type: 'green' },
-        R3D17: { q: -2, r: 2, type: 'blue' },
-        R3D18: { q: -1, r: 3, type: 'red' }
+
+    function generateRing(radius) {
+        if (radius === 0) return [{ q: 0, r: 0 }];
+        var results = [];
+        var directions = [
+            { q: 1, r: 0 }, { q: 0, r: 1 }, { q: -1, r: 1 },
+            { q: -1, r: 0 }, { q: 0, r: -1 }, { q: 1, r: -1 }
+        ];
+        var q = 0, r = -radius;
+        for (var d = 0; d < 6; d++) {
+            for (var step = 0; step < radius; step++) {
+                results.push({ q: q, r: r });
+                q += directions[d].q;
+                r += directions[d].r;
+            }
+        }
+        return results;
+    }
+
+    function buildBoard(rings) {
+        var positions = [];
+        for (var ring = 0; ring <= rings; ring++) {
+            var hexes = generateRing(ring);
+            for (var i = 0; i < hexes.length; i++) {
+                positions.push({ q: hexes[i].q, r: hexes[i].r, ring: ring });
+            }
+        }
+        return positions;
+    }
+
+    function posKey(q, r) { return q + ',' + r; }
+
+    var layouts = {
+        '6p': {
+            label: '6 Players (Standard)',
+            rings: 3,
+            homes: [
+                { q: 3, r: 0 }, { q: 3, r: -3 }, { q: 0, r: -3 },
+                { q: -3, r: 0 }, { q: -3, r: 3 }, { q: 0, r: 3 }
+            ],
+            removed: []
+        },
+        '5p': {
+            label: '5 Players',
+            rings: 3,
+            homes: [
+                { q: 3, r: 0 }, { q: 3, r: -3 }, { q: -1, r: -2 },
+                { q: -3, r: 2 }, { q: 0, r: 3 }
+            ],
+            removed: []
+        },
+        '4p': {
+            label: '4 Players',
+            rings: 3,
+            homes: [
+                { q: 3, r: -2 }, { q: 1, r: 2 },
+                { q: -1, r: -2 }, { q: -3, r: 2 }
+            ],
+            removed: []
+        },
+        '3p': {
+            label: '3 Players',
+            rings: 3,
+            homes: [
+                { q: 3, r: -3 }, { q: -3, r: 0 }, { q: 0, r: 3 }
+            ],
+            removed: [
+                { q: 3, r: 0 }, { q: 3, r: -1 }, { q: 2, r: 1 },
+                { q: 1, r: -3 }, { q: -1, r: -2 }, { q: -3, r: 2 },
+                { q: 0, r: -3 }, { q: -3, r: 3 }, { q: -2, r: 3 }
+            ]
+        },
+        '7p': {
+            label: '7 Players (PoK)',
+            rings: 4,
+            homes: [
+                { q: 3, r: 1 }, { q: 4, r: -2 }, { q: 3, r: -4 },
+                { q: -3, r: -1 }, { q: -4, r: 2 }, { q: 0, r: -4 },
+                { q: -3, r: 4 }
+            ],
+            removed: [],
+            hyperlanes: [
+                { q: 0, r: 1, type: 'lanes' },
+                { q: 0, r: -1, type: 'lanes' },
+                { q: -1, r: 0, type: 'lanes' },
+                { q: 1, r: 2, type: 'lanes' },
+                { q: 1, r: -3, type: 'lanes' },
+                { q: -3, r: 2, type: 'lanes' }
+            ]
+        },
+        '8p': {
+            label: '8 Players (PoK)',
+            rings: 4,
+            homes: [
+                { q: 0, r: 4 }, { q: 3, r: 1 }, { q: 4, r: -2 },
+                { q: 3, r: -4 }, { q: 0, r: -4 }, { q: -3, r: -1 },
+                { q: -4, r: 2 }, { q: -3, r: 4 }
+            ],
+            removed: [],
+            hyperlanes: [
+                { q: 0, r: 1, type: 'lanes' },
+                { q: 1, r: 0, type: 'lanes' },
+                { q: 0, r: -1, type: 'lanes' },
+                { q: -1, r: 0, type: 'lanes' },
+                { q: 3, r: -2, type: 'lanes' },
+                { q: -3, r: 2, type: 'lanes' }
+            ]
+        },
+        'hyper8': {
+            label: '8 Players (Hyper Imperium)',
+            rings: 3,
+            homes: [
+                { q: 3, r: 0 }, { q: 3, r: -3 }, { q: 0, r: -3 },
+                { q: -3, r: 0 }, { q: -3, r: 3 }, { q: 0, r: 3 },
+                { q: 2, r: -3 }, { q: -2, r: 3 }
+            ],
+            removed: []
+        }
     };
 
     var classicColors = {
@@ -45,7 +125,8 @@
         red: '#C62828',
         green: '#2E7D32',
         lanes: '#37474F',
-        legends: '#FF8F00'
+        legends: '#FF8F00',
+        home: '#6A1B9A'
     };
 
     var asciiColors = {
@@ -54,35 +135,86 @@
         red: '#2e0a0a',
         green: '#0a2e0a',
         lanes: '#1a1a1a',
-        legends: '#2e1a0a'
+        legends: '#2e1a0a',
+        home: '#1a0a2e'
     };
 
-    function oddqOffsetToAxial(col, row) {
-        var q = col;
-        var r = row - Math.floor((col + (col & 1)) / 2);
-        return { q: q, r: r };
+    function assignTileTypes(positions, layoutDef) {
+        var homeSet = {};
+        for (var i = 0; i < layoutDef.homes.length; i++) {
+            homeSet[posKey(layoutDef.homes[i].q, layoutDef.homes[i].r)] = true;
+        }
+
+        var removedSet = {};
+        for (var i = 0; i < layoutDef.removed.length; i++) {
+            removedSet[posKey(layoutDef.removed[i].q, layoutDef.removed[i].r)] = true;
+        }
+
+        var hyperlaneSet = {};
+        if (layoutDef.hyperlanes) {
+            for (var i = 0; i < layoutDef.hyperlanes.length; i++) {
+                var hl = layoutDef.hyperlanes[i];
+                hyperlaneSet[posKey(hl.q, hl.r)] = true;
+            }
+        }
+
+        var result = [];
+        for (var i = 0; i < positions.length; i++) {
+            var pos = positions[i];
+            var key = posKey(pos.q, pos.r);
+
+            if (removedSet[key]) continue;
+
+            var type;
+            if (pos.q === 0 && pos.r === 0) {
+                type = 'rex';
+            } else if (homeSet[key]) {
+                type = 'green';
+            } else if (hyperlaneSet[key]) {
+                type = 'lanes';
+            } else if (pos.ring === 1) {
+                type = 'blue';
+            } else if (pos.ring === 2) {
+                type = (i % 2 === 0) ? 'blue' : 'red';
+            } else if (pos.ring === 3) {
+                type = (i % 3 === 0) ? 'red' : 'blue';
+            } else {
+                type = 'blue';
+            }
+
+            result.push({ q: pos.q, r: pos.r, ring: pos.ring, type: type, isHome: !!homeSet[key] });
+        }
+        return result;
     }
 
     HexApp.registerGame('twilight', {
         label: 'Twilight',
         orientation: 'flat',
         sizes: [
-            { value: 3, label: '3 Rings (Standard)' }
+            { value: 3, label: 'Standard' }
         ],
         defaultSize: 3,
         defaultPlayers: 6,
         styles: ['classic', 'artistic'],
         hasEditor: false,
         layouts: [
+            { value: '6p', label: '6 Players (Standard)' },
+            { value: '5p', label: '5 Players' },
+            { value: '4p', label: '4 Players' },
+            { value: '3p', label: '3 Players' },
+            { value: '7p', label: '7 Players (PoK)' },
+            { value: '8p', label: '8 Players (PoK)' },
             { value: 'hyper8', label: '8 Players (Hyper Imperium)' }
         ],
-        defaultLayout: 'hyper8',
+        defaultLayout: '6p',
 
-        playerCounts: function() { return [3, 4, 5, 6]; },
+        playerCounts: function() { return [3, 4, 5, 6, 7, 8]; },
 
         generate: function(size, players, seed, selectedLayout) {
-            var hexes = [];
-            var keys = Object.keys(layout);
+            var layoutDef = layouts[selectedLayout] || layouts['6p'];
+            var boardPositions = buildBoard(layoutDef.rings);
+            var assigned = assignTileTypes(boardPositions, layoutDef);
+
             var rng = createSeededRng(seed + '_twilight');
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
             var imgMap = (typeof TwilightImages !== 'undefined') ? TwilightImages : null;
@@ -100,17 +232,28 @@
                 return pool.splice(idx, 1)[0];
             }
 
-            for (var i = 0; i < keys.length; i++) {
-                var id = keys[i];
-                var def = layout[id];
+            var hexes = [];
+            for (var i = 0; i < assigned.length; i++) {
+                var def = assigned[i];
                 var type = def.type;
-                var label = def.label || type.charAt(0).toUpperCase();
+                var label = type.charAt(0).toUpperCase();
                 var tileName = null;
                 var imagePath = null;
+                var id = 'R' + def.ring + 'D' + (i + 1);
 
                 if (type === 'rex') {
+                    id = 'R0';
                     tileName = 'Mecatol Rex';
+                    label = 'Rex';
                     if (imgMap) imagePath = base + 'img/tiles/twilight/' + imgMap.rex;
+                } else if (def.isHome) {
+                    tileName = drawTile(pools.green);
+                    if (tileName) {
+                        label = tileName.split('/')[0].split(' ')[0].substring(0, 3);
+                        if (imgMap && imgMap.green && imgMap.green[tileName]) {
+                            imagePath = base + 'img/tiles/twilight/' + imgMap.green[tileName];
+                        }
+                    }
                 } else if (pools[type]) {
                     tileName = drawTile(pools[type]);
                     if (tileName) {
@@ -121,13 +264,11 @@
                     }
                 }
 
-                var axial = oddqOffsetToAxial(def.q, def.r);
-
                 hexes.push({
                     id: id,
-                    q: axial.q,
-                    r: axial.r,
-                    type: type,
+                    q: def.q,
+                    r: def.r,
+                    type: def.isHome ? 'green' : type,
                     label: label,
                     tileName: tileName || type,
                     imagePath: imagePath
