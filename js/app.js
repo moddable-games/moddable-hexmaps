@@ -333,6 +333,34 @@
 
         renderer.colors = config.getColors(currentStyle);
         renderer.labels = currentStyle !== 'artistic';
+
+        if (config.getImages) {
+            var images = config.getImages(currentStyle);
+            if (images && images._perHex) {
+                renderer.images = images;
+                var perHexPaths = {};
+                for (var i = 0; i < hexData.length; i++) {
+                    if (hexData[i].imagePath) {
+                        perHexPaths[hexData[i].imagePath] = hexData[i].imagePath;
+                    }
+                }
+                HexRenderer.preloadImages(perHexPaths, function() {
+                    HexRenderer.render(renderer);
+                });
+                return;
+            } else if (images) {
+                renderer.images = images;
+                HexRenderer.preloadImages(images, function() {
+                    HexRenderer.render(renderer);
+                });
+                return;
+            } else {
+                renderer.images = null;
+            }
+        } else {
+            renderer.images = null;
+        }
+
         HexRenderer.render(renderer);
     }
 

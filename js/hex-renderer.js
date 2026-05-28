@@ -1,6 +1,32 @@
 var HexRenderer = (function() {
 
     var activeRenderer = null;
+    var imageCache = {};
+
+    function preloadImages(imagePaths, callback) {
+        var keys = Object.keys(imagePaths);
+        var remaining = keys.length;
+        if (remaining === 0) { if (callback) callback(); return; }
+
+        keys.forEach(function(key) {
+            if (imageCache[imagePaths[key]]) {
+                remaining--;
+                if (remaining === 0 && callback) callback();
+                return;
+            }
+            var img = new Image();
+            img.onload = function() {
+                imageCache[imagePaths[key]] = img;
+                remaining--;
+                if (remaining === 0 && callback) callback();
+            };
+            img.onerror = function() {
+                remaining--;
+                if (remaining === 0 && callback) callback();
+            };
+            img.src = imagePaths[key];
+        });
+    }
 
     function create(canvasId, options) {
         var canvas = document.getElementById(canvasId);
@@ -25,6 +51,7 @@ var HexRenderer = (function() {
             onHexClick: options.onHexClick || null,
             onHexHover: options.onHexHover || null,
             colors: options.colors || {},
+            images: options.images || null,
             labels: options.labels || false,
             cleanup: null
         };
@@ -130,9 +157,20 @@ var HexRenderer = (function() {
         }
         ctx.closePath();
 
-        var fillColor = getTerrainColor(renderer, hex.type);
-        ctx.fillStyle = fillColor;
-        ctx.fill();
+        var imgPath = renderer.images ? (hex.imagePath || renderer.images[hex.type]) : null;
+        var img = imgPath && imageCache[imgPath];
+
+        if (img) {
+            ctx.save();
+            ctx.clip();
+            var size = renderer.hexSize * 2;
+            ctx.drawImage(img, center.x - size / 2, center.y - size / 2, size, size);
+            ctx.restore();
+        } else {
+            var fillColor = getTerrainColor(renderer, hex.type);
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+        }
 
         var isHovered = renderer.hoveredHex &&
             renderer.hoveredHex.q === hex.q &&
@@ -280,6 +318,7 @@ var HexRenderer = (function() {
         setHexes: setHexes,
         render: render,
         resize: resize,
-        fitToCanvas: fitToCanvas
+        fitToCanvas: fitToCanvas,
+        preloadImages: preloadImages
     };
 })();

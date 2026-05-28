@@ -71,7 +71,7 @@
         ],
         defaultSize: 3,
         defaultPlayers: 6,
-        styles: null,
+        styles: ['classic', 'artistic'],
         hasEditor: false,
 
         playerCounts: function() { return [3, 4, 5, 6]; },
@@ -80,6 +80,8 @@
             var hexes = [];
             var keys = Object.keys(layout);
             var rng = createSeededRng(seed + '_twilight');
+            var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            var imgMap = (typeof TwilightImages !== 'undefined') ? TwilightImages : null;
 
             var pools = {
                 blue: TwilightTiles.blue.slice(),
@@ -99,11 +101,19 @@
                 var def = layout[id];
                 var type = def.type;
                 var label = def.label || type.charAt(0).toUpperCase();
+                var tileName = null;
+                var imagePath = null;
 
-                if (type !== 'rex' && pools[type]) {
-                    var tileName = drawTile(pools[type]);
+                if (type === 'rex') {
+                    tileName = 'Mecatol Rex';
+                    if (imgMap) imagePath = base + 'img/tiles/twilight/' + imgMap.rex;
+                } else if (pools[type]) {
+                    tileName = drawTile(pools[type]);
                     if (tileName) {
                         label = tileName.split('/')[0].split(' ')[0].substring(0, 3);
+                        if (imgMap && imgMap[type] && imgMap[type][tileName]) {
+                            imagePath = base + 'img/tiles/twilight/' + imgMap[type][tileName];
+                        }
                     }
                 }
 
@@ -115,7 +125,8 @@
                     r: axial.r,
                     type: type,
                     label: label,
-                    tileName: type === 'rex' ? 'Mecatol Rex' : (pools[type] ? label : type)
+                    tileName: tileName || type,
+                    imagePath: imagePath
                 });
             }
 
@@ -125,6 +136,11 @@
         getColors: function(style) {
             if (style === 'ascii') return asciiColors;
             return classicColors;
+        },
+
+        getImages: function(style) {
+            if (style !== 'artistic') return null;
+            return { _perHex: true };
         },
 
         rendererOptions: function() {

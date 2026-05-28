@@ -209,6 +209,29 @@
             return hexData;
         },
 
+        getImages: function(style) {
+            var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            if (style === 'artistic') {
+                return {
+                    water: base + 'img/tiles/nukes/water.png',
+                    trees: base + 'img/tiles/nukes/trees.png',
+                    mount: base + 'img/tiles/nukes/mount.png',
+                    grass: base + 'img/tiles/nukes/grass.png',
+                    sand: base + 'img/tiles/nukes/sand.png'
+                };
+            }
+            if (style === 'ascii') {
+                return {
+                    water: base + 'img/tiles/nukes/ascii-water.png',
+                    trees: base + 'img/tiles/nukes/ascii-trees.png',
+                    mount: base + 'img/tiles/nukes/ascii-mount.png',
+                    grass: base + 'img/tiles/nukes/ascii-grass.png',
+                    sand: base + 'img/tiles/nukes/ascii-sand.png'
+                };
+            }
+            return null;
+        },
+
         rendererOptions: function() {
             return { hexSize: 40, flat: false };
         }
