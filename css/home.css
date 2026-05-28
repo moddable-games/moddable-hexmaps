@@ -166,7 +166,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hx-dev {
-    background: var(--hx-canvas);
+    background: var(--hx-deep);
+    background-image: url('../assets/hex-grid-green.svg');
+    background-size: 56px 64px;
+    background-repeat: repeat;
     padding: 80px 24px;
 }
 
@@ -180,33 +183,33 @@ a { color: inherit; text-decoration: none; }
     font-family: var(--mg-font-pixel, 'Press Start 2P', monospace);
     font-size: 10px;
     letter-spacing: 0.1em;
-    color: var(--hx-accent);
+    color: var(--hx-glow);
     margin-bottom: 12px;
 }
 
 .hx-dev__title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--hx-ink);
+    color: #fff;
     margin-bottom: 16px;
 }
 
 .hx-dev__text {
     font-size: 1rem;
-    color: var(--mg-mute, #4f5764);
+    color: rgba(255,255,255,0.7);
     line-height: 1.6;
     margin-bottom: 32px;
 }
 
 .hx-dev__code {
-    background: var(--hx-deep);
-    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 12px;
     padding: 20px;
     text-align: left;
     font-family: var(--mg-font-mono, 'JetBrains Mono', monospace);
     font-size: 13px;
-    color: var(--hx-glow);
+    color: rgba(255,255,255,0.8);
     line-height: 1.7;
     overflow-x: auto;
     margin-bottom: 32px;
@@ -220,15 +223,12 @@ a { color: inherit; text-decoration: none; }
     margin-top: 32px;
 }
 
-.hx-dev__btns .hx-btn--primary { background: var(--hx-accent); color: #fff; }
-.hx-dev__btns .hx-btn--outline { color: var(--hx-ink); border-color: rgba(0,0,0,0.2); }
-
 .dev-tabs__bar {
     display: flex;
     gap: 4px;
     justify-content: center;
     margin-bottom: 0;
-    border-bottom: 1px solid var(--hx-hairline);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     padding-bottom: 0;
 }
 
@@ -239,7 +239,7 @@ a { color: inherit; text-decoration: none; }
     padding: 10px 16px;
     background: none;
     border: none;
-    color: var(--mg-mute, #4f5764);
+    color: rgba(255,255,255,0.5);
     cursor: pointer;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
@@ -247,12 +247,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .dev-tabs__tab:hover {
-    color: var(--hx-ink);
+    color: rgba(255,255,255,0.8);
 }
 
 .dev-tabs__tab.active {
-    color: var(--hx-accent);
-    border-bottom-color: var(--hx-accent);
+    color: var(--hx-glow);
+    border-bottom-color: var(--hx-glow);
 }
 
 .dev-tabs__panel {
@@ -269,7 +269,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hx-sister {
-    background: var(--hx-deep);
+    background: var(--hx-mid);
     padding: 60px 24px 80px;
 }
 
