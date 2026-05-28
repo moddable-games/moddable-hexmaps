@@ -18,7 +18,7 @@ Shared library was at `tools/stu/js/` (stuquery.js, stuquery.hexmap.js, interact
 - **Single engine** that renders hexagonal grids via Canvas (not CSS-positioned divs)
 - **Game configs** define terrain types, tile images, generation rules, player counts
 - **URL params** for embedding: `?game=nukes&players=4&seed=abc123&theme=classic`
-- **Marketing site** at hex.moddable.games showing all 3 games
+- **Marketing site** at hex.moddable.games showing all 4 games
 - **Embeddable** in moddable-website tools pages via iframe
 
 ## Key data from original tools

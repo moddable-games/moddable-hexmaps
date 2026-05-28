@@ -121,7 +121,7 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 - Embed API: `boardonly=1`, `bg=`, `mode=view|edit`, `theme=` params for iframe embedding
 - Initial project setup and architecture planning
 - Built Canvas-based hex rendering engine (pointy-top + flat-top)
-- Ported all 3 games from WordPress tools (Nukes, Talisman, Twilight)
+- Ported initial 3 games from WordPress tools (Nukes, Talisman, Twilight)
 - Landing page, generator app, and docs following moddable-chess structure
 - Green-themed design (distinct from moddable-chess blue)
 - Brand assets: cube.svg favicon, moddable-logo footer, hex-grid-green background
