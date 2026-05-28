@@ -94,6 +94,14 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 
 ### Changelog
 
+#### 2026-05-28
+- Homepage: "For Developers" section with tabbed code blocks (script loading, register game, embed)
+- Homepage: "Moddable Engines" sister section matching chess
+- Hero parallax scroll effect (title lag, button fade, glow drift)
+- Section colour banding: no adjacent sections share similar colours
+- Updated docs with plugin system guide and postMessage bridge API reference
+- Bump script updated to major/minor/patch syntax
+
 #### 2026-05-27
 - Plugin architecture: `HexApp.registerGame()` API — each game is a self-contained file in `js/games/`
 - Embed bridge: postMessage API (`hexmap:getMap`, `hexmap:setMap`, `hexmap:regenerate`) with game-level export hooks
