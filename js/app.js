@@ -16,7 +16,8 @@
     function init() {
         var params = new URLSearchParams(window.location.search);
         var game = params.get('game') || 'nukes';
-        var seed = params.get('seed') || String(Math.floor(Date.now() / 9876));
+        var seed = params.get('seed') || String(Date.now());
+        if (params.get('random') === '1') seed = String(Date.now());
         var size = parseInt(params.get('size')) || null;
         var players = parseInt(params.get('players')) || 0;
         currentStyle = params.get('theme') || params.get('style') || null;
@@ -172,7 +173,7 @@
 
         var randomBtn = document.getElementById('random-btn');
         randomBtn.addEventListener('click', function() {
-            currentSeed = String(Math.floor(Date.now() / 9876));
+            currentSeed = String(Date.now());
             document.getElementById('seed-input').value = currentSeed;
             regenerateMap();
             updateUrl();
@@ -621,7 +622,10 @@
             }
 
             if (msg.type === 'hexmap:regenerate') {
-                if (msg.seed) {
+                if (msg.random) {
+                    currentSeed = String(Date.now());
+                    document.getElementById('seed-input').value = currentSeed;
+                } else if (msg.seed) {
                     currentSeed = msg.seed;
                     document.getElementById('seed-input').value = currentSeed;
                 }
