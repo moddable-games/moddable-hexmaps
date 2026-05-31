@@ -629,6 +629,25 @@
                 if (msg.players !== undefined) currentPlayers = msg.players;
                 regenerateMap();
             }
+
+            if (msg.type === 'hexmap:setStyle') {
+                if (msg.style) {
+                    currentStyle = msg.style;
+                    gameStyles[currentGame] = currentStyle;
+                    applyStyle();
+                }
+            }
+
+            if (msg.type === 'hexmap:setGame') {
+                if (msg.game) {
+                    switchGame(msg.game);
+                    if (msg.style) {
+                        currentStyle = msg.style;
+                        gameStyles[msg.game] = msg.style;
+                        applyStyle();
+                    }
+                }
+            }
         });
     }
 
