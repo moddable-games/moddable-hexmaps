@@ -79,8 +79,8 @@ var HexRenderer = (function() {
     function setupCanvas(renderer) {
         var w, h;
         if (renderer.useViewport) {
-            w = window.innerWidth;
-            h = window.innerHeight;
+            w = document.documentElement.clientWidth;
+            h = document.documentElement.clientHeight;
         } else {
             var parent = renderer.canvas.parentElement;
             w = parent.clientWidth;
@@ -88,6 +88,10 @@ var HexRenderer = (function() {
         }
         renderer.canvas.width = w;
         renderer.canvas.height = h;
+        if (renderer.useViewport) {
+            renderer.canvas.style.width = w + 'px';
+            renderer.canvas.style.height = h + 'px';
+        }
         renderer.offsetX = w / 2;
         renderer.offsetY = h / 2;
     }
