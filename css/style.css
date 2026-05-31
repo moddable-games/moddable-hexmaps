@@ -259,8 +259,15 @@ h1, h2, h3, p, li { text-wrap: pretty; }
 body.embed-mode {
     min-height: auto;
     overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
+}
+
+html:has(body.embed-mode) {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--hx-canvas-dark);
 }
 
 body.embed-mode .main-content {
@@ -269,6 +276,11 @@ body.embed-mode .main-content {
 }
 
 body.embed-mode .canvas-area {
+    position: absolute;
+    inset: 0;
+}
+
+body.embed-mode .canvas-wrap {
     position: absolute;
     inset: 0;
 }

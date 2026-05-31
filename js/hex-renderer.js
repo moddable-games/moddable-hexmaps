@@ -63,6 +63,7 @@ var HexRenderer = (function() {
             colors: options.colors || {},
             images: options.images || null,
             labels: options.labels || false,
+            bgColor: options.bgColor || null,
             cleanup: null
         };
 
@@ -148,6 +149,11 @@ var HexRenderer = (function() {
     function render(renderer) {
         var ctx = renderer.ctx;
         ctx.clearRect(0, 0, renderer.canvas.width, renderer.canvas.height);
+
+        if (renderer.bgColor) {
+            ctx.fillStyle = renderer.bgColor;
+            ctx.fillRect(0, 0, renderer.canvas.width, renderer.canvas.height);
+        }
 
         for (var i = 0; i < renderer.hexes.length; i++) {
             var hex = renderer.hexes[i];

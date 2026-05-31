@@ -11,6 +11,7 @@
 
     var embedMode = false;
     var viewOnly = false;
+    var embedBgColor = null;
 
     function init() {
         var params = new URLSearchParams(window.location.search);
@@ -94,6 +95,8 @@
 
         if (bgColor) {
             var color = bgColor.match(/^[0-9a-fA-F]{3,8}$/) ? '#' + bgColor : bgColor;
+            embedBgColor = color;
+            document.documentElement.style.background = color;
             document.body.style.background = color;
             document.querySelector('.canvas-area').style.background = color;
         }
@@ -260,7 +263,8 @@
             colors: config.getColors(currentStyle),
             labels: currentStyle === 'classic',
             onHexClick: onHexClick,
-            onHexHover: onHexHover
+            onHexHover: onHexHover,
+            bgColor: embedBgColor
         });
 
         regenerateMap();

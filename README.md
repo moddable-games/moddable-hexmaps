@@ -97,6 +97,10 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 
 ### Changelog
 
+#### 2026-05-31
+- Fix: boardonly embed mode now respects `bg=` param for canvas background colour (fixes #33)
+- Fix: embed fills full iframe with no white border (html/body/canvas all receive background)
+
 #### 2026-05-28
 - New game: Colony (Catan-style) with standard and expanded layouts, number overlays, 6/8 constraint
 - Twilight Imperium: 7 official layout variants (3p–8p including PoK with hyperlanes)
