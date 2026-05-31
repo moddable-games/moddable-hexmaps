@@ -270,7 +270,8 @@
             onHexClick: onHexClick,
             onHexHover: onHexHover,
             bgColor: embedBgColor,
-            fitScale: embedMode ? 0.98 : 0.9
+            fitScale: embedMode ? 0.98 : 0.9,
+            useViewport: embedMode
         });
 
         regenerateMap();

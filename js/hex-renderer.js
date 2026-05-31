@@ -65,6 +65,7 @@ var HexRenderer = (function() {
             labels: options.labels || false,
             bgColor: options.bgColor || null,
             fitScale: options.fitScale || 0.9,
+            useViewport: options.useViewport || false,
             cleanup: null
         };
 
@@ -76,11 +77,19 @@ var HexRenderer = (function() {
     }
 
     function setupCanvas(renderer) {
-        var parent = renderer.canvas.parentElement;
-        renderer.canvas.width = parent.clientWidth;
-        renderer.canvas.height = parent.clientHeight;
-        renderer.offsetX = renderer.canvas.width / 2;
-        renderer.offsetY = renderer.canvas.height / 2;
+        var w, h;
+        if (renderer.useViewport) {
+            w = window.innerWidth;
+            h = window.innerHeight;
+        } else {
+            var parent = renderer.canvas.parentElement;
+            w = parent.clientWidth;
+            h = parent.clientHeight;
+        }
+        renderer.canvas.width = w;
+        renderer.canvas.height = h;
+        renderer.offsetX = w / 2;
+        renderer.offsetY = h / 2;
     }
 
     function resize(renderer) {
