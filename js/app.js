@@ -627,7 +627,13 @@
                 }
                 if (msg.size) currentSize = msg.size;
                 if (msg.players !== undefined) currentPlayers = msg.players;
+                if (msg.layout) currentLayout = msg.layout;
+                if (msg.style) {
+                    currentStyle = msg.style;
+                    gameStyles[currentGame] = currentStyle;
+                }
                 regenerateMap();
+                if (msg.style) applyStyle();
             }
 
             if (msg.type === 'hexmap:setStyle') {

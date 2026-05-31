@@ -6,9 +6,9 @@
 <title>API Reference — Moddable Hexmaps</title>
 <meta name="description" content="Complete API reference for the Moddable Hexmaps engine. HexRenderer, HexMath, XorShift, and embed parameters.">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.4.8">
-<link rel="stylesheet" href="../css/shared.css?v=0.4.8">
-<link rel="stylesheet" href="../css/docs.css?v=0.4.8">
+<link rel="stylesheet" href="../css/variables.css?v=0.4.9">
+<link rel="stylesheet" href="../css/shared.css?v=0.4.9">
+<link rel="stylesheet" href="../css/docs.css?v=0.4.9">
 </head>
 <body>
 
@@ -265,12 +265,14 @@ iframe.contentWindow.postMessage({ type: 'hexmap:getMap' }, '*');
 }, '*');</code></pre>
 
             <h3>hexmap:regenerate</h3>
-            <p>Trigger map regeneration with new parameters. Any combination of seed, size, and players can be provided.</p>
+            <p>Trigger map regeneration with new parameters. Any combination of seed, size, players, layout, and style can be provided.</p>
             <pre><code>iframe.contentWindow.postMessage({
   type: 'hexmap:regenerate',
   seed: '42',
   size: 4,
-  players: 3
+  players: 3,
+  layout: '6p',       // optional — layout variant key
+  style: 'kenney'     // optional — also switches visual style
 }, '*');</code></pre>
 
             <h3>hexmap:setStyle</h3>
@@ -321,8 +323,8 @@ iframe.contentWindow.postMessage({ type: 'hexmap:getMap' }, '*');
 
 <footer class="site-footer">
     <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.8</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.9</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.4.8"></script>
+<script src="../js/docs-toc.js?v=0.4.9"></script>
 </body>
 </html>
