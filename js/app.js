@@ -76,6 +76,10 @@
             setTimeout(function() { HexRenderer.resize(renderer); }, 50);
             setTimeout(function() { HexRenderer.resize(renderer); }, 200);
             window.addEventListener('load', function() { HexRenderer.resize(renderer); });
+            var wrap = document.querySelector('.canvas-wrap');
+            if (wrap && window.ResizeObserver) {
+                new ResizeObserver(function() { HexRenderer.resize(renderer); }).observe(wrap);
+            }
         }
     }
 
