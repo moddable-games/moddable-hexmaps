@@ -74,6 +74,7 @@
         if (embedMode) {
             setupEmbedBridge();
             setTimeout(function() { HexRenderer.resize(renderer); }, 50);
+            setTimeout(function() { HexRenderer.resize(renderer); }, 200);
             window.addEventListener('load', function() { HexRenderer.resize(renderer); });
         }
     }
@@ -264,7 +265,8 @@
             labels: currentStyle === 'classic',
             onHexClick: onHexClick,
             onHexHover: onHexHover,
-            bgColor: embedBgColor
+            bgColor: embedBgColor,
+            fitScale: embedMode ? 0.96 : 0.9
         });
 
         regenerateMap();

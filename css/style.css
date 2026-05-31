@@ -257,27 +257,34 @@ h1, h2, h3, p, li { text-wrap: pretty; }
 }
 
 body.embed-mode {
-    min-height: auto;
+    min-height: 0;
     overflow: hidden;
     height: 100%;
     width: 100%;
+    margin: 0;
+    padding: 0;
+    display: block;
 }
 
 html:has(body.embed-mode) {
     height: 100%;
     width: 100%;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
     background: var(--hx-canvas-dark);
 }
 
 body.embed-mode .main-content {
-    position: absolute;
+    position: fixed;
     inset: 0;
+    display: block;
 }
 
 body.embed-mode .canvas-area {
     position: absolute;
     inset: 0;
+    display: block;
 }
 
 body.embed-mode .canvas-wrap {

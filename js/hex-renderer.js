@@ -64,6 +64,7 @@ var HexRenderer = (function() {
             images: options.images || null,
             labels: options.labels || false,
             bgColor: options.bgColor || null,
+            fitScale: options.fitScale || 0.9,
             cleanup: null
         };
 
@@ -123,7 +124,7 @@ var HexRenderer = (function() {
 
         var scaleX = renderer.canvas.width / gridWidth;
         var scaleY = renderer.canvas.height / gridHeight;
-        var scale = Math.min(scaleX, scaleY) * 0.9;
+        var scale = Math.min(scaleX, scaleY) * renderer.fitScale;
 
         renderer.hexSize = renderer.hexSize * scale;
 
