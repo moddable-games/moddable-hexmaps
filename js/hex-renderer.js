@@ -77,14 +77,14 @@ var HexRenderer = (function() {
     }
 
     function setupCanvas(renderer) {
-        var w, h;
-        if (renderer.useViewport) {
-            w = window.innerWidth;
-            h = window.innerHeight;
-        } else {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        if (!renderer.useViewport) {
             var parent = renderer.canvas.parentElement;
-            w = parent.clientWidth;
-            h = parent.clientHeight;
+            if (parent.clientWidth > 0 && parent.clientHeight > 0) {
+                w = parent.clientWidth;
+                h = parent.clientHeight;
+            }
         }
         renderer.canvas.width = w;
         renderer.canvas.height = h;
