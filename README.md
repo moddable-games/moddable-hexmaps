@@ -100,8 +100,9 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 #### 2026-05-31
 - Fix: boardonly embed mode now respects `bg=` param for canvas background colour (fixes #33)
 - Fix: embed fills full iframe with no white border (html/body/canvas all receive background)
-- Fix: canvas uses viewport dimensions in embed mode for correct sizing
-- New postMessage commands: `hexmap:setStyle` and `hexmap:setGame` for parent-page control
+- Fix: canvas uses viewport dimensions in embed mode for correct sizing and vertical centering
+- New postMessage commands: `hexmap:setStyle`, `hexmap:setGame` for parent-page control
+- Extended `hexmap:regenerate` with `layout` and `style` params (fixes #30)
 - Docs: updated API reference with colony game, correct style list, new postMessage commands
 
 #### 2026-05-28
