@@ -182,6 +182,11 @@
         var exportBtn = document.getElementById('export-btn');
         exportBtn.addEventListener('click', function() { exportMap(); });
 
+        var exportSvgBtn = document.getElementById('export-svg-btn');
+        if (exportSvgBtn) {
+            exportSvgBtn.addEventListener('click', function() { exportSvg(); });
+        }
+
         var importBtn = document.getElementById('import-btn');
         importBtn.addEventListener('click', function() { importMap(); });
 
@@ -516,6 +521,31 @@
         }
     }
 
+    function exportSvg() {
+        if (typeof HexSvg === 'undefined') return;
+        var config = HexApp.getGameConfig(currentGame);
+        var colors = (config && config.getColors) ? config.getColors(currentStyle) : {};
+        var images = (config && config.getImages) ? config.getImages(currentStyle) : null;
+        var flat = (config && config.orientation === 'flat');
+        var svg = HexSvg.toSVG(hexData, {
+            hexSize: 30,
+            flat: flat,
+            colors: colors,
+            images: images,
+            imageMode: images ? 'reference' : 'none',
+            strokeColor: 'rgba(0,0,0,0.3)',
+            strokeWidth: 1,
+            labels: false
+        });
+        var blob = new Blob([svg], { type: 'image/svg+xml' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = currentGame + '-' + currentSize + 'r-' + currentSeed + '.svg';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
     function importMap() {
         var textarea = document.getElementById('import-data');
         var json = textarea.value.trim();
@@ -607,6 +637,22 @@
 
                 if (event.source) {
                     event.source.postMessage(response, event.origin !== 'null' ? event.origin : '*');
+                }
+            }
+
+            if (msg.type === 'hexmap:exportSvg') {
+                if (typeof HexSvg !== 'undefined' && event.source) {
+                    var config2 = HexApp.getGameConfig(currentGame);
+                    var colors2 = (config2 && config2.getColors) ? config2.getColors(currentStyle) : {};
+                    var flat2 = (config2 && config2.orientation === 'flat');
+                    var svgStr = HexSvg.toSVG(hexData, {
+                        hexSize: msg.hexSize || 30,
+                        flat: flat2,
+                        colors: colors2,
+                        strokeColor: 'rgba(0,0,0,0.3)',
+                        strokeWidth: 1
+                    });
+                    event.source.postMessage({ type: 'hexmap:svgData', svg: svgStr }, event.origin !== 'null' ? event.origin : '*');
                 }
             }
 
