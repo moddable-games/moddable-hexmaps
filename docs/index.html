@@ -6,9 +6,9 @@
 <title>Docs — Moddable Hexmaps</title>
 <meta name="description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding guide.">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.4.11">
-<link rel="stylesheet" href="../css/shared.css?v=0.4.11">
-<link rel="stylesheet" href="../css/docs.css?v=0.4.11">
+<link rel="stylesheet" href="../css/variables.css?v=0.4.12">
+<link rel="stylesheet" href="../css/shared.css?v=0.4.12">
+<link rel="stylesheet" href="../css/docs.css?v=0.4.12">
 </head>
 <body>
 
@@ -48,7 +48,7 @@
                     <tr><td><code>seed</code></td><td>any string</td><td>RNG seed for reproducible maps</td></tr>
                     <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman)</td><td>Ring count / map size (hidden when layouts used)</td></tr>
                     <tr><td><code>players</code></td><td>2–8 (varies by game)</td><td>Player count for base placement</td></tr>
-                    <tr><td><code>style</code></td><td>artistic, classic, kenney, realistic</td><td>Visual style (varies per game)</td></tr>
+                    <tr><td><code>style</code></td><td>artistic, classic, kenney, realistic</td><td>Visual style (see <a href="api.html#embedding">API docs</a> for per-game availability)</td></tr>
                     <tr><td><code>layout</code></td><td>varies per game</td><td>Board layout variant (Twilight: 3p–8p; Colony: standard, expanded)</td></tr>
                     <tr><td><code>boardonly</code></td><td>1</td><td>Hide all UI chrome, show only the map canvas</td></tr>
                     <tr><td><code>bg</code></td><td>hex colour (e.g. 1a1a2e or #1a1a2e)</td><td>Background colour for the canvas area</td></tr>
@@ -99,13 +99,13 @@
             <p>Nuclear war hex maps with 5 map sizes (2–6 rings). Terrain types: water, forest, mountain, plains, desert, and player HQ bases. Supports 2–6 players with pre-defined base positions per map size.</p>
 
             <h3>Talisman: Hexed</h3>
-            <p>Hex adaptation of the Talisman board game. Uses concentric rings: inner (crown), middle, river, outer, and optional dungeon ring. Each ring has its own terrain palette.</p>
+            <p>Hex adaptation of the Talisman board game. Uses concentric rings: inner (crown), middle, river, outer, and optional dungeon ring. Each ring has its own terrain palette. Styles: artistic (illustrated tiles with descriptions), classic (flat colours), kenney (Kenney Hexagon Pack), realistic (Screaming Brain terrain textures).</p>
 
             <h3>Twilight Imperium</h3>
             <p>Galaxy generator for TI4. Seven layout variants from 3-player to 8-player (including Prophecy of Kings expansion and Hyper Imperium). Tile types: blue (planet systems), red (anomalies), green (home systems), lanes (hyperlanes), and legends.</p>
 
             <h3>Colony</h3>
-            <p>Hex board generator inspired by Settlers of Catan. Standard (19 hex, 3-4 players) and expanded (37 hex, 5-6 players) layouts. Number token overlays with 6/8 non-adjacency constraint enforcement. Terrain: forest, pasture, fields, hills, mountains, desert.</p>
+            <p>Hex board generator inspired by Settlers of Catan. Standard (19 hex, 3-4 players) and expanded (5-6 players) layouts. Number token overlays with 6/8 non-adjacency constraint enforcement. Terrain: forest, pasture, fields, hills, mountains, desert. Styles: classic (flat colours), kenney, realistic.</p>
         </section>
 
         <section id="architecture">
@@ -120,7 +120,9 @@ js/games/            — Game plugins (one file per game)
 js/xorshift.js       — Seeded PRNG (XorShift128)
 js/hex-math.js       — Axial coordinate math, grid generation
 js/hex-renderer.js   — Canvas-based hex rendering
-data/                — Game data files (coordinate maps, tile pools)</code></pre>
+js/hex-svg.js        — SVG serialiser (export, postMessage, annotations)
+data/                — Game data files (coordinate maps, tile pools)
+img/tiles/           — Committed tile images per game and style</code></pre>
             <p>Each game is a self-contained plugin file that calls <code>HexApp.registerGame(key, config)</code>. The framework auto-generates the game selector tabs from the registry and delegates all game-specific behaviour to plugin hooks.</p>
         </section>
 
@@ -213,8 +215,8 @@ data/                — Game data files (coordinate maps, tile pools)</code></p
 
 <footer class="site-footer">
     <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.11</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.12</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.4.11"></script>
+<script src="../js/docs-toc.js?v=0.4.12"></script>
 </body>
 </html>

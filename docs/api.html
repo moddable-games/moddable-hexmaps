@@ -6,9 +6,9 @@
 <title>API Reference — Moddable Hexmaps</title>
 <meta name="description" content="Complete API reference for the Moddable Hexmaps engine. HexRenderer, HexMath, XorShift, and embed parameters.">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.4.11">
-<link rel="stylesheet" href="../css/shared.css?v=0.4.11">
-<link rel="stylesheet" href="../css/docs.css?v=0.4.11">
+<link rel="stylesheet" href="../css/variables.css?v=0.4.12">
+<link rel="stylesheet" href="../css/shared.css?v=0.4.12">
+<link rel="stylesheet" href="../css/docs.css?v=0.4.12">
 </head>
 <body>
 
@@ -188,8 +188,19 @@ rng.integer(0, 5);  // deterministic result</code></pre>
                 <tbody>
                     <tr><td><code>boardonly</code></td><td><code>1</code></td><td>Hide all UI chrome (nav, sidebar, footer, tabs). Map canvas fills the iframe</td></tr>
                     <tr><td><code>bg</code></td><td>hex colour (e.g. <code>1a1a2e</code> or <code>#1a1a2e</code>)</td><td>Background colour for canvas area. Omit <code>#</code> for cleaner URLs</td></tr>
-                    <tr><td><code>theme</code></td><td>artistic, classic, kenney, realistic</td><td>Visual style (availability varies by game). Alias: <code>style</code></td></tr>
+                    <tr><td><code>theme</code></td><td>see table below</td><td>Visual style (availability varies by game). Alias: <code>style</code></td></tr>
                     <tr><td><code>mode</code></td><td>view, edit</td><td>view = read-only (default for boardonly); edit = click-to-cycle terrain</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Styles per game</h3>
+            <table>
+                <thead><tr><th>Game</th><th>Available styles</th></tr></thead>
+                <tbody>
+                    <tr><td>nukes</td><td>artistic, classic, kenney, realistic</td></tr>
+                    <tr><td>talisman</td><td>artistic, classic, kenney, realistic</td></tr>
+                    <tr><td>twilight</td><td>classic only (no style parameter)</td></tr>
+                    <tr><td>colony</td><td>classic, kenney, realistic</td></tr>
                 </tbody>
             </table>
 
@@ -290,6 +301,18 @@ iframe.contentWindow.postMessage({ type: 'hexmap:getMap' }, '*');
   style: 'realistic'  // optional — defaults to the game's first style
 }, '*');</code></pre>
 
+            <h3>hexmap:exportSvg</h3>
+            <p>Request an SVG export of the current map. Responds with a <code>hexmap:svgData</code> message containing the full SVG markup string.</p>
+            <pre><code>// Parent sends:
+iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
+
+// Hexmaps responds:
+{
+  type: 'hexmap:svgData',
+  svg: '&lt;svg xmlns="..."&gt;...&lt;/svg&gt;'   // complete SVG document string
+}</code></pre>
+            <p>The SVG includes hex polygons with fill colours and (when using a tile style) clipped tile images as linked <code>&lt;image&gt;</code> elements. Labels are included when in classic mode.</p>
+
             <h3>Listening for responses</h3>
             <pre><code>window.addEventListener('message', function(event) {
   if (event.data.type === 'hexmap:mapData') {
@@ -297,7 +320,57 @@ iframe.contentWindow.postMessage({ type: 'hexmap:getMap' }, '*');
     console.log('Format:', event.data.format);
     console.log('Map data:', event.data.data);
   }
+  if (event.data.type === 'hexmap:svgData') {
+    console.log('SVG:', event.data.svg);
+  }
 });</code></pre>
+        </section>
+
+        <section id="hex-svg">
+            <h2>HexSvg</h2>
+            <p>SVG serialiser for hex maps. Produces standalone SVG documents from hex data arrays — used by the Export SVG button and the <code>hexmap:exportSvg</code> postMessage command.</p>
+
+            <h3>HexSvg.toSVG(hexes, options)</h3>
+            <p>Render a hex map to an SVG string.</p>
+            <pre><code>var svg = HexSvg.toSVG(hexData, {
+  hexSize: 40,
+  flat: false,
+  colors: { plains: '#C8E6C9', forest: '#388E3C' },
+  images: { plains: 'img/tiles/talisman/plains.png' },
+  imageMode: 'link',    // 'link' (href) or 'embed' (data URI) or 'none'
+  labels: true,
+  strokeColor: 'rgba(0,0,0,0.3)',
+  strokeWidth: 1,
+  padding: 15,
+  bgColor: '#1a1a2e',
+  scaleFactor: 0.95
+});</code></pre>
+            <table>
+                <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>hexSize</code></td><td>number</td><td>30</td><td>Hex radius in SVG units</td></tr>
+                    <tr><td><code>flat</code></td><td>boolean</td><td>false</td><td>Flat-top (true) or pointy-top (false) orientation</td></tr>
+                    <tr><td><code>colors</code></td><td>object</td><td>{}</td><td>Terrain type → fill colour map</td></tr>
+                    <tr><td><code>images</code></td><td>object|null</td><td>null</td><td>Terrain type → image path map (or null for flat colours only)</td></tr>
+                    <tr><td><code>imageMode</code></td><td>string</td><td>'none'</td><td>'link' for external hrefs, 'embed' for inline data URIs, 'none' to skip images</td></tr>
+                    <tr><td><code>labels</code></td><td>boolean</td><td>false</td><td>Show text labels on each hex</td></tr>
+                    <tr><td><code>strokeColor</code></td><td>string</td><td>'rgba(0,0,0,0.3)'</td><td>Hex border stroke colour</td></tr>
+                    <tr><td><code>strokeWidth</code></td><td>number</td><td>1</td><td>Hex border width</td></tr>
+                    <tr><td><code>padding</code></td><td>number</td><td>15</td><td>Padding around the map in SVG units</td></tr>
+                    <tr><td><code>bgColor</code></td><td>string|null</td><td>null</td><td>Background fill colour (null = transparent)</td></tr>
+                    <tr><td><code>scaleFactor</code></td><td>number</td><td>0.95</td><td>Hex polygon inset (1.0 = edge-to-edge, 0.95 = small gap)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>HexSvg.toAnnotatedSVG(hexes, annotations, options)</h3>
+            <p>Same as <code>toSVG</code> but adds annotation overlays (highlights, tokens, arrows, legend). Used for tactical/analysis exports.</p>
+            <pre><code>var svg = HexSvg.toAnnotatedSVG(hexData, {
+  highlights: [{ q: 0, r: 1, style: 'valid' }],
+  tokens: [{ q: 1, r: 0, color: '#1c4a4a', label: 'P1' }],
+  arrows: [{ from: {q:0,r:0}, to: {q:1,r:0}, color: '#2aaa10' }],
+  legend: [{ style: 'valid', text: 'Move' }, { style: 'blocked', text: 'Blocked' }]
+}, options);</code></pre>
+            <p>Annotation styles: <code>valid</code> (green border), <code>blocked</code> (red X), <code>selected</code> (gold border), <code>friendly</code> (gold border).</p>
         </section>
 
         <section id="register-game">
@@ -323,8 +396,8 @@ iframe.contentWindow.postMessage({ type: 'hexmap:getMap' }, '*');
 
 <footer class="site-footer">
     <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.11</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.12</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.4.11"></script>
+<script src="../js/docs-toc.js?v=0.4.12"></script>
 </body>
 </html>

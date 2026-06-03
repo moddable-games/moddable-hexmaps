@@ -97,6 +97,14 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 
 ### Changelog
 
+#### 2026-06-03
+- New styles: Kenney and Realistic for Talisman (55 unique tiles each, all terrain types covered)
+- SVG export: HexSvg serialiser with `Export SVG` button and `hexmap:exportSvg` postMessage command
+- SVG annotations: highlights, tokens, arrows, and legend rendering for annotated exports
+- SVG legend centring fix
+- Docs: HexSvg API reference, per-game style availability table, exportSvg postMessage docs
+- Docs: architecture listing updated with hex-svg.js and img/tiles/
+
 #### 2026-05-31
 - Fix: boardonly embed mode now respects `bg=` param for canvas background colour (fixes #33)
 - Fix: embed fills full iframe with no white border (html/body/canvas all receive background)

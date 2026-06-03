@@ -101,7 +101,7 @@
         ],
         defaultSize: 4,
         defaultPlayers: 0,
-        styles: ['artistic', 'classic'],
+        styles: ['artistic', 'classic', 'kenney', 'realistic'],
         hasEditor: false,
 
         playerCounts: function() { return []; },
@@ -115,12 +115,14 @@
         },
 
         getImages: function(style) {
-            if (style !== 'artistic') return null;
+            if (style === 'classic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            var folders = { artistic: 'talisman', kenney: 'talisman-kenney', realistic: 'talisman-realistic' };
+            var folder = folders[style] || 'talisman';
             var allTiles = {};
             var allTypes = Object.keys(classicColors);
             for (var i = 0; i < allTypes.length; i++) {
-                allTiles[allTypes[i]] = base + 'img/tiles/talisman/' + allTypes[i] + '.png';
+                allTiles[allTypes[i]] = base + 'img/tiles/' + folder + '/' + allTypes[i] + '.png';
             }
             return allTiles;
         },

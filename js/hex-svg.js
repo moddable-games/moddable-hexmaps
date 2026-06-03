@@ -198,8 +198,17 @@ var HexSvg = (function() {
         if (annotations.legend && annotations.legend.length > 0) {
             var vb = computeViewBox(hexes, opts);
             var legendY = vb.y + vb.h - opts.padding + 5;
+
+            // Calculate total legend width for centring
+            var totalW = 0;
+            for (var m = 0; m < annotations.legend.length; m++) {
+                totalW += 20 + annotations.legend[m].text.length * 6 + 15;
+            }
+            totalW -= 15; // no trailing gap
+            var startX = (vb.w - totalW) / 2;
+
             svg += '<g class="legend" transform="translate(' + vb.x.toFixed(2) + ',' + legendY.toFixed(2) + ')">\n';
-            var lx = opts.padding;
+            var lx = startX;
             for (var l = 0; l < annotations.legend.length; l++) {
                 var leg = annotations.legend[l];
                 var legStyle = ANNOTATION_STYLES[leg.style] || ANNOTATION_STYLES.valid;
