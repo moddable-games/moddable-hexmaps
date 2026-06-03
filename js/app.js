@@ -187,6 +187,16 @@
             exportSvgBtn.addEventListener('click', function() { exportSvg(); });
         }
 
+        var exportPngBtn = document.getElementById('export-png-btn');
+        if (exportPngBtn) {
+            exportPngBtn.addEventListener('click', function() { exportPng(); });
+        }
+
+        var exportPdfBtn = document.getElementById('export-pdf-btn');
+        if (exportPdfBtn) {
+            exportPdfBtn.addEventListener('click', function() { exportPdf(); });
+        }
+
         var importBtn = document.getElementById('import-btn');
         importBtn.addEventListener('click', function() { importMap(); });
 
@@ -555,6 +565,160 @@
         a.download = currentGame + '-' + currentSize + 'r-' + currentSeed + '.svg';
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    function exportPng() {
+        if (!renderer) return;
+        var canvas = renderer.canvas;
+        var scale = 2;
+        var offscreen = document.createElement('canvas');
+        offscreen.width = canvas.width * scale;
+        offscreen.height = canvas.height * scale;
+        var ctx = offscreen.getContext('2d');
+        ctx.scale(scale, scale);
+        ctx.drawImage(canvas, 0, 0);
+        offscreen.toBlob(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = currentGame + '-' + currentSeed + '-' + currentSize + '.png';
+            a.click();
+            URL.revokeObjectURL(url);
+        }, 'image/png');
+    }
+
+    function exportPdf() {
+        if (!renderer) return;
+        var canvas = renderer.canvas;
+        var pageW = 595.28;
+        var pageH = 841.89;
+        var margin = 40;
+        var availW = pageW - margin * 2;
+        var availH = pageH - margin * 2;
+
+        var imgW = canvas.width;
+        var imgH = canvas.height;
+        var ratio = Math.min(availW / imgW, availH / imgH);
+        var drawW = imgW * ratio;
+        var drawH = imgH * ratio;
+        var offsetX = (pageW - drawW) / 2;
+        var offsetY = (pageH - drawH) / 2;
+
+        var imgData = canvas.toDataURL('image/png');
+
+        var pdf = '%PDF-1.4\n';
+        var objects = [];
+
+        function addObj(content) {
+            objects.push(content);
+            return objects.length;
+        }
+
+        addObj('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+        addObj('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+        addObj('3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pageW + ' ' + pageH + '] /Contents 4 0 R /Resources << /XObject << /Img 5 0 R >> >> >>\nendobj\n');
+
+        var stream = 'q ' + drawW.toFixed(2) + ' 0 0 ' + drawH.toFixed(2) + ' ' + offsetX.toFixed(2) + ' ' + (pageH - offsetY - drawH).toFixed(2) + ' cm /Img Do Q';
+        addObj('4 0 obj\n<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream\nendobj\n');
+
+        var raw = atob(imgData.split(',')[1]);
+        var bytes = new Uint8Array(raw.length);
+        for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+
+        var imgObj = '5 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + imgW + ' /Height ' + imgH + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + bytes.length + ' >>\nstream\n';
+        addObj(imgObj);
+
+        var xref = [];
+        var parts = [pdf];
+        var pos = pdf.length;
+        for (var i = 0; i < objects.length; i++) {
+            xref.push(pos);
+            if (i === 4) {
+                parts.push(objects[i]);
+                pos += objects[i].length;
+            } else {
+                parts.push(objects[i]);
+                pos += objects[i].length;
+            }
+        }
+
+        var jpegCanvas = document.createElement('canvas');
+        jpegCanvas.width = imgW;
+        jpegCanvas.height = imgH;
+        var jpegCtx = jpegCanvas.getContext('2d');
+        jpegCtx.drawImage(canvas, 0, 0);
+        jpegCanvas.toBlob(function(jpegBlob) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var jpegBytes = new Uint8Array(reader.result);
+                var imgObjStr = '5 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + imgW + ' /Height ' + imgH + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpegBytes.length + ' >>\nstream\n';
+                var imgEndStr = '\nendstream\nendobj\n';
+
+                var pdfParts = [];
+                var offset = 0;
+                var offsets = [];
+
+                var header = '%PDF-1.4\n';
+                pdfParts.push(header);
+                offset += header.length;
+
+                var obj1 = '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
+                offsets.push(offset);
+                pdfParts.push(obj1);
+                offset += obj1.length;
+
+                var obj2 = '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n';
+                offsets.push(offset);
+                pdfParts.push(obj2);
+                offset += obj2.length;
+
+                var obj3 = '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pageW + ' ' + pageH + '] /Contents 4 0 R /Resources << /XObject << /Img 5 0 R >> >> >>\nendobj\n';
+                offsets.push(offset);
+                pdfParts.push(obj3);
+                offset += obj3.length;
+
+                var streamContent = 'q ' + drawW.toFixed(2) + ' 0 0 ' + drawH.toFixed(2) + ' ' + offsetX.toFixed(2) + ' ' + (pageH - offsetY - drawH).toFixed(2) + ' cm /Img Do Q';
+                var obj4 = '4 0 obj\n<< /Length ' + streamContent.length + ' >>\nstream\n' + streamContent + '\nendstream\nendobj\n';
+                offsets.push(offset);
+                pdfParts.push(obj4);
+                offset += obj4.length;
+
+                offsets.push(offset);
+                offset += imgObjStr.length + jpegBytes.length + imgEndStr.length;
+
+                var xrefStart = offset;
+                var xrefStr = 'xref\n0 6\n0000000000 65535 f \n';
+                for (var x = 0; x < offsets.length; x++) {
+                    xrefStr += String(offsets[x]).padStart(10, '0') + ' 00000 n \n';
+                }
+                xrefStr += 'trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xrefStart + '\n%%EOF';
+
+                var textParts = pdfParts.join('');
+                var textEncoder = new TextEncoder();
+                var textBytes = textEncoder.encode(textParts);
+                var imgObjBytes = textEncoder.encode(imgObjStr);
+                var imgEndBytes = textEncoder.encode(imgEndStr);
+                var xrefBytes = textEncoder.encode(xrefStr);
+
+                var totalLen = textBytes.length + imgObjBytes.length + jpegBytes.length + imgEndBytes.length + xrefBytes.length;
+                var pdfBuffer = new Uint8Array(totalLen);
+                var p = 0;
+                pdfBuffer.set(textBytes, p); p += textBytes.length;
+                pdfBuffer.set(imgObjBytes, p); p += imgObjBytes.length;
+                pdfBuffer.set(jpegBytes, p); p += jpegBytes.length;
+                pdfBuffer.set(imgEndBytes, p); p += imgEndBytes.length;
+                pdfBuffer.set(xrefBytes, p);
+
+                var blob = new Blob([pdfBuffer], { type: 'application/pdf' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = currentGame + '-' + currentSeed + '-' + currentSize + '.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+            reader.readAsArrayBuffer(jpegBlob);
+        }, 'image/jpeg', 0.92);
     }
 
     function importMap() {

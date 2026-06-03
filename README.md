@@ -98,6 +98,8 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-03
+- Export PNG: 2x resolution canvas download from Data panel
+- Export PDF: single A4 page with map centred and maximised, JPEG-compressed
 - Hex metadata system: `getDescriptions()` game config hook with enhanced hover info
 - Talisman: all 55 terrain types have names and action descriptions shown on hover
 - Colony: 5-6 player expanded layout with correct elongated hexagonal shape (4-5-6-6-5-4)
