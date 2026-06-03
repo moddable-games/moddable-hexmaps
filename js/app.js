@@ -567,7 +567,7 @@
         URL.revokeObjectURL(url);
     }
 
-    function renderOffscreen(scale) {
+    function renderOffscreen(scale, bgColor) {
         var config = HexApp.getGameConfig(currentGame);
         var flat = config && config.orientation === 'flat';
         var hexSize = renderer.hexSize;
@@ -589,6 +589,10 @@
         offCanvas.width = Math.ceil(w);
         offCanvas.height = Math.ceil(h);
         var ctx = offCanvas.getContext('2d');
+        if (bgColor) {
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, offCanvas.width, offCanvas.height);
+        }
         ctx.scale(scale, scale);
 
         var ox = -minX + padding;
@@ -658,7 +662,7 @@
 
     function exportPdf() {
         if (!renderer || !hexData.length) return;
-        var offCanvas = renderOffscreen(2);
+        var offCanvas = renderOffscreen(2, '#ffffff');
         var imgW = offCanvas.width;
         var imgH = offCanvas.height;
 
