@@ -39,13 +39,20 @@
 
         document.getElementById('seed-input').value = seed;
 
+        var config = HexApp.getGameConfig(game);
+        if (config && config.styles) {
+            if (!currentStyle || config.styles.indexOf(currentStyle) === -1) {
+                currentStyle = config.styles[0];
+            }
+            gameStyles[game] = currentStyle;
+        }
+
         setupGameSelector(game);
         loadGame(game, size, players);
         setupControls();
         buildEditorPanel();
         applyStyle();
 
-        var config = HexApp.getGameConfig(game);
         if (config && config.styles) {
             var styleSelect = document.getElementById('style-select');
             styleSelect.innerHTML = '';
@@ -55,11 +62,7 @@
                 opt.textContent = config.styles[i].charAt(0).toUpperCase() + config.styles[i].slice(1);
                 styleSelect.appendChild(opt);
             }
-            if (config.styles.indexOf(currentStyle) === -1) {
-                currentStyle = config.styles[0];
-            }
             styleSelect.value = currentStyle;
-            gameStyles[game] = currentStyle;
         } else {
             document.getElementById('style-group').style.display = 'none';
         }
