@@ -261,7 +261,7 @@
         var rng = createSeededRng(seed + '_colony_' + layoutKey);
         var pool = buildPool(seafarersTerrainPools[layoutKey]);
         var landCount = pool.length;
-        var gridSize = landCount > 23 ? 4 : 3;
+        var gridSize = landCount > 30 ? 4 : 3;
         var allPositions = generateGrid(gridSize);
 
         shuffle(pool, rng);
