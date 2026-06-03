@@ -286,11 +286,6 @@
             if (!landSet[key]) seaPositions.push(allPositions[i]);
         }
 
-        var outerRing = generateRing(gridSize + 1);
-        for (var i = 0; i < outerRing.length; i++) {
-            seaPositions.push({ q: outerRing[i].q, r: outerRing[i].r, ring: gridSize + 1 });
-        }
-
         var hexData = [];
         for (var i = 0; i < landPositions.length; i++) {
             var pos = landPositions[i];
