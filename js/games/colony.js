@@ -354,8 +354,8 @@
 
     function placeFourIslands(allPositions, landCount, rng) {
         var seeds = [
-            { q: 1, r: -3 }, { q: 3, r: 1 },
-            { q: -1, r: 3 }, { q: -3, r: -1 }
+            { q: 1, r: -2 }, { q: 2, r: 1 },
+            { q: -1, r: 2 }, { q: -2, r: -1 }
         ];
 
         var gridSet = {};
