@@ -24,7 +24,7 @@ Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: He
 | Nukes | Water, Forest, Desert, Mountain, Plains, HQ | 2–6 rings | 2–6 |
 | Talisman: Hexed | Inner, Middle, River, Outer, Dungeon, Ending | 4–5 rings | — |
 | Twilight Imperium | Blue (planets), Red (anomalies), Green (home), Lanes, Rex | 7 layouts (3–8p) | 3–8 |
-| Colony | Forest, Pasture, Fields, Hills, Mountains, Desert | Standard / Expanded | — |
+| Colony | Forest, Pasture, Fields, Hills, Mountains, Desert, Sea, Gold, Fog | 7 layouts (Seafarers) | — |
 
 ---
 
@@ -98,6 +98,17 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-03
+- Hex metadata system: `getDescriptions()` game config hook with enhanced hover info
+- Talisman: all 55 terrain types have names and action descriptions shown on hover
+- Colony: 5-6 player expanded layout with correct elongated hexagonal shape (4-5-6-6-5-4)
+- Colony: sea frame and port placement system with spacing constraints
+- Colony: 5 Seafarers expansion layouts (New World, New Shores, Four Islands, Through the Desert, Fog Islands)
+- Colony: gold, fog, and sea terrain types added
+- Guides restructured: index page at docs/guide.html, Colony tutorial moved to guide-colony.html
+- New guide: SVG Integration (postMessage, direct API, annotated SVG, print/PDF, Moddable Rules pattern)
+- Nav updated to "Guides" across all pages
+- OG/Twitter meta tags added to all doc pages
+- Homepage game cards forced to 2x2 grid, Colony and Talisman stats updated
 - New styles: Kenney and Realistic for Talisman (55 unique tiles each, all terrain types covered)
 - SVG export: HexSvg serialiser with `Export SVG` button and `hexmap:exportSvg` postMessage command
 - SVG annotations: highlights, tokens, arrows, and legend rendering for annotated exports

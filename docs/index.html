@@ -5,10 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Docs — Moddable Hexmaps</title>
 <meta name="description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding guide.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Moddable Hexmaps">
+<meta property="og:title" content="Docs — Moddable Hexmaps">
+<meta property="og:description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding guide.">
+<meta property="og:url" content="https://hex.moddable.games/docs/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Docs — Moddable Hexmaps">
+<meta name="twitter:description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding.">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.5.0">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.5.0">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.4.12">
-<link rel="stylesheet" href="../css/shared.css?v=0.4.12">
-<link rel="stylesheet" href="../css/docs.css?v=0.4.12">
+<link rel="stylesheet" href="../css/variables.css?v=0.5.0">
+<link rel="stylesheet" href="../css/shared.css?v=0.5.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.5.0">
 </head>
 <body>
 
@@ -21,7 +33,7 @@
         <a href="../generate/">Generate</a>
         <a href="./" class="active">Docs</a>
         <a href="api.html">API</a>
-        <a href="guide.html">Guide</a>
+        <a href="guide.html">Guides</a>
         <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
     </div>
 </nav>
@@ -49,7 +61,7 @@
                     <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman)</td><td>Ring count / map size (hidden when layouts used)</td></tr>
                     <tr><td><code>players</code></td><td>2–8 (varies by game)</td><td>Player count for base placement</td></tr>
                     <tr><td><code>style</code></td><td>artistic, classic, kenney, realistic</td><td>Visual style (see <a href="api.html#embedding">API docs</a> for per-game availability)</td></tr>
-                    <tr><td><code>layout</code></td><td>varies per game</td><td>Board layout variant (Twilight: 3p–8p; Colony: standard, expanded)</td></tr>
+                    <tr><td><code>layout</code></td><td>varies per game</td><td>Board layout variant (Twilight: 3p–8p; Colony: standard, expanded, newWorld, newShores, fourIslands, desert, fogIslands)</td></tr>
                     <tr><td><code>boardonly</code></td><td>1</td><td>Hide all UI chrome, show only the map canvas</td></tr>
                     <tr><td><code>bg</code></td><td>hex colour (e.g. 1a1a2e or #1a1a2e)</td><td>Background colour for the canvas area</td></tr>
                     <tr><td><code>mode</code></td><td>view, edit</td><td>view = read-only (no click editing); edit = interactive</td></tr>
@@ -215,8 +227,8 @@ img/tiles/           — Committed tile images per game and style</code></pre>
 
 <footer class="site-footer">
     <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.4.12</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.5.0</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.4.12"></script>
+<script src="../js/docs-toc.js?v=0.5.0"></script>
 </body>
 </html>

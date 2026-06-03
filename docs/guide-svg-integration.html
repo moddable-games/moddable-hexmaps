@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SVG Integration Guide — Moddable Hexmaps</title>
+<meta name="description" content="Export hex maps as SVG and integrate them into documentation, rulebooks, or other web projects.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Moddable Hexmaps">
+<meta property="og:title" content="SVG Integration Guide — Moddable Hexmaps">
+<meta property="og:description" content="Export hex maps as SVG and integrate them into documentation, rulebooks, or other web projects.">
+<meta property="og:url" content="https://hex.moddable.games/docs/guide-svg-integration.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SVG Integration Guide — Moddable Hexmaps">
+<meta name="twitter:description" content="Export hex maps as SVG for docs, rulebooks, and external projects.">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.5.0">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.5.0">
+<link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/variables.css?v=0.5.0">
+<link rel="stylesheet" href="../css/shared.css?v=0.5.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.5.0">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="../" class="site-nav__brand">
+        <img src="../assets/cube.svg" class="site-nav__cube" alt="">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="../generate/">Generate</a>
+        <a href="./">Docs</a>
+        <a href="api.html">API</a>
+        <a href="guide.html" class="active">Guides</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+<div class="docs-layout">
+<nav class="docs-toc" id="docs-toc"></nav>
+<div class="docs-body">
+    <h1>SVG Integration Guide</h1>
+    <p class="docs-lede">Export hex maps as clean SVG for use in documentation, PDFs, rulebooks, or other web projects. Two approaches: postMessage from an iframe embed, or direct JavaScript API in the same page.</p>
+
+    <section id="overview">
+        <h2>Overview</h2>
+        <p>The hexmaps engine can produce standalone SVG output from any generated map. SVGs are resolution-independent and work well in print/PDF contexts where Canvas output would pixelate.</p>
+        <p>Choose your approach based on context:</p>
+        <ul>
+            <li><strong>UI button</strong> — one-click download from the generator interface</li>
+            <li><strong>postMessage</strong> — request SVG from an embedded iframe (cross-origin safe)</li>
+            <li><strong>Direct API</strong> — generate SVG programmatically in the same page</li>
+        </ul>
+    </section>
+
+    <section id="quick-export">
+        <h2>Quick Export (UI Button)</h2>
+        <p>The generator interface includes an "Export SVG" button in the sidebar (Random tab). Clicking it downloads the current map as an SVG file named <code>{game}-{size}r-{seed}.svg</code>.</p>
+        <p>This produces SVG with linked image references (relative paths to <code>img/tiles/</code>). The SVG is self-contained for colour-only styles (classic) but requires the tile images to be accessible at the referenced paths for image styles.</p>
+    </section>
+
+    <section id="postmessage">
+        <h2>postMessage Export (iframe Integration)</h2>
+        <p>Embed the generator in a hidden iframe and request SVG via the postMessage bridge. This is the recommended approach for external projects that need reproducible map output.</p>
+        <pre><code>var iframe = document.createElement('iframe');
+iframe.src = 'https://hex.moddable.games/generate/?game=talisman&amp;size=4&amp;seed=42&amp;style=artistic&amp;boardonly=1';
+iframe.style.display = 'none';
+document.body.appendChild(iframe);
+
+iframe.onload = function() {
+    iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
+};
+
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'hexmap:svgData') {
+        document.getElementById('map-container').innerHTML = event.data.svg;
+    }
+});</code></pre>
+        <p>The <code>boardonly=1</code> parameter hides the UI chrome, reducing iframe load time. The seed ensures the same map is generated every time.</p>
+        <p>Available postMessage commands:</p>
+        <table class="docs-table">
+            <tr><th>Send</th><th>Receive</th><th>Purpose</th></tr>
+            <tr><td><code>hexmap:exportSvg</code></td><td><code>hexmap:svgData</code></td><td>Get full SVG markup</td></tr>
+            <tr><td><code>hexmap:getMap</code></td><td><code>hexmap:mapData</code></td><td>Get hex data as JSON</td></tr>
+            <tr><td><code>hexmap:regenerate</code></td><td>—</td><td>Generate new random map</td></tr>
+            <tr><td><code>hexmap:setStyle</code></td><td>—</td><td>Change visual style</td></tr>
+            <tr><td><code>hexmap:setGame</code></td><td>—</td><td>Switch active game</td></tr>
+        </table>
+    </section>
+
+    <section id="direct-api">
+        <h2>Direct API (Same-Page Usage)</h2>
+        <p>Load the engine scripts and call <code>HexSvg.toSVG()</code> directly. This avoids the iframe overhead and gives full control over options.</p>
+        <p>Required scripts (in order):</p>
+        <pre><code>&lt;script src="js/xorshift.js"&gt;&lt;/script&gt;
+&lt;script src="js/hex-math.js"&gt;&lt;/script&gt;
+&lt;script src="js/hex-svg.js"&gt;&lt;/script&gt;
+&lt;script src="js/game-registry.js"&gt;&lt;/script&gt;
+&lt;script src="js/games/talisman.js"&gt;&lt;/script&gt;</code></pre>
+        <p>Generate hex data then render to SVG:</p>
+        <pre><code>var config = HexApp.getGameConfig('talisman');
+var hexes = config.generate(4, 0, '42');
+var svg = HexSvg.toSVG(hexes, {
+    hexSize: 40,
+    flat: false,
+    colors: config.getColors(),
+    images: config.getImages('artistic'),
+    imageMode: 'link',
+    labels: true,
+    padding: 15
+});
+document.getElementById('output').innerHTML = svg;</code></pre>
+    </section>
+
+    <section id="annotated">
+        <h2>Annotated SVG (Tactical Diagrams)</h2>
+        <p>Use <code>HexSvg.toAnnotatedSVG()</code> to add move highlights, player tokens, directional arrows, and legends on top of a base map. Useful for rulebooks and strategy guides.</p>
+        <pre><code>var annotations = {
+    highlights: [
+        { q: 0, r: 1, style: 'valid' },
+        { q: 1, r: -1, style: 'blocked' },
+        { q: -1, r: 0, style: 'selected' }
+    ],
+    tokens: [
+        { q: 0, r: 0, color: '#1c4a4a', label: 'P1', stroke: '#fff' }
+    ],
+    arrows: [
+        { from: { q: 0, r: 0 }, to: { q: 1, r: 0 }, color: '#2aaa10', style: 'solid' }
+    ],
+    legend: [
+        { style: 'valid', text: 'Legal move' },
+        { style: 'blocked', text: 'Blocked' }
+    ]
+};
+
+var svg = HexSvg.toAnnotatedSVG(hexes, annotations, {
+    hexSize: 40,
+    flat: false,
+    colors: config.getColors()
+});</code></pre>
+        <p>Available highlight styles:</p>
+        <table class="docs-table">
+            <tr><th>Style</th><th>Appearance</th></tr>
+            <tr><td><code>valid</code></td><td>Green hex border</td></tr>
+            <tr><td><code>blocked</code></td><td>Red X through hex</td></tr>
+            <tr><td><code>selected</code></td><td>Gold hex border</td></tr>
+            <tr><td><code>friendly</code></td><td>Gold hex border (alias)</td></tr>
+        </table>
+    </section>
+
+    <section id="image-modes">
+        <h2>Image Modes</h2>
+        <p>The <code>imageMode</code> option controls how tile artwork is referenced in the SVG output:</p>
+        <table class="docs-table">
+            <tr><th>Mode</th><th>Output</th><th>Use when</th></tr>
+            <tr><td><code>'none'</code></td><td>Flat colour polygons only</td><td>Smallest file size, works everywhere, no external dependencies</td></tr>
+            <tr><td><code>'link'</code></td><td><code>&lt;image href="img/tiles/..."&gt;</code></td><td>SVG will be served from same origin as tile images</td></tr>
+            <tr><td><code>'embed'</code></td><td>Inline data URIs</td><td>Self-contained SVG, works offline, larger file size</td></tr>
+        </table>
+        <p>For most web use, <code>'link'</code> keeps file sizes small. For PDF generation or offline contexts, use <code>'embed'</code> so the SVG is fully self-contained.</p>
+    </section>
+
+    <section id="print-pdf">
+        <h2>Print and PDF Considerations</h2>
+        <p>SVG viewBox is auto-calculated from hex positions. Some PDF renderers (wkhtmltopdf, older Puppeteer) ignore viewBox and require explicit width/height attributes — these are included by default.</p>
+        <p>Tips for PDF output:</p>
+        <ul>
+            <li>Use <code>imageMode: 'embed'</code> so tiles render without network access</li>
+            <li>Increase <code>hexSize</code> for print DPI (e.g. 60 for 300dpi output vs 40 for screen)</li>
+            <li>Set <code>bgColor</code> if you need an opaque background (default is transparent)</li>
+            <li>The SVG includes <code>width</code> and <code>height</code> attributes in addition to viewBox for maximum renderer compatibility</li>
+        </ul>
+        <pre><code>var svg = HexSvg.toSVG(hexes, {
+    hexSize: 60,
+    colors: config.getColors(),
+    images: config.getImages('artistic'),
+    imageMode: 'embed',
+    padding: 20,
+    bgColor: '#ffffff'
+});</code></pre>
+    </section>
+
+    <section id="moddable-rules">
+        <h2>Moddable Rules Integration Pattern</h2>
+        <p>The Talisman Hexed rulebook project uses this workflow to produce reproducible map illustrations:</p>
+        <ol>
+            <li>Hidden iframe loads the hexmaps generator with a specific seed and style</li>
+            <li>postMessage requests SVG export once the iframe loads</li>
+            <li>SVG markup is inserted into the rulebook page at the designated container</li>
+            <li>Puppeteer renders the full page (including SVG maps) to PDF</li>
+        </ol>
+        <p>This gives map illustrations that automatically update when the generator improves — no manual re-export needed. The seed guarantees the same board layout every time.</p>
+        <pre><code>// In the rulebook page
+var maps = document.querySelectorAll('[data-hexmap]');
+maps.forEach(function(container) {
+    var iframe = document.createElement('iframe');
+    iframe.src = container.dataset.hexmap + '&amp;boardonly=1';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    iframe.onload = function() {
+        iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
+    };
+
+    window.addEventListener('message', function handler(event) {
+        if (event.data.type === 'hexmap:svgData' &amp;&amp; event.source === iframe.contentWindow) {
+            container.innerHTML = event.data.svg;
+            iframe.remove();
+            window.removeEventListener('message', handler);
+        }
+    });
+});</code></pre>
+        <p>Usage in HTML:</p>
+        <pre><code>&lt;div data-hexmap="https://hex.moddable.games/generate/?game=talisman&amp;size=4&amp;seed=rulebook-map-1&amp;style=artistic"&gt;&lt;/div&gt;</code></pre>
+    </section>
+
+    <section id="options-reference">
+        <h2>Options Reference</h2>
+        <table class="docs-table">
+            <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+            <tr><td><code>hexSize</code></td><td>30</td><td>Radius of each hex in SVG units</td></tr>
+            <tr><td><code>flat</code></td><td>false</td><td>Flat-top (true) or pointy-top (false) orientation</td></tr>
+            <tr><td><code>colors</code></td><td>{}</td><td>Map of terrain type → fill colour</td></tr>
+            <tr><td><code>images</code></td><td>null</td><td>Map of terrain type → image path/URI</td></tr>
+            <tr><td><code>imageMode</code></td><td>'none'</td><td>'none', 'link', or 'embed'</td></tr>
+            <tr><td><code>strokeColor</code></td><td>'rgba(0,0,0,0.3)'</td><td>Hex border colour</td></tr>
+            <tr><td><code>strokeWidth</code></td><td>1</td><td>Hex border width</td></tr>
+            <tr><td><code>labels</code></td><td>false</td><td>Show hex labels</td></tr>
+            <tr><td><code>padding</code></td><td>15</td><td>Padding around the map in SVG units</td></tr>
+            <tr><td><code>bgColor</code></td><td>null</td><td>Background colour (null = transparent)</td></tr>
+            <tr><td><code>scaleFactor</code></td><td>0.95</td><td>Hex polygon scale (gap between hexes)</td></tr>
+        </table>
+    </section>
+</div>
+</div>
+
+<footer class="site-footer">
+    <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.5.0</p>
+</footer>
+<script src="../js/docs-toc.js?v=0.5.0"></script>
+</body>
+</html>

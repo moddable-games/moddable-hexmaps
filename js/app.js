@@ -400,7 +400,18 @@
         var info = document.getElementById('hex-info');
         if (info) {
             var name = hex.tileName || hex.type;
-            info.textContent = hex.id + ' (' + hex.q + ',' + hex.r + ') — ' + name;
+            var detail = '';
+            var config = HexApp.getGameConfig(currentGame);
+            if (config && config.getDescriptions) {
+                var descs = config.getDescriptions();
+                if (descs[hex.type]) {
+                    name = descs[hex.type].name;
+                    detail = descs[hex.type].desc;
+                }
+            }
+            var text = hex.id + ' (' + hex.q + ',' + hex.r + ') — ' + name;
+            if (detail) text += ': ' + detail;
+            info.textContent = text;
         }
     }
 

@@ -202,7 +202,8 @@ p, li { text-wrap: pretty; }
     color: #3a3a3a;
 }
 
-.docs-body ul {
+.docs-body ul,
+.docs-body ol {
     margin: 8px 0 16px 20px;
     font-size: 0.95rem;
     line-height: 1.7;

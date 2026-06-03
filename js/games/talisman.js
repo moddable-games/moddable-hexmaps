@@ -92,6 +92,64 @@
         return hexes;
     }
 
+    var descriptions = {
+        plains:    { name: 'Plains', desc: 'draw one card' },
+        fields:    { name: 'Fields', desc: 'draw one card' },
+        woods:     { name: 'Woods', desc: 'draw one card' },
+        hills:     { name: 'Hills', desc: 'draw one card' },
+        forest:    { name: 'Forest', desc: 'roll D6' },
+        graveyard: { name: 'Graveyard', desc: 'based on alignment' },
+        crags:     { name: 'Crags', desc: 'roll D6' },
+        sentinel:  { name: 'Sentinel', desc: 'strength 9 to cross to middle' },
+        ruins:     { name: 'Ruins', desc: 'draw two cards' },
+        city:      { name: 'City', desc: 'enchantress, doctor or alchemist' },
+        village:   { name: 'Village', desc: 'blacksmith, healer or mystic' },
+        tavern:    { name: 'Tavern', desc: 'roll D6' },
+        chapel:    { name: 'Chapel', desc: 'based on alignment' },
+        desert:    { name: 'Desert', desc: 'cannot cross without water bottle' },
+        river:     { name: 'River', desc: 'cannot cross without raft' },
+        oasis:     { name: 'Oasis', desc: 'draw 2 cards / outward only' },
+        valley:    { name: 'Hidden Valley', desc: 'draw 3 cards / outward only' },
+        runes:     { name: 'Runes', desc: 'draw one card +2 for enemies' },
+        temple:    { name: 'Temple', desc: 'roll 2D6' },
+        cave:      { name: "Warlock's Cave", desc: 'draw quest card' },
+        chasm:     { name: 'Chasm', desc: 'roll D6(s)' },
+        castle:    { name: 'Castle', desc: 'heal for gold' },
+        portal:    { name: 'Portal of Power', desc: 'access inner region' },
+        glade:     { name: 'Cursed Glade', desc: 'draw one card - no magic allowed' },
+        knight:    { name: 'Black Knight', desc: 'pay one gold or one life' },
+        mines:     { name: 'Mines', desc: 'roll 3D6 minus craft' },
+        den:       { name: "Werewolve's Den", desc: 'fight werewolf (roll 2D6 strength)' },
+        death:     { name: 'Death', desc: 'roll 2D6 vs Death' },
+        crypt:     { name: 'Crypt', desc: 'roll 3D6 minus strength' },
+        vampire:   { name: "Vampire's Tower", desc: 'roll D6 lose life' },
+        pits:      { name: 'Pits', desc: 'fight pit fiends (roll D6 for count, S4 each)' },
+        peril:     { name: 'Plains of Peril', desc: 'stop here, one space per turn' },
+        fire:      { name: 'Valley of Fire', desc: 'must have talisman to enter' },
+        cavern:    { name: 'Cavern', desc: 'draw two cards' },
+        corridor:  { name: 'Corridor', desc: 'draw one card' },
+        tunnel:    { name: 'Tunnel', desc: 'draw one card' },
+        vault:     { name: 'Vault', desc: 'draw three cards' },
+        cell:      { name: 'Cell', desc: 'leave follower / take follower' },
+        entrance:  { name: 'Dungeon Entrance', desc: 'draw two cards' },
+        guard:     { name: 'Guard Room', desc: 'bribe guard (2G) or fight (S5)' },
+        hall:      { name: 'Hall of Darkness', desc: 'roll d6 next turn' },
+        kitchen:   { name: 'Kitchen', desc: 'you may roll a d6' },
+        library:   { name: 'Library', desc: 'roll d6' },
+        monster:   { name: 'Monster Pit', desc: 'roll d6' },
+        summon:    { name: 'Summoning Circle', desc: 'move closest enemy' },
+        torture:   { name: 'Torture Chamber', desc: 'pay 1G or lose one S or C' },
+        treasure:  { name: 'Treasure Chamber', desc: 'fight lord of darkness (S12/C12)' },
+        mountains: { name: 'Mountains', desc: 'cannot enter or pass through' },
+        crown:     { name: 'Crown of Command', desc: 'cast command spell' },
+        battle:    { name: 'Battle Royale', desc: 'last player standing wins' },
+        dragon:    { name: 'Dragon King', desc: 'fight dragon king' },
+        guild:     { name: "Thieves Guild", desc: 'steal from all players' },
+        eagle:     { name: 'Eagle King', desc: 'gain followers' },
+        demon:     { name: 'Demon Lord', desc: 'fight demon lord' },
+        doom:      { name: 'Hand of Doom', desc: 'all players roll fate' }
+    };
+
     HexApp.registerGame('talisman', {
         label: 'Talisman',
         orientation: 'pointy',
@@ -125,6 +183,10 @@
                 allTiles[allTypes[i]] = base + 'img/tiles/' + folder + '/' + allTypes[i] + '.png';
             }
             return allTiles;
+        },
+
+        getDescriptions: function() {
+            return descriptions;
         },
 
         rendererOptions: function() {
