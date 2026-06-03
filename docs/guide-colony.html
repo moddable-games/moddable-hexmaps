@@ -215,13 +215,19 @@ for (var i = 0; i &lt; hexData.length; i++) {
 
     <section id="step6">
         <h2>Step 6: Layout Variants</h2>
-        <p>Colony has two board sizes: standard (19 hexes, 2 rings) and expanded (37 hexes, 3 rings). The engine's layout system lets you define variants without changing the generate logic:</p>
+        <p>Colony supports 7 layouts: the base game (19 hexes, 2 rings), expanded 5-6 player (30 hexes, custom coordinates), and 5 Seafarers expansion scenarios. The engine's layout system lets you define variants without changing the generate logic:</p>
         <pre><code>layouts: [
     { value: 'standard', label: 'Standard (3-4 Players)' },
-    { value: 'expanded', label: 'Expanded (5-6 Players)' }
+    { value: 'expanded', label: 'Expanded (5-6 Players)' },
+    { value: 'newWorld', label: 'Seafarers: New World' },
+    { value: 'fourIslands', label: 'Seafarers: Four Islands' },
+    { value: 'newShores', label: 'Seafarers: New Shores' },
+    { value: 'desert', label: 'Seafarers: Through the Desert' },
+    { value: 'fogIslands', label: 'Seafarers: Fog Islands' }
 ],
 defaultLayout: 'standard',</code></pre>
         <p>When <code>layouts</code> is defined, the framework shows a Layout dropdown and passes the selected value as the fourth argument to <code>generate()</code>. The size selector is automatically hidden.</p>
+        <p>The Seafarers layouts use a ring-3 grid (37 hexes) with land placed by different algorithms (random island, four separated clusters, etc.) and remaining positions filled with sea. A decorative sea frame ring surrounds the playing area. Additional terrain types (<code>sea</code>, <code>gold</code>, <code>fog</code>) extend the base colour/image maps.</p>
         <p>In your generate function, use the layout to determine ring count and tile pool:</p>
         <pre><code>generate: function(size, players, seed, selectedLayout) {
     var layouts = {
@@ -263,6 +269,7 @@ defaultLayout: 'standard',</code></pre>
                 <tr><td><code>generate()</code></td><td>Build the hex array with terrain, overlays, and positions</td></tr>
                 <tr><td><code>getColors()</code></td><td>Map terrain types to flat colours for classic mode</td></tr>
                 <tr><td><code>getImages()</code></td><td>Map terrain types to image paths for artistic modes</td></tr>
+                <tr><td><code>getDescriptions()</code></td><td>Map terrain types to name + description for hover info</td></tr>
                 <tr><td><code>constraints()</code></td><td>Validate placement rules, trigger re-generation if invalid</td></tr>
                 <tr><td><code>layouts</code></td><td>Define board variants (hides size selector automatically)</td></tr>
                 <tr><td><code>rendererOptions()</code></td><td>Set hex size and orientation</td></tr>

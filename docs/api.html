@@ -402,6 +402,16 @@ iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
 
             <h3>HexApp.getRegisteredGames()</h3>
             <p>Returns an array of all registered game keys (e.g. <code>['nukes', 'talisman', 'twilight', 'colony']</code>).</p>
+
+            <h3>config.getDescriptions()</h3>
+            <p>Optional hook returning a map of terrain type keys to metadata objects. When present, the hover info displays the full name and description instead of the raw type key.</p>
+            <pre><code>getDescriptions: function() {
+    return {
+        plains: { name: 'Plains', desc: 'draw one card' },
+        cave:   { name: "Warlock's Cave", desc: 'draw quest card' }
+    };
+}</code></pre>
+            <p>Currently used by Talisman (55 terrain descriptions). Other games can add descriptions using the same interface.</p>
         </section>
 </div>
 </div>
