@@ -353,30 +353,59 @@
     }
 
     function placeFourIslands(allPositions, landCount, rng) {
-        var perIsland = Math.floor(landCount / 4);
-        var extra = landCount - perIsland * 4;
+        var seeds = [
+            { q: 1, r: -3 }, { q: 3, r: 1 },
+            { q: -1, r: 3 }, { q: -3, r: -1 }
+        ];
 
-        var quadrants = [[], [], [], []];
+        var gridSet = {};
         for (var i = 0; i < allPositions.length; i++) {
-            var p = allPositions[i];
-            var x = p.q + p.r * 0.5;
-            var y = p.r;
-            var qi;
-            if (x >= 0 && y < 0) qi = 0;
-            else if (x > 0 && y >= 0) qi = 1;
-            else if (x <= 0 && y > 0) qi = 2;
-            else qi = 3;
-            quadrants[qi].push(p);
+            gridSet[allPositions[i].q + ',' + allPositions[i].r] = true;
+        }
+
+        var islandOf = {};
+        var islands = [[], [], [], []];
+        for (var i = 0; i < 4; i++) {
+            islands[i].push(seeds[i]);
+            islandOf[seeds[i].q + ',' + seeds[i].r] = i;
+        }
+
+        var placed = 4;
+        while (placed < landCount) {
+            var grew = false;
+            for (var i = 0; i < 4; i++) {
+                if (placed >= landCount) break;
+                var candidates = [];
+                for (var j = 0; j < islands[i].length; j++) {
+                    var h = islands[i][j];
+                    for (var d = 0; d < directions.length; d++) {
+                        var nq = h.q + directions[d].q;
+                        var nr = h.r + directions[d].r;
+                        var nk = nq + ',' + nr;
+                        if (!gridSet[nk] || islandOf[nk] !== undefined) continue;
+                        var adjOther = false;
+                        for (var d2 = 0; d2 < directions.length; d2++) {
+                            var ak = (nq + directions[d2].q) + ',' + (nr + directions[d2].r);
+                            if (islandOf[ak] !== undefined && islandOf[ak] !== i) {
+                                adjOther = true; break;
+                            }
+                        }
+                        if (!adjOther) candidates.push({ q: nq, r: nr });
+                    }
+                }
+                if (candidates.length > 0) {
+                    var pick = candidates[rng.integer(0, candidates.length - 1)];
+                    islands[i].push(pick);
+                    islandOf[pick.q + ',' + pick.r] = i;
+                    placed++;
+                    grew = true;
+                }
+            }
+            if (!grew) break;
         }
 
         var result = [];
-        for (var island = 0; island < 4; island++) {
-            var count = perIsland + (island < extra ? 1 : 0);
-            shuffle(quadrants[island], rng);
-            for (var i = 0; i < count && i < quadrants[island].length; i++) {
-                result.push(quadrants[island][i]);
-            }
-        }
+        for (var i = 0; i < 4; i++) result = result.concat(islands[i]);
         return result;
     }
 
