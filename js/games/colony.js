@@ -261,7 +261,7 @@
         var rng = createSeededRng(seed + '_colony_' + layoutKey);
         var pool = buildPool(seafarersTerrainPools[layoutKey]);
         var landCount = pool.length;
-        var gridSize = (layoutKey === 'fourIslands' || landCount > 23) ? 4 : 3;
+        var gridSize = landCount > 23 ? 4 : 3;
         var allPositions = generateGrid(gridSize);
 
         shuffle(pool, rng);
@@ -360,46 +360,26 @@
     function placeFourIslands(allPositions, landCount, rng) {
         var perIsland = Math.floor(landCount / 4);
         var extra = landCount - perIsland * 4;
-        var offsets = [
-            { q: 2, r: -4 }, { q: -2, r: 4 },
-            { q: 4, r: -1 }, { q: -4, r: 1 }
-        ];
-        var result = [];
-        var used = {};
 
-        for (var island = 0; island < 4; island++) {
-            var center = offsets[island];
-            var count = perIsland + (island < extra ? 1 : 0);
-            var candidates = [];
-            for (var i = 0; i < allPositions.length; i++) {
-                var p = allPositions[i];
-                var dist = Math.max(Math.abs(p.q - center.q), Math.abs(p.r - center.r),
-                    Math.abs((p.q + p.r) - (center.q + center.r)));
-                if (dist <= 1 && !used[p.q + ',' + p.r]) {
-                    candidates.push(p);
-                }
-            }
-            shuffle(candidates, rng);
-            for (var i = 0; i < count && i < candidates.length; i++) {
-                result.push(candidates[i]);
-                used[candidates[i].q + ',' + candidates[i].r] = true;
-            }
+        var quadrants = [[], [], [], []];
+        for (var i = 0; i < allPositions.length; i++) {
+            var p = allPositions[i];
+            var x = p.q + p.r * 0.5;
+            var y = p.r;
+            var qi;
+            if (x >= 0 && y < 0) qi = 0;
+            else if (x > 0 && y >= 0) qi = 1;
+            else if (x <= 0 && y > 0) qi = 2;
+            else qi = 3;
+            quadrants[qi].push(p);
         }
-        if (result.length < landCount) {
-            for (var i = 0; i < allPositions.length && result.length < landCount; i++) {
-                var p = allPositions[i];
-                if (!used[p.q + ',' + p.r]) {
-                    var nearIsland = false;
-                    for (var j = 0; j < result.length; j++) {
-                        var dist = Math.max(Math.abs(p.q - result[j].q), Math.abs(p.r - result[j].r),
-                            Math.abs((p.q + p.r) - (result[j].q + result[j].r)));
-                        if (dist <= 1) { nearIsland = true; break; }
-                    }
-                    if (nearIsland) {
-                        result.push(p);
-                        used[p.q + ',' + p.r] = true;
-                    }
-                }
+
+        var result = [];
+        for (var island = 0; island < 4; island++) {
+            var count = perIsland + (island < extra ? 1 : 0);
+            shuffle(quadrants[island], rng);
+            for (var i = 0; i < count && i < quadrants[island].length; i++) {
+                result.push(quadrants[island][i]);
             }
         }
         return result;
