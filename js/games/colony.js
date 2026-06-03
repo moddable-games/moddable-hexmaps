@@ -261,7 +261,7 @@
         var rng = createSeededRng(seed + '_colony_' + layoutKey);
         var pool = buildPool(seafarersTerrainPools[layoutKey]);
         var landCount = pool.length;
-        var gridSize = landCount <= 23 ? 3 : 4;
+        var gridSize = (layoutKey === 'fourIslands' || landCount > 23) ? 4 : 3;
         var allPositions = generateGrid(gridSize);
 
         shuffle(pool, rng);
@@ -361,8 +361,8 @@
         var perIsland = Math.floor(landCount / 4);
         var extra = landCount - perIsland * 4;
         var offsets = [
-            { q: 2, r: -3 }, { q: -2, r: 3 },
-            { q: 3, r: 0 }, { q: -3, r: 0 }
+            { q: 2, r: -4 }, { q: -2, r: 4 },
+            { q: 4, r: -1 }, { q: -4, r: 1 }
         ];
         var result = [];
         var used = {};
@@ -375,7 +375,7 @@
                 var p = allPositions[i];
                 var dist = Math.max(Math.abs(p.q - center.q), Math.abs(p.r - center.r),
                     Math.abs((p.q + p.r) - (center.q + center.r)));
-                if (dist <= 2 && !used[p.q + ',' + p.r]) {
+                if (dist <= 1 && !used[p.q + ',' + p.r]) {
                     candidates.push(p);
                 }
             }
@@ -383,6 +383,23 @@
             for (var i = 0; i < count && i < candidates.length; i++) {
                 result.push(candidates[i]);
                 used[candidates[i].q + ',' + candidates[i].r] = true;
+            }
+        }
+        if (result.length < landCount) {
+            for (var i = 0; i < allPositions.length && result.length < landCount; i++) {
+                var p = allPositions[i];
+                if (!used[p.q + ',' + p.r]) {
+                    var nearIsland = false;
+                    for (var j = 0; j < result.length; j++) {
+                        var dist = Math.max(Math.abs(p.q - result[j].q), Math.abs(p.r - result[j].r),
+                            Math.abs((p.q + p.r) - (result[j].q + result[j].r)));
+                        if (dist <= 1) { nearIsland = true; break; }
+                    }
+                    if (nearIsland) {
+                        result.push(p);
+                        used[p.q + ',' + p.r] = true;
+                    }
+                }
             }
         }
         return result;
