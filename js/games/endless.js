@@ -119,7 +119,11 @@
         if (factionId && pools[factionId] && pools[factionId].length > 0) {
             return pools[factionId].shift();
         }
-        if (pools._overflow.length > 0) return pools._overflow.shift();
+        if (pools._overflow && pools._overflow.length > 0) return pools._overflow.shift();
+        for (var key in pools) {
+            if (key === '_overflow') continue;
+            if (pools[key].length > 0) return pools[key].shift();
+        }
         return null;
     }
 
@@ -325,7 +329,13 @@
 
         getImages: function(style) {
             if (style !== 'artistic') return null;
-            return { _perHex: true };
+            var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            return {
+                _perHex: true,
+                wormhole: base + 'img/tiles/endless/wormhole.png',
+                asteroid: base + 'img/tiles/endless/asteroid_belt.png',
+                empty: base + 'img/tiles/endless/void.png'
+            };
         },
 
         getDescriptions: function() {
