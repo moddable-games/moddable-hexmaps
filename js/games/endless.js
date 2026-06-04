@@ -128,18 +128,38 @@
         }
 
         var pools = {};
+        var overflow = [];
         if (systemData) {
             for (var f = 0; f < activeFactions; f++) {
                 var fid = factions[f].id;
                 var regionSystems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
-                var objs = [];
+                var placeable = [];
                 for (var j = 0; j < regionSystems.length; j++) {
                     var sys = findSystem(systemData, regionSystems[j]);
-                    if (sys) objs.push(sys);
+                    if (!sys) continue;
+                    if (sys.name.indexOf('Asteroid Belt') !== -1) continue;
+                    if (sys.name.indexOf('Space Port') !== -1) continue;
+                    if (sys.name === factions[f].home || sys.name.indexOf(factions[f].home) === 0) continue;
+                    placeable.push(sys);
                 }
-                shuffle(objs, rng);
-                pools[fid] = objs;
+                shuffle(placeable, rng);
+                pools[fid] = placeable.slice(0, 10);
+                for (var j = 10; j < placeable.length; j++) overflow.push(placeable[j]);
             }
+            for (var f = activeFactions; f < 8; f++) {
+                var fid = factions[f].id;
+                var regionSystems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
+                for (var j = 0; j < regionSystems.length; j++) {
+                    var sys = findSystem(systemData, regionSystems[j]);
+                    if (!sys) continue;
+                    if (sys.name.indexOf('Asteroid Belt') !== -1) continue;
+                    if (sys.name.indexOf('Space Port') !== -1) continue;
+                    overflow.push(sys);
+                }
+            }
+            overflow.push({ name: 'Empty Space', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
+            overflow.push({ name: 'Empty Space', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
+            shuffle(overflow, rng);
         }
 
         var result = [];
@@ -160,10 +180,19 @@
                 }
                 label = factions[fIdx] ? factions[fIdx].label : 'H';
             } else if (hex.isCentre) {
-                type = 'space';
-                label = 'X';
+                type = 'homeworld';
+                label = 'SP';
+                if (systemData) {
+                    system = { name: 'Central Space Port', code: null, region: 'Neutral', faction: 'Shared', events: 0, planets: 0, habitats: 1, population: 0, wormholes: '0' };
+                }
             } else if (hex.faction && pools[hex.faction] && pools[hex.faction].length > 0) {
                 system = pools[hex.faction].shift();
+            } else if (overflow.length > 0) {
+                system = overflow.shift();
+            } else {
+                for (var pk in pools) {
+                    if (pools[pk].length > 0) { system = pools[pk].shift(); break; }
+                }
             }
 
             var imagePath = null;
