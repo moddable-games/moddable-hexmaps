@@ -1,52 +1,28 @@
 (function() {
 
     var factions = [
-        { id: 'republic', label: 'Rep', name: 'Republic', region: 'Near Earth', home: 'Sol' },
-        { id: 'alphas', label: 'Alp', name: 'Alphas', region: 'Far North', home: 'Prime' },
-        { id: 'syndicate', label: 'Syn', name: 'Syndicate', region: 'The Core', home: 'Markab' },
-        { id: 'freeworlds', label: 'FW', name: 'Free Worlds', region: 'Dirt Belt', home: 'Dabih' },
-        { id: 'pirates', label: 'Pir', name: 'Pirates', region: 'The Rim', home: 'Alkaid' },
-        { id: 'remnant', label: 'Rem', name: 'Remnant', region: 'Ember Wastes', home: 'Arculus' },
-        { id: 'coalition', label: 'Coa', name: 'Coalition', region: 'Paradise', home: 'Talita' },
-        { id: 'wanderers', label: 'Wan', name: 'Wanderers', region: 'Wanderer Space', home: "Ka'ch'chrai" }
+        { id: 'republic', label: '1', name: 'Republic', region: 'Near Earth', home: 'Sol' },
+        { id: 'alphas', label: '8', name: 'Alphas', region: 'Far North', home: 'Prime' },
+        { id: 'syndicate', label: '4', name: 'Syndicate', region: 'The Core', home: 'Markab' },
+        { id: 'freeworlds', label: '6', name: 'Free Worlds', region: 'Dirt Belt', home: 'Dabih' },
+        { id: 'pirates', label: '2', name: 'Pirates', region: 'The Rim', home: 'Alkaid' },
+        { id: 'remnant', label: '7', name: 'Remnant', region: 'Ember Wastes', home: 'Arculus' },
+        { id: 'coalition', label: '3', name: 'Coalition', region: 'Paradise', home: 'Talita' },
+        { id: 'wanderers', label: '5', name: 'Wanderers', region: 'Wanderer Space', home: "Ka'ch'chrai" }
     ];
 
     var classicColors = {
+        space: '#263238',
         homeworld: '#4CAF50',
-        core: '#7B1FA2',
-        frontier: '#1565C0',
-        rim: '#37474F',
-        contested: '#C62828',
-        nebula: '#E040FB',
-        asteroid: '#9E9E9E',
-        wormhole: '#00BCD4',
-        empty: '#263238'
+        republic: '#1565C0',
+        alphas: '#C62828',
+        syndicate: '#7B1FA2',
+        freeworlds: '#2E7D32',
+        pirates: '#F57C00',
+        remnant: '#00838F',
+        coalition: '#AD1457',
+        wanderers: '#4E342E'
     };
-
-    var directions = [
-        { q: 1, r: 0 }, { q: 0, r: 1 }, { q: -1, r: 1 },
-        { q: -1, r: 0 }, { q: 0, r: -1 }, { q: 1, r: -1 }
-    ];
-
-    function generateRing(radius) {
-        if (radius === 0) return [{ q: 0, r: 0 }];
-        var results = [];
-        var q = 0, r = -radius;
-        for (var d = 0; d < 6; d++) {
-            for (var step = 0; step < radius; step++) {
-                results.push({ q: q, r: r });
-                q += directions[d].q;
-                r += directions[d].r;
-            }
-        }
-        return results;
-    }
-
-    function posKey(q, r) { return q + ',' + r; }
-
-    function hexDistance(q1, r1, q2, r2) {
-        return (Math.abs(q1 - q2) + Math.abs(q1 + r1 - q2 - r2) + Math.abs(r1 - r2)) / 2;
-    }
 
     function shuffle(arr, rng) {
         for (var i = arr.length - 1; i > 0; i--) {
@@ -58,87 +34,30 @@
         return arr;
     }
 
-    function getHomePositions(ring, count) {
-        var ringHexes = generateRing(ring);
-        var spacing = Math.floor(ringHexes.length / count);
-        var positions = [];
-        for (var i = 0; i < count; i++) {
-            positions.push(ringHexes[i * spacing]);
-        }
-        return positions;
-    }
-
-    var layouts = {
-        'compact': { label: 'Compact (2–3 players)', rings: 4, homeRing: 3 },
-        'standard': { label: 'Standard (4–6 players)', rings: 5, homeRing: 4 },
-        'grand': { label: 'Grand (7–8 players)', rings: 6, homeRing: 5 }
-    };
-
-    function buildSystemPools(activeFactions, rng) {
-        var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
-        if (!systemData) return null;
-
-        var pools = {};
-        for (var f = 0; f < activeFactions; f++) {
-            var fid = factions[f].id;
-            var regionSystems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
-            var systemObjects = [];
-            for (var i = 0; i < regionSystems.length; i++) {
-                var sys = findSystem(systemData, regionSystems[i]);
-                if (sys) systemObjects.push(sys);
-            }
-            shuffle(systemObjects, rng);
-            pools[fid] = systemObjects;
-        }
-
-        var allUsed = {};
-        for (var fid in pools) {
-            for (var i = 0; i < pools[fid].length; i++) allUsed[pools[fid][i].name] = true;
-        }
-        var overflow = [];
-        for (var i = 0; i < systemData.systems.length; i++) {
-            if (!allUsed[systemData.systems[i].name]) overflow.push(systemData.systems[i]);
-        }
-        shuffle(overflow, rng);
-        pools._overflow = overflow;
-        return pools;
+    function hexDistance(q1, r1, q2, r2) {
+        return (Math.abs(q1 - q2) + Math.abs(q1 + r1 - q2 - r2) + Math.abs(r1 - r2)) / 2;
     }
 
     function findSystem(systemData, name) {
         for (var i = 0; i < systemData.systems.length; i++) {
             if (systemData.systems[i].name === name) return systemData.systems[i];
-        }
-        for (var i = 0; i < systemData.systems.length; i++) {
             if (systemData.systems[i].name.indexOf(name) === 0) return systemData.systems[i];
         }
         return null;
     }
 
-    function drawSystem(pools, factionId) {
-        if (!pools) return null;
-        if (factionId && pools[factionId] && pools[factionId].length > 0) {
-            return pools[factionId].shift();
-        }
-        if (pools._overflow && pools._overflow.length > 0) return pools._overflow.shift();
-        for (var key in pools) {
-            if (key === '_overflow') continue;
-            if (pools[key].length > 0) return pools[key].shift();
-        }
-        return null;
-    }
-
     function buildSystemHover(sys) {
-        var parts = [sys.name];
-        if (sys.code) parts[0] += ' [' + sys.code + ']';
-        parts[0] += ' — ' + sys.region + ' (' + sys.faction + ')';
+        var text = sys.name;
+        if (sys.code) text += ' [' + sys.code + ']';
+        text += ' — ' + sys.region + ' (' + sys.faction + ')';
         var stats = [];
         if (sys.planets) stats.push(sys.planets + ' planets');
         if (sys.habitats) stats.push(sys.habitats + ' hab');
         if (sys.population) stats.push('pop ' + sys.population);
         if (sys.events) stats.push(sys.events + ' events');
         if (sys.wormholes && sys.wormholes !== '0') stats.push('WH: ' + sys.wormholes);
-        if (stats.length) parts[0] += ' | ' + stats.join(', ');
-        return parts[0];
+        if (stats.length) text += ' | ' + stats.join(', ');
+        return text;
     }
 
     function getSystemImagePath(systemName, base) {
@@ -149,178 +68,143 @@
         return base + 'img/tiles/' + imgPath;
     }
 
-    function generate(size, players, seed, selectedLayout) {
+    function generate(size, players, seed) {
+        var layout = (typeof MongoLayout !== 'undefined') ? MongoLayout : null;
+        var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
+        if (!layout) return [];
+
         var rng = createSeededRng(seed + '_endless');
-        var activeFactions = players > 0 ? Math.min(players, 8) : 6;
+        var centre = layout.centre;
+        var activeFactions = players > 0 ? Math.min(players, 8) : 8;
 
-        var layoutDef = layouts[selectedLayout] || layouts['standard'];
-        var rings = layoutDef.rings;
-        var homeRing = layoutDef.homeRing;
-
-        var allPositions = [];
-        for (var ring = 0; ring <= rings; ring++) {
-            var hexes = generateRing(ring);
-            for (var i = 0; i < hexes.length; i++) {
-                allPositions.push({ q: hexes[i].q, r: hexes[i].r, ring: ring });
-            }
-        }
-
-        var board = {};
-        for (var i = 0; i < allPositions.length; i++) {
-            var pos = allPositions[i];
-            board[posKey(pos.q, pos.r)] = { q: pos.q, r: pos.r, ring: pos.ring, type: null, faction: null };
-        }
-
-        board[posKey(0, 0)].type = 'core';
-
-        var homePositions = getHomePositions(homeRing, activeFactions);
-        for (var f = 0; f < activeFactions; f++) {
-            var hp = homePositions[f];
-            var key = posKey(hp.q, hp.r);
-            if (board[key]) {
-                board[key].type = 'homeworld';
-                board[key].faction = factions[f].id;
-                board[key].label = factions[f].label;
-            }
-        }
-
-        var wormholeTypes = ['C', 'M', 'Y', 'K'];
-        var wormholeCount = Math.min(8, Math.floor(allPositions.length * 0.06));
-        var wormholeCandidates = [];
-        for (var key in board) {
-            var cell = board[key];
-            if (cell.type === null && cell.ring >= 2 && cell.ring < rings) {
-                wormholeCandidates.push(key);
-            }
-        }
-        shuffle(wormholeCandidates, rng);
-        for (var w = 0; w < wormholeCount && w < wormholeCandidates.length; w++) {
-            var wk = wormholeCandidates[w];
-            board[wk].type = 'wormhole';
-            board[wk].wormholeType = wormholeTypes[w % 4];
-        }
-
-        for (var f = 0; f < activeFactions; f++) {
-            var hp = homePositions[f];
-            for (var d = 0; d < 6; d++) {
-                var nq = hp.q + directions[d].q;
-                var nr = hp.r + directions[d].r;
-                var nk = posKey(nq, nr);
-                if (board[nk] && board[nk].type === null) {
-                    board[nk].type = 'frontier';
-                    board[nk].faction = factions[f].id;
-                }
-            }
-        }
-
-        for (var key in board) {
-            var cell = board[key];
-            if (cell.type !== null) continue;
-
-            if (cell.ring === 0) {
-                cell.type = 'core';
-            } else if (cell.ring === 1) {
-                cell.type = rng.integer(0, 3) === 0 ? 'nebula' : 'core';
-            } else if (cell.ring <= 2) {
-                var roll = rng.integer(0, 5);
-                if (roll === 0) cell.type = 'nebula';
-                else if (roll <= 2) cell.type = 'core';
-                else cell.type = 'contested';
-            } else if (cell.ring <= homeRing - 1) {
-                var roll = rng.integer(0, 7);
-                if (roll === 0) cell.type = 'nebula';
-                else if (roll === 1) cell.type = 'asteroid';
-                else if (roll <= 3) cell.type = 'contested';
-                else cell.type = 'frontier';
-            } else if (cell.ring === homeRing) {
-                var roll = rng.integer(0, 5);
-                if (roll === 0) cell.type = 'asteroid';
-                else if (roll <= 2) cell.type = 'frontier';
-                else cell.type = 'rim';
-            } else {
-                var roll = rng.integer(0, 5);
-                if (roll === 0) cell.type = 'asteroid';
-                else if (roll === 1) cell.type = 'empty';
-                else cell.type = 'rim';
-            }
-        }
-
-        var systemPools = buildSystemPools(activeFactions, rng);
+        var factionPositions = layout.factions;
         var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
 
-        var hexData = [];
-        for (var key in board) {
-            var cell = board[key];
-            var label = cell.label || cell.type.charAt(0).toUpperCase();
-            if (cell.wormholeType) label = cell.wormholeType;
-            var id;
-            if (cell.q === 0 && cell.r === 0) {
-                id = 'R0';
-            } else {
-                id = 'R' + cell.ring + '_' + key;
+        var hexes = [];
+        for (var i = 0; i < layout.hexes.length; i++) {
+            var def = layout.hexes[i];
+            var offsetCol = def.q - centre.q;
+            var offsetRow = -(def.r - centre.r);
+            var q = offsetCol - Math.floor((offsetRow - (offsetRow & 1)) / 2);
+            var r = offsetRow;
+            hexes.push({ id: def.id, q: q, r: r, origQ: def.q, origR: def.r });
+        }
+
+        var homeAxials = [];
+        for (var f = 0; f < activeFactions; f++) {
+            var fp = factionPositions[f];
+            var offsetCol = fp.q - centre.q;
+            var offsetRow = -(fp.r - centre.r);
+            var hq = offsetCol - Math.floor((offsetRow - (offsetRow & 1)) / 2);
+            var hr = offsetRow;
+            homeAxials.push({ q: hq, r: hr, faction: factions[f] });
+        }
+
+        for (var i = 0; i < hexes.length; i++) {
+            var hex = hexes[i];
+            var isHome = false;
+            for (var f = 0; f < homeAxials.length; f++) {
+                if (hex.q === homeAxials[f].q && hex.r === homeAxials[f].r) {
+                    hex.faction = homeAxials[f].faction.id;
+                    hex.isHome = true;
+                    isHome = true;
+                    break;
+                }
             }
+            if (hex.origQ === centre.q && hex.origR === centre.r) {
+                hex.isCentre = true;
+            }
+            if (!isHome && !hex.isCentre) {
+                var minDist = 999;
+                var closest = null;
+                for (var f = 0; f < homeAxials.length; f++) {
+                    var d = hexDistance(hex.q, hex.r, homeAxials[f].q, homeAxials[f].r);
+                    if (d < minDist) { minDist = d; closest = homeAxials[f].faction.id; }
+                }
+                hex.faction = closest;
+            }
+        }
+
+        var pools = {};
+        if (systemData) {
+            for (var f = 0; f < activeFactions; f++) {
+                var fid = factions[f].id;
+                var regionSystems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
+                var objs = [];
+                for (var j = 0; j < regionSystems.length; j++) {
+                    var sys = findSystem(systemData, regionSystems[j]);
+                    if (sys) objs.push(sys);
+                }
+                shuffle(objs, rng);
+                pools[fid] = objs;
+            }
+        }
+
+        var result = [];
+        for (var i = 0; i < hexes.length; i++) {
+            var hex = hexes[i];
+            var type = hex.faction ? hex.faction : 'space';
+            if (hex.isHome) type = 'homeworld';
+            var label = type.charAt(0).toUpperCase();
 
             var system = null;
-            var imagePath = null;
-
-            if (cell.type === 'homeworld') {
+            if (hex.isHome) {
                 var fIdx = -1;
-                for (var fi = 0; fi < factions.length; fi++) {
-                    if (factions[fi].id === cell.faction) { fIdx = fi; break; }
+                for (var f = 0; f < factions.length; f++) {
+                    if (factions[f].id === hex.faction) { fIdx = f; break; }
                 }
-                if (fIdx >= 0) {
-                    var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
-                    system = systemData ? findSystem(systemData, factions[fIdx].home) : null;
+                if (fIdx >= 0 && systemData) {
+                    system = findSystem(systemData, factions[fIdx].home);
                 }
-            } else if (cell.type !== 'wormhole' && cell.type !== 'asteroid' && cell.type !== 'empty') {
-                system = drawSystem(systemPools, cell.faction);
+                label = factions[fIdx] ? factions[fIdx].label : 'H';
+            } else if (hex.isCentre) {
+                type = 'space';
+                label = 'X';
+            } else if (hex.faction && pools[hex.faction] && pools[hex.faction].length > 0) {
+                system = pools[hex.faction].shift();
             }
 
+            var imagePath = null;
             if (system) {
                 imagePath = getSystemImagePath(system.name, base);
                 if (!label || label.length <= 1) label = system.name.substring(0, 3);
             }
 
-            var hex = {
-                id: id,
-                q: cell.q,
-                r: cell.r,
-                type: cell.type,
+            var out = {
+                id: hex.id,
+                q: hex.q,
+                r: hex.r,
+                type: type,
                 label: label,
-                faction: cell.faction || null
+                faction: hex.faction || null
             };
-            if (system) {
-                hex.tileName = buildSystemHover(system);
-                hex.imagePath = imagePath;
+            if (system) out.tileName = buildSystemHover(system);
+            if (imagePath) out.imagePath = imagePath;
+            if (hex.isHome) {
+                out.overlay = { text: label, color: '#FFFFFF', size: 0.4 };
             }
 
-            hexData.push(hex);
+            result.push(out);
         }
 
-        return hexData;
+        return result;
     }
 
     HexApp.registerGame('endless', {
         label: 'Endless Skies',
-        orientation: 'flat',
+        orientation: 'pointy',
         sizes: [
-            { value: 5, label: 'Standard' }
+            { value: 6, label: '6 Rings (127 hexes)' }
         ],
-        defaultSize: 5,
-        defaultPlayers: 6,
+        defaultSize: 6,
+        defaultPlayers: 8,
         styles: ['artistic', 'classic'],
         hasEditor: false,
-        layouts: [
-            { value: 'compact', label: 'Compact (2–3 players)' },
-            { value: 'standard', label: 'Standard (4–6 players)' },
-            { value: 'grand', label: 'Grand (7–8 players)' }
-        ],
-        defaultLayout: 'standard',
 
         playerCounts: function() { return [2, 3, 4, 5, 6, 7, 8]; },
 
-        generate: function(size, players, seed, layout) {
-            return generate(size, players, seed, layout);
+        generate: function(size, players, seed) {
+            return generate(size, players, seed);
         },
 
         getColors: function() {
@@ -332,28 +216,27 @@
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
             return {
                 _perHex: true,
-                wormhole: base + 'img/tiles/endless/wormhole.png',
-                asteroid: base + 'img/tiles/endless/asteroid_belt.png',
-                empty: base + 'img/tiles/endless/void.png'
+                space: base + 'img/tiles/endless/void.png'
             };
         },
 
         getDescriptions: function() {
             return {
-                homeworld: { name: 'Homeworld', desc: 'Faction home system' },
-                core: { name: 'Core System', desc: 'Dense inner systems — high value' },
-                frontier: { name: 'Frontier', desc: 'Exploration zone — moderate risk' },
-                rim: { name: 'Rim', desc: 'Sparse outer systems — low resources' },
-                contested: { name: 'Contested', desc: 'Border region — multi-faction claims' },
-                nebula: { name: 'Nebula', desc: 'Blocks line-of-sight — mining opportunity' },
-                asteroid: { name: 'Asteroid Field', desc: 'Dynamic obstacles — Discovery cards' },
-                wormhole: { name: 'Wormhole', desc: 'Instantaneous travel link' },
-                empty: { name: 'Void', desc: 'Uncharted space' }
+                space: { name: 'Deep Space', desc: 'Uncharted void' },
+                homeworld: { name: 'Homeworld', desc: 'Faction starting system' },
+                republic: { name: 'Republic Space', desc: 'Near Earth sector' },
+                alphas: { name: 'Alphas Space', desc: 'Far North sector' },
+                syndicate: { name: 'Syndicate Space', desc: 'The Core sector' },
+                freeworlds: { name: 'Free Worlds Space', desc: 'Dirt Belt sector' },
+                pirates: { name: 'Pirates Space', desc: 'The Rim sector' },
+                remnant: { name: 'Remnant Space', desc: 'Ember Wastes sector' },
+                coalition: { name: 'Coalition Space', desc: 'Paradise sector' },
+                wanderers: { name: 'Wanderer Space', desc: 'Wanderer sector' }
             };
         },
 
         rendererOptions: function() {
-            return { hexSize: 28, flat: true };
+            return { hexSize: 22, flat: false };
         }
     });
 })();
