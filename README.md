@@ -100,8 +100,11 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-04
-- New game: Planet Mongo — 8 factions, 127 hex board, biome clustering, 2–8 players
-- New game: Endless Skies — 4X galaxy generator, 8 factions, wormholes, 3 layout sizes
+- New game: Planet Mongo — fixed layout (127 hex, 6 rings), 8 factions, artistic tiles, named tiles with full commodity stats on hover
+- New game: Endless Skies — fixed layout (91 hex, 5 rings), 8 factions, 96 per-system star composites, full stats from CSV on hover
+- Planet Mongo: fixed board shape matching official setup diagram (odd-r offset → axial conversion)
+- Endless Skies: sector-based tile assignment, 104 systems from source CSV, space port/asteroid/wormhole/void tiles
+- Hover fix: tileName takes priority over generic biome descriptions
 - Homepage grid updated to 3-column layout for 6 games
 - Rename "Talisman: Hexed" to "Talisman Worlds" across all pages, docs, and data
 
