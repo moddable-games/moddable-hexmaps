@@ -161,20 +161,14 @@
             shuffle(overflow, rng);
         }
 
-        hexes.sort(function(a, b) {
-            if (a.isCentre) return -1;
-            if (b.isCentre) return 1;
-            if (a.isHome && !b.isHome) return -1;
-            if (b.isHome && !a.isHome) return 1;
-            var distA = 999, distB = 999;
-            for (var f = 0; f < homeAxials.length; f++) {
-                var dA = hexDistance(a.q, a.r, homeAxials[f].q, homeAxials[f].r);
-                var dB = hexDistance(b.q, b.r, homeAxials[f].q, homeAxials[f].r);
-                if (dA < distA) distA = dA;
-                if (dB < distB) distB = dB;
-            }
-            return distA - distB;
-        });
+        var priority = [];
+        var rest = [];
+        for (var i = 0; i < hexes.length; i++) {
+            if (hexes[i].isCentre || hexes[i].isHome) priority.push(hexes[i]);
+            else rest.push(hexes[i]);
+        }
+        shuffle(rest, rng);
+        hexes = priority.concat(rest);
 
         var result = [];
         for (var i = 0; i < hexes.length; i++) {
@@ -210,6 +204,7 @@
             }
             if (!imagePath && !system) {
                 imagePath = base + 'img/tiles/endless/void.png';
+                system = { name: 'Empty Space', region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' };
             }
 
             if (!imagePath && system) {
@@ -236,17 +231,6 @@
             }
 
             result.push(out);
-        }
-
-        var nonHome = [];
-        for (var i = 0; i < result.length; i++) {
-            if (result[i].type !== 'homeworld' && result[i].type !== 'spaceport') nonHome.push(i);
-        }
-        shuffle(nonHome, rng);
-        for (var e = 0; e < 2 && e < nonHome.length; e++) {
-            var idx = nonHome[e];
-            result[idx].tileName = 'Empty Space — no star system present';
-            result[idx].imagePath = base + 'img/tiles/endless/void.png';
         }
 
         return result;
