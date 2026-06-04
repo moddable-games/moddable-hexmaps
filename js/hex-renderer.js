@@ -60,6 +60,7 @@ var HexRenderer = (function() {
             selectedHex: null,
             onHexClick: options.onHexClick || null,
             onHexHover: options.onHexHover || null,
+            onHexLeave: options.onHexLeave || null,
             colors: options.colors || {},
             images: options.images || null,
             labels: options.labels || false,
@@ -296,7 +297,10 @@ var HexRenderer = (function() {
                 renderer.hoveredHex = hex;
                 render(renderer);
                 if (renderer.onHexHover && hex) {
-                    renderer.onHexHover(hex);
+                    renderer.onHexHover(hex, e);
+                }
+                if (!hex && renderer.onHexLeave) {
+                    renderer.onHexLeave();
                 }
             }
         };
@@ -304,6 +308,7 @@ var HexRenderer = (function() {
         var onMouseLeave = function() {
             renderer.hoveredHex = null;
             render(renderer);
+            if (renderer.onHexLeave) renderer.onHexLeave();
         };
 
         var onClick = function(e) {

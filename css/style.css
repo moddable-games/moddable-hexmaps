@@ -23,6 +23,7 @@ h1, h2, h3, p, li { text-wrap: pretty; }
 
 .canvas-area {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     background: var(--hx-canvas-dark);
@@ -84,6 +85,55 @@ h1, h2, h3, p, li { text-wrap: pretty; }
     font-size: 0.8rem;
     color: var(--hx-text-mute);
     font-family: var(--mg-font-mono, monospace);
+    min-width: 0;
+    overflow: hidden;
+}
+
+.canvas-footer #hex-info {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+    margin-right: 12px;
+}
+
+.hex-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    background: var(--hx-surface);
+    border: 1px solid var(--hx-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    font-family: var(--mg-font-mono, monospace);
+    color: var(--hx-text);
+    max-width: 320px;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    line-height: 1.5;
+}
+
+.hex-tooltip.visible {
+    display: block;
+}
+
+.hex-tooltip .tt-name {
+    font-weight: 600;
+    color: var(--hx-accent);
+    margin-bottom: 4px;
+}
+
+.hex-tooltip .tt-stats {
+    color: var(--hx-text-mute);
+}
+
+.hex-tooltip .tt-special {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--hx-border);
+    color: var(--hx-accent);
 }
 
 .sidebar {

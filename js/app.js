@@ -288,6 +288,7 @@
             labels: currentStyle === 'classic',
             onHexClick: onHexClick,
             onHexHover: onHexHover,
+            onHexLeave: onHexLeave,
             bgColor: embedBgColor,
             fitScale: embedMode ? 0.98 : 0.9,
             useViewport: embedMode
@@ -409,7 +410,7 @@
         updateInfo();
     }
 
-    function onHexHover(hex) {
+    function onHexHover(hex, e) {
         var info = document.getElementById('hex-info');
         if (info) {
             var name = hex.tileName || hex.type;
@@ -428,6 +429,42 @@
             if (detail) text += ': ' + detail;
             info.textContent = text;
         }
+
+        var tooltip = document.getElementById('hex-tooltip');
+        if (tooltip && hex.tileName) {
+            var parts = hex.tileName.split(' ★ ');
+            var mainText = parts[0];
+            var special = parts[1] || '';
+            var nameMatch = mainText.match(/^(.+?) \[.+?\] — (.+)$/);
+            var html = '';
+            if (nameMatch) {
+                html += '<div class="tt-name">' + nameMatch[1] + '</div>';
+                html += '<div class="tt-stats">' + nameMatch[2] + '</div>';
+            } else {
+                html += '<div class="tt-name">' + mainText + '</div>';
+            }
+            if (special) {
+                html += '<div class="tt-special">★ ' + special + '</div>';
+            }
+            tooltip.innerHTML = html;
+            tooltip.classList.add('visible');
+            var canvasWrap = document.querySelector('.canvas-wrap');
+            var wrapRect = canvasWrap.getBoundingClientRect();
+            var tx = e.clientX - wrapRect.left + 16;
+            var ty = e.clientY - wrapRect.top - 10;
+            if (tx + 320 > wrapRect.width) tx = e.clientX - wrapRect.left - 336;
+            tooltip.style.left = tx + 'px';
+            tooltip.style.top = ty + 'px';
+        } else if (tooltip) {
+            tooltip.classList.remove('visible');
+        }
+    }
+
+    function onHexLeave() {
+        var tooltip = document.getElementById('hex-tooltip');
+        if (tooltip) tooltip.classList.remove('visible');
+        var info = document.getElementById('hex-info');
+        if (info) info.textContent = 'Hover over a hex';
     }
 
     function updateInfo() {
