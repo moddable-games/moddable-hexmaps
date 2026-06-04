@@ -37,8 +37,7 @@
         woodland: '#2E7D32',
         desert: '#FFC107',
         jungle: '#388E3C',
-        market: '#FFD700',
-        home: '#9E9E9E'
+        market: '#FFD700'
     };
 
     var directions = [
@@ -111,14 +110,21 @@
 
         board[posKey(0, 0)].type = 'market';
 
+        var capitalBiomes = {
+            magneticans: 'mountain', arborians: 'woodland', coralians: 'submerged',
+            frigians: 'glacial', volcanians: 'volcanic', tropicans: 'jungle',
+            lionmen: 'desert', hawkmen: 'oceanic'
+        };
+
         var homePositions = getHomePositions(4);
         for (var f = 0; f < 8; f++) {
             var hp = homePositions[f];
             var key = posKey(hp.q, hp.r);
             if (board[key]) {
-                board[key].type = 'home';
+                board[key].type = capitalBiomes[factions[f].id] || 'mountain';
                 board[key].faction = factions[f].id;
                 board[key].label = factions[f].label;
+                board[key].isCapital = true;
             }
         }
 
@@ -221,7 +227,7 @@
                 id = 'R' + cell.ring + '_' + key;
             }
 
-            var tile = drawTile(tilePools, cell.type, cell.faction);
+            var tile = drawTile(tilePools, cell.type, cell.faction, cell.isCapital);
             var hex = {
                 id: id,
                 q: cell.q,
@@ -231,9 +237,8 @@
                 faction: cell.faction || null
             };
             if (tile) {
-                hex.tileName = tile.name;
+                hex.tileName = tile.name + ' [' + tile.id + '] — Pop: ' + tile.pop + buildCommodityStr(tile);
                 hex.tileId = tile.id;
-                hex.pop = tile.pop;
                 if (label.length <= 1) hex.label = tile.name.substring(0, 3);
             }
 
@@ -241,6 +246,19 @@
         }
 
         return hexData;
+    }
+
+    function buildCommodityStr(tile) {
+        var parts = [];
+        if (tile.ice) parts.push(tile.ice + ' ice');
+        if (tile.water) parts.push(tile.water + ' water');
+        if (tile.food) parts.push(tile.food + ' food');
+        if (tile.stone) parts.push(tile.stone + ' stone');
+        if (tile.metal) parts.push(tile.metal + ' metal');
+        if (tile.mrg) parts.push(tile.mrg + ' energy');
+        if (tile.gem) parts.push(tile.gem + ' gems');
+        if (parts.length === 0) return '';
+        return ' | ' + parts.join(', ');
     }
 
     function buildTilePools(rng) {
@@ -258,9 +276,17 @@
         return pools;
     }
 
-    function drawTile(pools, biome, faction) {
+    function drawTile(pools, biome, faction, isCapital) {
         if (!pools || !pools[biome]) return null;
         var pool = pools[biome];
+
+        if (isCapital && faction) {
+            for (var i = 0; i < pool.length; i++) {
+                if (pool[i].faction === faction && pool[i].id.charAt(0) === 'C') {
+                    return pool.splice(i, 1)[0];
+                }
+            }
+        }
 
         if (faction) {
             for (var i = 0; i < pool.length; i++) {
@@ -319,8 +345,7 @@
                 woodland: base + 'img/tiles/' + folder + '/woodland.png',
                 desert: base + 'img/tiles/' + folder + '/desert.png',
                 jungle: base + 'img/tiles/' + folder + '/jungle.png',
-                market: base + 'img/tiles/' + folder + '/market.png',
-                home: base + 'img/tiles/' + folder + '/home.png'
+                market: base + 'img/tiles/' + folder + '/market.png'
             };
         },
 
@@ -334,8 +359,7 @@
                 woodland: { name: 'Woodland', desc: 'Dense forest — Arborian realm' },
                 desert: { name: 'Desert', desc: 'Arid wastes — Lionmen domain' },
                 jungle: { name: 'Jungle', desc: 'Tropical growth — Tropican territory' },
-                market: { name: 'Central Market', desc: 'Ming\'s Palace — trade hub' },
-                home: { name: 'Home City', desc: 'Faction capital' }
+                market: { name: 'Central Market', desc: 'Ming\'s Palace — trade hub' }
             };
         },
 

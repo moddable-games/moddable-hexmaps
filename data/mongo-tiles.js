@@ -134,6 +134,7 @@ var MongoTiles = {
         { id: "W39", name: "Pirate Cave", biome: "oceanic", pop: 3, ice: 0, water: 3, food: 0, wood: 8, stone: 0, metal: 0, mrg: 0, gem: 0 },
         { id: "W40", name: "Pearl Cove", biome: "oceanic", pop: 8, ice: 0, water: 0, food: 0, wood: 8, stone: 0, metal: 0, mrg: 0, gem: 1 },
         { id: "W41", name: "Pearly Straights", biome: "oceanic", pop: 8, ice: 0, water: 0, food: 0, wood: 8, stone: 0, metal: 0, mrg: 0, gem: 2 },
-        { id: "W42", name: "Oyster Straights", biome: "oceanic", pop: 8, ice: 0, water: 0, food: 0, wood: 8, stone: 0, metal: 0, mrg: 0, gem: 3, city: true, faction: "hawkmen" }
+        { id: "W42", name: "Oyster Straights", biome: "oceanic", pop: 8, ice: 0, water: 0, food: 0, wood: 8, stone: 0, metal: 0, mrg: 0, gem: 3, city: true, faction: "hawkmen" },
+        { id: "W43", name: "Vultan's Roost", biome: "oceanic", pop: 5, ice: 0, water: 0, food: 0, wood: 8, stone: 0, metal: 0, mrg: 0, gem: 0, city: true, faction: "hawkmen" }
     ]
 };
