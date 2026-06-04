@@ -95,7 +95,7 @@
         for (var i = 0; i < layout.hexes.length; i++) {
             var def = layout.hexes[i];
             var q = def.q - centre.q;
-            var r = def.r - centre.r;
+            var r = -(def.r - centre.r);
             var biome = def.biome;
             var faction = def.faction || null;
             var isCapital = !!faction;
