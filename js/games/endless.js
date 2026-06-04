@@ -158,8 +158,6 @@
                     overflow.push(sys);
                 }
             }
-            overflow.push({ name: 'Empty Space (1)', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
-            overflow.push({ name: 'Empty Space (2)', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
             shuffle(overflow, rng);
         }
 
@@ -186,6 +184,7 @@
             var label = type.charAt(0).toUpperCase();
 
             var system = null;
+            var imagePath = null;
             if (hex.isHome) {
                 var fIdx = -1;
                 for (var f = 0; f < factions.length; f++) {
@@ -209,10 +208,16 @@
                     if (pools[pk].length > 0) { system = pools[pk].shift(); break; }
                 }
             }
+            if (!imagePath && !system) {
+                imagePath = base + 'img/tiles/endless/void.png';
+            }
 
-            var imagePath = null;
-            if (system) {
-                imagePath = getSystemImagePath(system.name, base);
+            if (!imagePath && system) {
+                if (system._empty) {
+                    imagePath = base + 'img/tiles/endless/void.png';
+                } else {
+                    imagePath = getSystemImagePath(system.name, base);
+                }
                 if (!label || label.length <= 1) label = system.name.substring(0, 3);
             }
 
@@ -231,6 +236,17 @@
             }
 
             result.push(out);
+        }
+
+        var nonHome = [];
+        for (var i = 0; i < result.length; i++) {
+            if (result[i].type !== 'homeworld' && result[i].type !== 'spaceport') nonHome.push(i);
+        }
+        shuffle(nonHome, rng);
+        for (var e = 0; e < 2 && e < nonHome.length; e++) {
+            var idx = nonHome[e];
+            result[idx].tileName = 'Empty Space — no star system present';
+            result[idx].imagePath = base + 'img/tiles/endless/void.png';
         }
 
         return result;
