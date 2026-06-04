@@ -5,7 +5,7 @@
         { id: 'alphas', label: 'Alp', name: 'Alphas', region: 'Far North', home: 'Prime' },
         { id: 'syndicate', label: 'Syn', name: 'Syndicate', region: 'The Core', home: 'Markab' },
         { id: 'freeworlds', label: 'FW', name: 'Free Worlds', region: 'Dirt Belt', home: 'Alkaid' },
-        { id: 'pirates', label: 'Pir', name: 'Pirates', region: 'The Rim', home: 'Tortuga' },
+        { id: 'pirates', label: 'Pir', name: 'Pirates', region: 'The Rim', home: 'Aldebaran' },
         { id: 'remnant', label: 'Rem', name: 'Remnant', region: 'Ember Wastes', home: 'Arculus' },
         { id: 'coalition', label: 'Coa', name: 'Coalition', region: 'Paradise', home: 'Talita' },
         { id: 'wanderers', label: 'Wan', name: 'Wanderers', region: 'Wanderer Space', home: "Ka'ch'chrai" }
@@ -73,6 +73,51 @@
         'standard': { label: 'Standard (4–6 players)', rings: 5, homeRing: 4 },
         'grand': { label: 'Grand (7–8 players)', rings: 6, homeRing: 5 }
     };
+
+    function buildSystemPools(activeFactions, rng) {
+        var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
+        if (!systemData) return null;
+
+        var pools = {};
+        for (var f = 0; f < activeFactions; f++) {
+            var fid = factions[f].id;
+            var systems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
+            shuffle(systems, rng);
+            pools[fid] = systems;
+        }
+        pools._neutral = systemData.neutral ? systemData.neutral.slice() : [];
+        shuffle(pools._neutral, rng);
+
+        var allUsed = [];
+        for (var fid in pools) allUsed = allUsed.concat(pools[fid]);
+        var remaining = [];
+        for (var name in systemData.images) {
+            if (allUsed.indexOf(name) === -1 && pools._neutral.indexOf(name) === -1) {
+                remaining.push(name);
+            }
+        }
+        shuffle(remaining, rng);
+        pools._overflow = remaining;
+        return pools;
+    }
+
+    function drawSystem(pools, factionId) {
+        if (!pools) return null;
+        if (factionId && pools[factionId] && pools[factionId].length > 0) {
+            return pools[factionId].shift();
+        }
+        if (pools._neutral.length > 0) return pools._neutral.shift();
+        if (pools._overflow.length > 0) return pools._overflow.shift();
+        return null;
+    }
+
+    function getSystemImagePath(systemName, base) {
+        var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
+        if (!systemData || !systemName) return null;
+        var imgPath = systemData.images[systemName];
+        if (!imgPath) return null;
+        return base + 'img/tiles/' + imgPath;
+    }
 
     function generate(size, players, seed, selectedLayout) {
         var rng = createSeededRng(seed + '_endless');
@@ -170,6 +215,9 @@
             }
         }
 
+        var systemPools = buildSystemPools(activeFactions, rng);
+        var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+
         var hexData = [];
         for (var key in board) {
             var cell = board[key];
@@ -182,14 +230,36 @@
                 id = 'R' + cell.ring + '_' + key;
             }
 
-            hexData.push({
+            var systemName = null;
+            var imagePath = null;
+
+            if (cell.type === 'homeworld') {
+                var fIdx = -1;
+                for (var fi = 0; fi < factions.length; fi++) {
+                    if (factions[fi].id === cell.faction) { fIdx = fi; break; }
+                }
+                if (fIdx >= 0) systemName = factions[fIdx].home;
+            } else if (cell.type !== 'wormhole' && cell.type !== 'asteroid' && cell.type !== 'empty') {
+                systemName = drawSystem(systemPools, cell.faction);
+            }
+
+            if (systemName) {
+                imagePath = getSystemImagePath(systemName, base);
+                if (!label || label.length <= 1) label = systemName.substring(0, 3);
+            }
+
+            var hex = {
                 id: id,
                 q: cell.q,
                 r: cell.r,
                 type: cell.type,
                 label: label,
                 faction: cell.faction || null
-            });
+            };
+            if (systemName) hex.tileName = systemName;
+            if (imagePath) hex.imagePath = imagePath;
+
+            hexData.push(hex);
         }
 
         return hexData;
@@ -223,19 +293,8 @@
         },
 
         getImages: function(style) {
-            if (style === 'classic') return null;
-            var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
-            return {
-                homeworld: base + 'img/tiles/endless/homeworld.png',
-                core: base + 'img/tiles/endless/core.png',
-                frontier: base + 'img/tiles/endless/frontier.png',
-                rim: base + 'img/tiles/endless/rim.png',
-                contested: base + 'img/tiles/endless/contested.png',
-                nebula: base + 'img/tiles/endless/nebula.png',
-                asteroid: base + 'img/tiles/endless/asteroid.png',
-                wormhole: base + 'img/tiles/endless/wormhole.png',
-                empty: base + 'img/tiles/endless/empty.png'
-            };
+            if (style !== 'artistic') return null;
+            return { _perHex: true };
         },
 
         getDescriptions: function() {
