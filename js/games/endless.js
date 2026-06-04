@@ -83,6 +83,8 @@
         var hexes = [];
         for (var i = 0; i < layout.hexes.length; i++) {
             var def = layout.hexes[i];
+            var ring = def.id === 'R0' ? 0 : parseInt(def.id.match(/R(\d+)/)[1]);
+            if (ring > 5) continue;
             var offsetCol = def.q - centre.q;
             var offsetRow = -(def.r - centre.r);
             var q = offsetCol - Math.floor((offsetRow - (offsetRow & 1)) / 2);
@@ -194,9 +196,9 @@
         label: 'Endless Skies',
         orientation: 'pointy',
         sizes: [
-            { value: 6, label: '6 Rings (127 hexes)' }
+            { value: 5, label: '5 Rings (91 hexes)' }
         ],
-        defaultSize: 6,
+        defaultSize: 5,
         defaultPlayers: 8,
         styles: ['artistic', 'classic'],
         hasEditor: false,
