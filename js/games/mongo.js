@@ -244,7 +244,7 @@
         ],
         defaultSize: 6,
         defaultPlayers: 8,
-        styles: ['classic', 'kenney', 'realistic'],
+        styles: ['artistic', 'classic', 'kenney', 'realistic'],
         hasEditor: false,
 
         playerCounts: function() { return [2, 3, 4, 5, 6, 7, 8]; },
@@ -260,7 +260,7 @@
         getImages: function(style) {
             if (style === 'classic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
-            var folders = { kenney: 'mongo-kenney', realistic: 'mongo-realistic' };
+            var folders = { artistic: 'mongo', kenney: 'mongo-kenney', realistic: 'mongo-realistic' };
             var folder = folders[style];
             if (!folder) return null;
             return {

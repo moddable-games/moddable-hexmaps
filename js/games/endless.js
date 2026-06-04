@@ -203,7 +203,7 @@
         ],
         defaultSize: 5,
         defaultPlayers: 6,
-        styles: ['classic'],
+        styles: ['artistic', 'classic'],
         hasEditor: false,
         layouts: [
             { value: 'compact', label: 'Compact (2–3 players)' },
@@ -222,8 +222,20 @@
             return classicColors;
         },
 
-        getImages: function() {
-            return null;
+        getImages: function(style) {
+            if (style === 'classic') return null;
+            var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            return {
+                homeworld: base + 'img/tiles/endless/homeworld.png',
+                core: base + 'img/tiles/endless/core.png',
+                frontier: base + 'img/tiles/endless/frontier.png',
+                rim: base + 'img/tiles/endless/rim.png',
+                contested: base + 'img/tiles/endless/contested.png',
+                nebula: base + 'img/tiles/endless/nebula.png',
+                asteroid: base + 'img/tiles/endless/asteroid.png',
+                wormhole: base + 'img/tiles/endless/wormhole.png',
+                empty: base + 'img/tiles/endless/empty.png'
+            };
         },
 
         getDescriptions: function() {
