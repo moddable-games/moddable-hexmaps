@@ -2,7 +2,7 @@
 
 **A shared hexagonal map framework for board game tools.**
 
-Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: Hexed, Twilight Imperium, and Colony — and available for any hex-based game.
+Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman Worlds, Twilight Imperium, and Colony — and available for any hex-based game.
 
 ---
 
@@ -22,7 +22,7 @@ Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman: He
 | Game | Terrain types | Map sizes | Players |
 |------|--------------|-----------|---------|
 | Nukes | Water, Forest, Desert, Mountain, Plains, HQ | 2–6 rings | 2–6 |
-| Talisman: Hexed | Inner, Middle, River, Outer, Dungeon, Ending | 4–5 rings | — |
+| Talisman Worlds | Inner, Middle, River, Outer, Dungeon, Ending | 4–5 rings | — |
 | Twilight Imperium | Blue (planets), Red (anomalies), Green (home), Lanes, Rex | 7 layouts (3–8p) | 3–8 |
 | Colony | Forest, Pasture, Fields, Hills, Mountains, Desert, Sea, Gold, Fog | 7 layouts (Seafarers) | — |
 
@@ -96,6 +96,9 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ---
 
 ### Changelog
+
+#### 2026-06-04
+- Rename "Talisman: Hexed" to "Talisman Worlds" across all pages, docs, and data
 
 #### 2026-06-03
 - Export PNG: 2x resolution canvas download from Data panel

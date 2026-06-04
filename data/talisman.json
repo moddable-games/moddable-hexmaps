@@ -1,6 +1,6 @@
 {
     "id": "talisman",
-    "name": "Talisman: Hexed",
+    "name": "Talisman Worlds",
     "description": "Hex adaptation of the Talisman board game",
     "flat": false,
     "ringTypes": {
