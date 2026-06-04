@@ -27,6 +27,7 @@
         if (tile.ice) parts.push(tile.ice + ' ice');
         if (tile.water) parts.push(tile.water + ' water');
         if (tile.food) parts.push(tile.food + ' food');
+        if (tile.wood) parts.push(tile.wood + ' wood');
         if (tile.stone) parts.push(tile.stone + ' stone');
         if (tile.metal) parts.push(tile.metal + ' metal');
         if (tile.mrg) parts.push(tile.mrg + ' energy');
@@ -118,7 +119,7 @@
             };
 
             if (tile) {
-                hex.tileName = tile.name + ' [' + tile.id + '] — Pop: ' + tile.pop + buildCommodityStr(tile);
+                hex.tileName = tile.name + ' [' + tile.id + '] — Pop: ' + tile.pop + buildCommodityStr(tile) + (tile.special ? ' ★ ' + tile.special : '');
                 hex.tileId = tile.id;
             }
             if (factionInfo) {
