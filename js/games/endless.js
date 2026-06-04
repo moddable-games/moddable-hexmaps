@@ -198,9 +198,8 @@
             } else if (hex.isCentre) {
                 type = 'spaceport';
                 label = 'SP';
-                if (systemData) {
-                    system = { name: 'Central Space Port', code: null, region: 'Neutral', faction: 'Shared', events: 0, planets: 0, habitats: 1, population: 0, wormholes: '0' };
-                }
+                system = { name: 'Central Space Port', code: null, region: 'Neutral', faction: 'Shared', events: 0, planets: 0, habitats: 1, population: 0, wormholes: '0' };
+                imagePath = base + 'img/tiles/endless/space_port.png';
             } else if (hex.faction && pools[hex.faction] && pools[hex.faction].length > 0) {
                 system = pools[hex.faction].shift();
             } else if (overflow.length > 0) {
