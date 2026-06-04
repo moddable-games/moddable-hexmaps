@@ -158,10 +158,25 @@
                     overflow.push(sys);
                 }
             }
-            overflow.push({ name: 'Empty Space', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
-            overflow.push({ name: 'Empty Space', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
+            overflow.push({ name: 'Empty Space (1)', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
+            overflow.push({ name: 'Empty Space (2)', code: null, region: 'Void', faction: 'None', events: 0, planets: 0, habitats: 0, population: 0, wormholes: '0' });
             shuffle(overflow, rng);
         }
+
+        hexes.sort(function(a, b) {
+            if (a.isCentre) return -1;
+            if (b.isCentre) return 1;
+            if (a.isHome && !b.isHome) return -1;
+            if (b.isHome && !a.isHome) return 1;
+            var distA = 999, distB = 999;
+            for (var f = 0; f < homeAxials.length; f++) {
+                var dA = hexDistance(a.q, a.r, homeAxials[f].q, homeAxials[f].r);
+                var dB = hexDistance(b.q, b.r, homeAxials[f].q, homeAxials[f].r);
+                if (dA < distA) distA = dA;
+                if (dB < distB) distB = dB;
+            }
+            return distA - distB;
+        });
 
         var result = [];
         for (var i = 0; i < hexes.length; i++) {
@@ -246,10 +261,20 @@
         getImages: function(style) {
             if (style !== 'artistic') return null;
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
+            var voidTile = base + 'img/tiles/endless/void.png';
             return {
                 _perHex: true,
-                space: base + 'img/tiles/endless/void.png',
-                spaceport: base + 'img/tiles/endless/space_port.png'
+                space: voidTile,
+                spaceport: base + 'img/tiles/endless/space_port.png',
+                homeworld: voidTile,
+                republic: voidTile,
+                alphas: voidTile,
+                syndicate: voidTile,
+                freeworlds: voidTile,
+                pirates: voidTile,
+                remnant: voidTile,
+                coalition: voidTile,
+                wanderers: voidTile
             };
         },
 
