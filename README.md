@@ -100,6 +100,10 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-04
+- Fix corrupted mongo-tiles.js: all 127 tiles rebuilt from verified rulebook source
+- Mongo hover: special abilities and wood commodity now shown in tooltips
+- Floating hex tooltip: rich tile data appears near cursor instead of overflowing footer
+- Footer truncation: long text shows ellipsis, sidebar no longer shifts on hover
 - New game: Planet Mongo — fixed layout (127 hex, 6 rings), 8 factions, artistic tiles, named tiles with full commodity stats on hover
 - New game: Endless Skies — fixed layout (91 hex, 5 rings), 8 factions, 96 per-system star composites, full stats from CSV on hover
 - Planet Mongo: fixed board shape matching official setup diagram (odd-r offset → axial conversion)
