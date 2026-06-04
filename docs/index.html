@@ -13,14 +13,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Docs — Moddable Hexmaps">
 <meta name="twitter:description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding.">
-<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.5.1">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.6.0">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.5.1">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.6.0">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.5.1">
-<link rel="stylesheet" href="../css/shared.css?v=0.5.1">
-<link rel="stylesheet" href="../css/docs.css?v=0.5.1">
+<link rel="stylesheet" href="../css/variables.css?v=0.6.0">
+<link rel="stylesheet" href="../css/shared.css?v=0.6.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.6.0">
 </head>
 <body>
 
@@ -45,7 +45,7 @@
 
         <section id="overview">
             <h2>Overview</h2>
-            <p>Moddable Hexmaps is a shared hex map rendering engine and randomiser framework. It supports four board games out of the box and can be extended with custom game configs.</p>
+            <p>Moddable Hexmaps is a shared hex map rendering engine and randomiser framework. It supports six board games out of the box and can be extended with custom game configs.</p>
         </section>
 
         <section id="url-params">
@@ -56,7 +56,7 @@
                     <tr><th>Parameter</th><th>Values</th><th>Description</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><code>game</code></td><td>nukes, talisman, twilight, colony</td><td>Which game to generate</td></tr>
+                    <tr><td><code>game</code></td><td>nukes, talisman, twilight, colony, mongo, endless</td><td>Which game to generate</td></tr>
                     <tr><td><code>seed</code></td><td>any string</td><td>RNG seed for reproducible maps</td></tr>
                     <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman)</td><td>Ring count / map size (hidden when layouts used)</td></tr>
                     <tr><td><code>players</code></td><td>2–8 (varies by game)</td><td>Player count for base placement</td></tr>
@@ -118,6 +118,12 @@
 
             <h3>Colony</h3>
             <p>Hex board generator inspired by Settlers of Catan. 7 layouts: standard (19 hex), expanded (30 hex, 5-6 players), and 5 Seafarers scenarios (New World, Four Islands, New Shores, Through the Desert, Fog Islands). Sea frame, port placement, number token overlays with 6/8 non-adjacency constraint. Terrain: forest, pasture, fields, hills, mountains, desert, sea, gold, fog. Styles: classic (flat colours), kenney, realistic.</p>
+
+            <h3>Planet Mongo</h3>
+            <p>Territory control generator set on the Flash Gordon planet. 6-ring board (127 hexes) with 8 factions placed at fixed positions on ring 4. Each faction has starting tiles clustered around their home city, with remaining tiles placed by proximity. Biomes: oceanic, submerged, glacial, volcanic, mountain, woodland, desert, jungle. Central market tile. Supports 2-8 players. Styles: classic (flat colours), kenney, realistic.</p>
+
+            <h3>Endless Skies</h3>
+            <p>4X space exploration galaxy generator based on the Endless Sky video game. 8 asymmetric factions with home systems, faction regions, wormhole networks (4 types), asteroid fields, and nebulae. Three layout sizes: compact (4 rings, 2-3 players), standard (5 rings, 4-6 players), grand (6 rings, 7-8 players). System types: homeworld, core, frontier, rim, contested, nebula, asteroid, wormhole, void.</p>
         </section>
 
         <section id="architecture">
@@ -227,8 +233,8 @@ img/tiles/           — Committed tile images per game and style</code></pre>
 
 <footer class="site-footer">
     <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.5.1</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.6.0</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.5.1"></script>
+<script src="../js/docs-toc.js?v=0.6.0"></script>
 </body>
 </html>

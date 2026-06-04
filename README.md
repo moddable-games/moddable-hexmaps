@@ -25,6 +25,8 @@ Generates, renders, and edits hex-based game boards. Used by Nukes, Talisman Wor
 | Talisman Worlds | Inner, Middle, River, Outer, Dungeon, Ending | 4–5 rings | — |
 | Twilight Imperium | Blue (planets), Red (anomalies), Green (home), Lanes, Rex | 7 layouts (3–8p) | 3–8 |
 | Colony | Forest, Pasture, Fields, Hills, Mountains, Desert, Sea, Gold, Fog | 7 layouts (Seafarers) | — |
+| Planet Mongo | Oceanic, Submerged, Glacial, Volcanic, Mountain, Woodland, Desert, Jungle | 6 rings (127 hex) | 2–8 |
+| Endless Skies | Homeworld, Core, Frontier, Rim, Contested, Nebula, Asteroid, Wormhole, Void | 3 layouts (4–6 rings) | 2–8 |
 
 ---
 
@@ -98,6 +100,9 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-04
+- New game: Planet Mongo — 8 factions, 127 hex board, biome clustering, 2–8 players
+- New game: Endless Skies — 4X galaxy generator, 8 factions, wormholes, 3 layout sizes
+- Homepage grid updated to 3-column layout for 6 games
 - Rename "Talisman: Hexed" to "Talisman Worlds" across all pages, docs, and data
 
 #### 2026-06-03
