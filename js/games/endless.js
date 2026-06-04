@@ -13,6 +13,7 @@
 
     var classicColors = {
         space: '#263238',
+        spaceport: '#FFD700',
         homeworld: '#4CAF50',
         republic: '#1565C0',
         alphas: '#C62828',
@@ -180,7 +181,7 @@
                 }
                 label = factions[fIdx] ? factions[fIdx].label : 'H';
             } else if (hex.isCentre) {
-                type = 'homeworld';
+                type = 'spaceport';
                 label = 'SP';
                 if (systemData) {
                     system = { name: 'Central Space Port', code: null, region: 'Neutral', faction: 'Shared', events: 0, planets: 0, habitats: 1, population: 0, wormholes: '0' };
@@ -247,7 +248,8 @@
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
             return {
                 _perHex: true,
-                space: base + 'img/tiles/endless/void.png'
+                space: base + 'img/tiles/endless/void.png',
+                spaceport: base + 'img/tiles/endless/space_port.png'
             };
         },
 
