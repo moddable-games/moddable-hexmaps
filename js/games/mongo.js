@@ -208,6 +208,8 @@
             }
         }
 
+        var tilePools = buildTilePools(rng);
+
         var hexData = [];
         for (var key in board) {
             var cell = board[key];
@@ -219,17 +221,62 @@
                 id = 'R' + cell.ring + '_' + key;
             }
 
-            hexData.push({
+            var tile = drawTile(tilePools, cell.type, cell.faction);
+            var hex = {
                 id: id,
                 q: cell.q,
                 r: cell.r,
                 type: cell.type,
                 label: label,
                 faction: cell.faction || null
-            });
+            };
+            if (tile) {
+                hex.tileName = tile.name;
+                hex.tileId = tile.id;
+                hex.pop = tile.pop;
+                if (label.length <= 1) hex.label = tile.name.substring(0, 3);
+            }
+
+            hexData.push(hex);
         }
 
         return hexData;
+    }
+
+    function buildTilePools(rng) {
+        var tileData = (typeof MongoTiles !== 'undefined') ? MongoTiles : null;
+        if (!tileData) return null;
+
+        var pools = {};
+        for (var i = 0; i < tileData.tiles.length; i++) {
+            var t = tileData.tiles[i];
+            var biome = t.biome;
+            if (!pools[biome]) pools[biome] = [];
+            pools[biome].push(t);
+        }
+        for (var b in pools) shuffle(pools[b], rng);
+        return pools;
+    }
+
+    function drawTile(pools, biome, faction) {
+        if (!pools || !pools[biome]) return null;
+        var pool = pools[biome];
+
+        if (faction) {
+            for (var i = 0; i < pool.length; i++) {
+                if (pool[i].faction === faction) {
+                    return pool.splice(i, 1)[0];
+                }
+            }
+        }
+
+        for (var i = 0; i < pool.length; i++) {
+            if (!pool[i].city) {
+                return pool.splice(i, 1)[0];
+            }
+        }
+        if (pool.length > 0) return pool.splice(0, 1)[0];
+        return null;
     }
 
     function hexDistance(q1, r1, q2, r2) {
