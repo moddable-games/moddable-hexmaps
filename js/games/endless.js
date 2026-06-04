@@ -4,8 +4,8 @@
         { id: 'republic', label: 'Rep', name: 'Republic', region: 'Near Earth', home: 'Sol' },
         { id: 'alphas', label: 'Alp', name: 'Alphas', region: 'Far North', home: 'Prime' },
         { id: 'syndicate', label: 'Syn', name: 'Syndicate', region: 'The Core', home: 'Markab' },
-        { id: 'freeworlds', label: 'FW', name: 'Free Worlds', region: 'Dirt Belt', home: 'Alkaid' },
-        { id: 'pirates', label: 'Pir', name: 'Pirates', region: 'The Rim', home: 'Aldebaran' },
+        { id: 'freeworlds', label: 'FW', name: 'Free Worlds', region: 'Dirt Belt', home: 'Dabih' },
+        { id: 'pirates', label: 'Pir', name: 'Pirates', region: 'The Rim', home: 'Alkaid' },
         { id: 'remnant', label: 'Rem', name: 'Remnant', region: 'Ember Wastes', home: 'Arculus' },
         { id: 'coalition', label: 'Coa', name: 'Coalition', region: 'Paradise', home: 'Talita' },
         { id: 'wanderers', label: 'Wan', name: 'Wanderers', region: 'Wanderer Space', home: "Ka'ch'chrai" }
@@ -81,24 +81,37 @@
         var pools = {};
         for (var f = 0; f < activeFactions; f++) {
             var fid = factions[f].id;
-            var systems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
-            shuffle(systems, rng);
-            pools[fid] = systems;
-        }
-        pools._neutral = systemData.neutral ? systemData.neutral.slice() : [];
-        shuffle(pools._neutral, rng);
-
-        var allUsed = [];
-        for (var fid in pools) allUsed = allUsed.concat(pools[fid]);
-        var remaining = [];
-        for (var name in systemData.images) {
-            if (allUsed.indexOf(name) === -1 && pools._neutral.indexOf(name) === -1) {
-                remaining.push(name);
+            var regionSystems = systemData.regions[fid] ? systemData.regions[fid].slice() : [];
+            var systemObjects = [];
+            for (var i = 0; i < regionSystems.length; i++) {
+                var sys = findSystem(systemData, regionSystems[i]);
+                if (sys) systemObjects.push(sys);
             }
+            shuffle(systemObjects, rng);
+            pools[fid] = systemObjects;
         }
-        shuffle(remaining, rng);
-        pools._overflow = remaining;
+
+        var allUsed = {};
+        for (var fid in pools) {
+            for (var i = 0; i < pools[fid].length; i++) allUsed[pools[fid][i].name] = true;
+        }
+        var overflow = [];
+        for (var i = 0; i < systemData.systems.length; i++) {
+            if (!allUsed[systemData.systems[i].name]) overflow.push(systemData.systems[i]);
+        }
+        shuffle(overflow, rng);
+        pools._overflow = overflow;
         return pools;
+    }
+
+    function findSystem(systemData, name) {
+        for (var i = 0; i < systemData.systems.length; i++) {
+            if (systemData.systems[i].name === name) return systemData.systems[i];
+        }
+        for (var i = 0; i < systemData.systems.length; i++) {
+            if (systemData.systems[i].name.indexOf(name) === 0) return systemData.systems[i];
+        }
+        return null;
     }
 
     function drawSystem(pools, factionId) {
@@ -106,9 +119,22 @@
         if (factionId && pools[factionId] && pools[factionId].length > 0) {
             return pools[factionId].shift();
         }
-        if (pools._neutral.length > 0) return pools._neutral.shift();
         if (pools._overflow.length > 0) return pools._overflow.shift();
         return null;
+    }
+
+    function buildSystemHover(sys) {
+        var parts = [sys.name];
+        if (sys.code) parts[0] += ' [' + sys.code + ']';
+        parts[0] += ' — ' + sys.region + ' (' + sys.faction + ')';
+        var stats = [];
+        if (sys.planets) stats.push(sys.planets + ' planets');
+        if (sys.habitats) stats.push(sys.habitats + ' hab');
+        if (sys.population) stats.push('pop ' + sys.population);
+        if (sys.events) stats.push(sys.events + ' events');
+        if (sys.wormholes && sys.wormholes !== '0') stats.push('WH: ' + sys.wormholes);
+        if (stats.length) parts[0] += ' | ' + stats.join(', ');
+        return parts[0];
     }
 
     function getSystemImagePath(systemName, base) {
@@ -230,7 +256,7 @@
                 id = 'R' + cell.ring + '_' + key;
             }
 
-            var systemName = null;
+            var system = null;
             var imagePath = null;
 
             if (cell.type === 'homeworld') {
@@ -238,14 +264,17 @@
                 for (var fi = 0; fi < factions.length; fi++) {
                     if (factions[fi].id === cell.faction) { fIdx = fi; break; }
                 }
-                if (fIdx >= 0) systemName = factions[fIdx].home;
+                if (fIdx >= 0) {
+                    var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
+                    system = systemData ? findSystem(systemData, factions[fIdx].home) : null;
+                }
             } else if (cell.type !== 'wormhole' && cell.type !== 'asteroid' && cell.type !== 'empty') {
-                systemName = drawSystem(systemPools, cell.faction);
+                system = drawSystem(systemPools, cell.faction);
             }
 
-            if (systemName) {
-                imagePath = getSystemImagePath(systemName, base);
-                if (!label || label.length <= 1) label = systemName.substring(0, 3);
+            if (system) {
+                imagePath = getSystemImagePath(system.name, base);
+                if (!label || label.length <= 1) label = system.name.substring(0, 3);
             }
 
             var hex = {
@@ -256,8 +285,10 @@
                 label: label,
                 faction: cell.faction || null
             };
-            if (systemName) hex.tileName = systemName;
-            if (imagePath) hex.imagePath = imagePath;
+            if (system) {
+                hex.tileName = buildSystemHover(system);
+                hex.imagePath = imagePath;
+            }
 
             hexData.push(hex);
         }
