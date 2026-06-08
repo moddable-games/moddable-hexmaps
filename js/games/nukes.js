@@ -41,9 +41,11 @@
         playerCounts: function(size) {
             var mapData = NukesHexData.maps['r' + size];
             if (mapData && mapData.bases) {
-                return Object.keys(mapData.bases).map(function(k) {
-                    return parseInt(k.substring(1));
+                var counts = [0];
+                Object.keys(mapData.bases).forEach(function(k) {
+                    counts.push(parseInt(k.substring(1)));
                 });
+                return counts;
             }
             return [];
         },

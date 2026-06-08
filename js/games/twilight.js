@@ -107,15 +107,11 @@
                 { q: -3, r: 2, type: 'lanes' }
             ]
         },
-        'hyper8': {
-            label: '8 Players (Hyper Imperium)',
-            rings: 3,
-            homes: [
-                { q: 3, r: 0 }, { q: 3, r: -3 }, { q: 0, r: -3 },
-                { q: -3, r: 0 }, { q: -3, r: 3 }, { q: 0, r: 3 },
-                { q: 2, r: -3 }, { q: -2, r: 3 }
-            ],
-            removed: []
+        'hyper': {
+            label: 'Hyper Imperium',
+            rings: 4,
+            removed: [],
+            hyperBoard: true
         }
     };
 
@@ -125,7 +121,7 @@
         red: '#C62828',
         green: '#2E7D32',
         lanes: '#37474F',
-        legends: '#FF8F00',
+        legends: '#1565C0',
         home: '#6A1B9A'
     };
 
@@ -135,9 +131,30 @@
         red: '#2e0a0a',
         green: '#0a2e0a',
         lanes: '#1a1a1a',
-        legends: '#2e1a0a',
+        legends: '#0a1a2e',
         home: '#1a0a2e'
     };
+
+    var hyperHomes = {
+        6: [
+            { q: 0, r: -3 }, { q: 3, r: -3 }, { q: 3, r: 0 },
+            { q: 0, r: 3 }, { q: -3, r: 3 }, { q: -3, r: 0 }
+        ],
+        5: [
+            { q: 0, r: -3 }, { q: 3, r: -3 }, { q: 3, r: 0 },
+            { q: -3, r: 3 }, { q: -3, r: 0 }
+        ],
+        4: [
+            { q: 3, r: -3 }, { q: 3, r: 0 },
+            { q: -3, r: 3 }, { q: -3, r: 0 }
+        ]
+    };
+
+    var hyperRing4Pattern = [
+        'red','blue','blue','blue','red','blue','legends','blue',
+        'red','blue','blue','blue','red','blue','blue','blue',
+        'red','blue','legends','blue','red','blue','blue','blue'
+    ];
 
     function assignTileTypes(positions, layoutDef) {
         var homeSet = {};
@@ -158,6 +175,8 @@
             }
         }
 
+        var isHyper = !!layoutDef.hyperBoard;
+
         var result = [];
         for (var i = 0; i < positions.length; i++) {
             var pos = positions[i];
@@ -166,8 +185,29 @@
             if (removedSet[key]) continue;
 
             var type;
+            var isHome = !!homeSet[key];
+
             if (pos.q === 0 && pos.r === 0) {
                 type = 'rex';
+            } else if (isHyper) {
+                if (isHome) {
+                    type = 'green';
+                } else if (pos.ring === 1) {
+                    type = 'red';
+                } else if (pos.ring === 2) {
+                    var r2idx = i - 7;
+                    type = (r2idx % 2 === 0) ? 'lanes' : 'blue';
+                } else if (pos.ring === 3) {
+                    var r3idx = i - 19;
+                    var r3pattern = r3idx % 3;
+                    type = (r3pattern === 0) ? 'green' : (r3pattern === 1) ? 'blue' : 'red';
+                    if (type === 'green' && !isHome) type = 'blue';
+                } else if (pos.ring === 4) {
+                    var r4idx = i - 37;
+                    type = hyperRing4Pattern[r4idx] || 'blue';
+                } else {
+                    type = 'blue';
+                }
             } else if (homeSet[key]) {
                 type = 'green';
             } else if (hyperlaneSet[key]) {
@@ -182,7 +222,7 @@
                 type = 'blue';
             }
 
-            result.push({ q: pos.q, r: pos.r, ring: pos.ring, type: type, isHome: !!homeSet[key] });
+            result.push({ q: pos.q, r: pos.r, ring: pos.ring, type: type, isHome: isHome });
         }
         return result;
     }
@@ -204,14 +244,28 @@
             { value: '3p', label: '3 Players' },
             { value: '7p', label: '7 Players (PoK)' },
             { value: '8p', label: '8 Players (PoK)' },
-            { value: 'hyper8', label: '8 Players (Hyper Imperium)' }
+            { value: 'hyper', label: 'Hyper Imperium' }
         ],
         defaultLayout: '6p',
 
-        playerCounts: function() { return [3, 4, 5, 6, 7, 8]; },
+        playerCounts: function(size, layout) {
+            if (layout === 'hyper') return [4, 5, 6];
+            return [];
+        },
 
         generate: function(size, players, seed, selectedLayout) {
             var layoutDef = layouts[selectedLayout] || layouts['6p'];
+
+            if (layoutDef.hyperBoard) {
+                var pc = Math.max(4, Math.min(6, players || 6));
+                layoutDef = {
+                    rings: layoutDef.rings,
+                    homes: hyperHomes[pc],
+                    removed: [],
+                    hyperBoard: true
+                };
+            }
+
             var boardPositions = buildBoard(layoutDef.rings);
             var assigned = assignTileTypes(boardPositions, layoutDef);
 
@@ -219,11 +273,16 @@
             var base = (typeof window !== 'undefined' && window.location.pathname.indexOf('/generate') !== -1) ? '../' : '';
             var imgMap = (typeof TwilightImages !== 'undefined') ? TwilightImages : null;
 
+            var bluePool = TwilightTiles.blue.slice();
+            if (!layoutDef.hyperBoard) {
+                bluePool = bluePool.concat(TwilightTiles.legends.slice());
+            }
             var pools = {
-                blue: TwilightTiles.blue.slice(),
+                blue: bluePool,
                 red: TwilightTiles.red.slice(),
                 green: TwilightTiles.green.slice(),
-                lanes: TwilightTiles.lanes.slice()
+                lanes: TwilightTiles.lanes.slice(),
+                legends: TwilightTiles.legends.slice()
             };
 
             function drawTile(pool) {

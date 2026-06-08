@@ -161,6 +161,7 @@
         var layoutSelect = document.getElementById('layout-select');
         layoutSelect.addEventListener('change', function() {
             currentLayout = this.value;
+            updatePlayersForSize();
             regenerateMap();
             updateUrl();
         });
@@ -235,7 +236,7 @@
         var playersSelect = document.getElementById('players-select');
         var layoutSelect = document.getElementById('layout-select');
         sizeSelect.innerHTML = '';
-        playersSelect.innerHTML = '<option value="0">No bases</option>';
+        playersSelect.innerHTML = '';
         layoutSelect.innerHTML = '';
 
         if (config.layouts) {
@@ -263,7 +264,7 @@
         currentSize = size || config.defaultSize;
         sizeSelect.value = currentSize;
 
-        var playerOptions = config.playerCounts(currentSize);
+        var playerOptions = config.playerCounts(currentSize, currentLayout);
         var playersGroup = document.getElementById('players-group');
         if (playerOptions.length === 0) {
             playersGroup.style.display = 'none';
@@ -272,7 +273,7 @@
             for (var i = 0; i < playerOptions.length; i++) {
                 var opt = document.createElement('option');
                 opt.value = playerOptions[i];
-                opt.textContent = playerOptions[i] + ' Players';
+                opt.textContent = playerOptions[i] === 0 ? 'No bases' : playerOptions[i] + ' Players';
                 playersSelect.appendChild(opt);
             }
         }
@@ -477,24 +478,27 @@
     function updatePlayersForSize() {
         var playersSelect = document.getElementById('players-select');
         var playersGroup = document.getElementById('players-group');
-        playersSelect.innerHTML = '<option value="0">No bases</option>';
+        playersSelect.innerHTML = '';
 
         var config = HexApp.getGameConfig(currentGame);
-        if (config) {
-            var playerOptions = config.playerCounts(currentSize);
-            if (playerOptions.length === 0) {
-                playersGroup.style.display = 'none';
-            } else {
-                playersGroup.style.display = '';
-                for (var i = 0; i < playerOptions.length; i++) {
-                    var opt = document.createElement('option');
-                    opt.value = playerOptions[i];
-                    opt.textContent = playerOptions[i] + ' Players';
-                    playersSelect.appendChild(opt);
-                }
+        var playerOptions = config ? config.playerCounts(currentSize, currentLayout) : [];
+        if (playerOptions.length === 0) {
+            playersGroup.style.display = 'none';
+        } else {
+            playersGroup.style.display = '';
+            for (var i = 0; i < playerOptions.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = playerOptions[i];
+                opt.textContent = playerOptions[i] === 0 ? 'No bases' : playerOptions[i] + ' Players';
+                playersSelect.appendChild(opt);
             }
         }
-        playersSelect.value = '0';
+        if (currentPlayers && playersSelect.querySelector('option[value="' + currentPlayers + '"]')) {
+            playersSelect.value = currentPlayers;
+        } else if (playerOptions.length > 0) {
+            currentPlayers = playerOptions[0];
+            playersSelect.value = currentPlayers;
+        }
     }
 
     function buildEditorPanel() {

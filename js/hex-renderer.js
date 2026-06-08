@@ -271,7 +271,7 @@ var HexRenderer = (function() {
             red: '#C62828',
             green: '#2E7D32',
             lanes: '#37474F',
-            legends: '#FF8F00',
+            legends: '#1565C0',
             empty: '#263238'
         };
 

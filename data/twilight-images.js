@@ -34,7 +34,9 @@ var TwilightImages = {
         'Vefut II': 'blue/vefut-ii.webp',
         'Vega Major/Minor': 'blue/vega-major_vega-minor.webp',
         'Vorhal': 'blue/vorhal.webp',
-        'Wellon': 'blue/wellon.webp'
+        'Wellon': 'blue/wellon.webp',
+        "Hope's End": 'legends/hopes-end.webp',
+        'Primor': 'legends/primor.webp'
     },
     red: {
         'Alpha Wormhole': 'red/alpha_1.webp',
@@ -101,5 +103,9 @@ var TwilightImages = {
         'Hyperlane R-26a': 'lanes/R-2-6_1.webp',
         'Hyperlane R-26b': 'lanes/R-2-6_2.webp',
         'Hyperlane R-36': 'lanes/R-3-6.webp'
+    },
+    legends: {
+        "Hope's End": 'legends/hopes-end.webp',
+        'Primor': 'legends/primor.webp'
     }
 };
