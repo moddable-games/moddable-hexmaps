@@ -27,14 +27,19 @@
         var bgColor = params.get('bg');
         var mode = params.get('mode');
 
-        embedMode = boardOnly;
-        viewOnly = mode === 'view' || (boardOnly && mode !== 'edit');
+        var fullscreenMode = mode === 'fullscreen';
+        embedMode = boardOnly || fullscreenMode;
+        viewOnly = mode === 'view' || mode === 'fullscreen' || (boardOnly && mode !== 'edit');
 
         currentGame = game;
         currentSeed = seed;
 
         if (embedMode) {
             applyEmbedMode(bgColor);
+        }
+
+        if (fullscreenMode) {
+            applyFullscreenMode();
         }
 
         document.getElementById('seed-input').value = seed;
@@ -109,6 +114,39 @@
             document.body.style.background = color;
             document.querySelector('.canvas-area').style.background = color;
         }
+    }
+
+    function applyFullscreenMode() {
+        document.body.classList.add('fullscreen-mode');
+        var wrap = document.querySelector('.canvas-wrap');
+        if (wrap) {
+            wrap.style.position = 'fixed';
+            wrap.style.inset = '0';
+            wrap.style.zIndex = '9999';
+        }
+        var exitBtn = document.createElement('button');
+        exitBtn.className = 'fullscreen-exit';
+        exitBtn.textContent = 'Exit';
+        exitBtn.addEventListener('click', function() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                window.close();
+                window.history.back();
+            }
+        });
+        document.body.appendChild(exitBtn);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (document.fullscreenElement) document.exitFullscreen();
+                else window.history.back();
+            }
+        });
+        setTimeout(function() {
+            var el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        }, 300);
     }
 
     function setupGameSelector(activeGame) {
