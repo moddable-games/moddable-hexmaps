@@ -128,18 +128,18 @@
         exitBtn.className = 'fullscreen-exit';
         exitBtn.textContent = 'Exit';
         exitBtn.addEventListener('click', function() {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                window.close();
-                window.history.back();
-            }
+            if (document.fullscreenElement) document.exitFullscreen();
+            var url = new URL(window.location.href);
+            url.searchParams.delete('mode');
+            window.location.href = url.toString();
         });
         document.body.appendChild(exitBtn);
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 if (document.fullscreenElement) document.exitFullscreen();
-                else window.history.back();
+                var url = new URL(window.location.href);
+                url.searchParams.delete('mode');
+                window.location.href = url.toString();
             }
         });
         setTimeout(function() {
