@@ -53,34 +53,34 @@ cd moddable-hexmaps</code></pre>
 
     <section id="step1">
         <h2>Step 1: Create the Plugin File</h2>
-        <p>Create <code>js/games/colony.js</code>. Every plugin is an IIFE that calls <code>HexApp.registerGame()</code>:</p>
-        <pre><code>(function() {
-    HexApp.registerGame('colony', {
-        label: 'Colony',
-        orientation: 'pointy',
-        sizes: [{ value: 2, label: 'Standard' }],
-        defaultSize: 2,
-        defaultPlayers: 0,
-        styles: ['classic'],
-        hasEditor: false,
+        <p>Create <code>js/games/colony.js</code>. Every plugin imports <code>registerGame</code> from the game registry and any utilities it needs:</p>
+        <pre><code>import { registerGame } from '../game-registry.js';
 
-        playerCounts: function() { return []; },
+registerGame('colony', {
+    label: 'Colony',
+    orientation: 'pointy',
+    sizes: [{ value: 2, label: 'Standard' }],
+    defaultSize: 2,
+    defaultPlayers: 0,
+    styles: ['classic'],
+    hasEditor: false,
 
-        generate: function(size, players, seed, layout) {
-            return [{ id: 'R0', q: 0, r: 0, type: 'desert', label: 'D' }];
-        },
+    playerCounts: function() { return []; },
 
-        getColors: function() {
-            return { desert: '#FFF8E1' };
-        },
+    generate: function(size, players, seed, layout) {
+        return [{ id: 'R0', q: 0, r: 0, type: 'desert', label: 'D' }];
+    },
 
-        rendererOptions: function() {
-            return { hexSize: 50, flat: false };
-        }
-    });
-})();</code></pre>
-        <p>Add a script tag in <code>generate/index.html</code> before <code>app.js</code>:</p>
-        <pre><code>&lt;script src="../js/games/colony.js?v=0.7.0"&gt;&lt;/script&gt;</code></pre>
+    getColors: function() {
+        return { desert: '#FFF8E1' };
+    },
+
+    rendererOptions: function() {
+        return { hexSize: 50, flat: false };
+    }
+});</code></pre>
+        <p>Add an import in <code>js/app.js</code>:</p>
+        <pre><code>import './games/colony.js';</code></pre>
         <p>Reload the page. A "Colony" tab now appears, showing a single desert hex.</p>
     </section>
 

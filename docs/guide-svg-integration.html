@@ -92,15 +92,13 @@ window.addEventListener('message', function(event) {
 
     <section id="direct-api">
         <h2>Direct API (Same-Page Usage)</h2>
-        <p>Load the engine scripts and call <code>HexSvg.toSVG()</code> directly. This avoids the iframe overhead and gives full control over options.</p>
-        <p>Required scripts (in order):</p>
-        <pre><code>&lt;script src="js/xorshift.js"&gt;&lt;/script&gt;
-&lt;script src="js/hex-math.js"&gt;&lt;/script&gt;
-&lt;script src="js/hex-svg.js"&gt;&lt;/script&gt;
-&lt;script src="js/game-registry.js"&gt;&lt;/script&gt;
-&lt;script src="js/games/talisman.js"&gt;&lt;/script&gt;</code></pre>
-        <p>Generate hex data then render to SVG:</p>
-        <pre><code>var config = HexApp.getGameConfig('talisman');
+        <p>Import the engine modules and call <code>HexSvg.toSVG()</code> directly. This avoids the iframe overhead and gives full control over options.</p>
+        <pre><code>&lt;script type="module"&gt;
+import { getGameConfig } from './js/game-registry.js';
+import { HexSvg } from './js/hex-svg.js';
+import './js/games/talisman.js';
+
+var config = getGameConfig('talisman');
 var hexes = config.generate(4, 0, '42');
 var svg = HexSvg.toSVG(hexes, {
     hexSize: 40,
@@ -111,7 +109,9 @@ var svg = HexSvg.toSVG(hexes, {
     labels: true,
     padding: 15
 });
-document.getElementById('output').innerHTML = svg;</code></pre>
+document.getElementById('output').innerHTML = svg;
+&lt;/script&gt;</code></pre>
+        <p>The module system handles all dependencies automatically. You only need to import what you use directly.</p>
     </section>
 
     <section id="annotated">
