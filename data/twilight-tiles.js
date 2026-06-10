@@ -1,4 +1,4 @@
-var TwilightTiles = {
+export var TwilightTiles = {
     blue: [
         'Abaddon/Ashtroth/Loki',
         'Abyz/Fria',

@@ -1,4 +1,4 @@
-var MongoLayout = {
+export var MongoLayout = {
     orientation: 'pointy',
     centre: { q: 1, r: 2 },
     factions: [

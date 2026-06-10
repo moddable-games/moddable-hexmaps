@@ -1,22 +1,19 @@
-var HexApp = (function() {
-    var gameRegistry = {};
+var gameRegistry = {};
 
-    function registerGame(key, config) {
-        gameRegistry[key] = config;
-    }
+export function registerGame(key, config) {
+    gameRegistry[key] = config;
+}
 
-    function getGameConfig(key) {
-        return gameRegistry[key] || null;
-    }
+export function getGameConfig(key) {
+    return gameRegistry[key] || null;
+}
 
-    function getRegisteredGames() {
-        return Object.keys(gameRegistry);
-    }
+export function getRegisteredGames() {
+    return Object.keys(gameRegistry);
+}
 
-    return {
-        registerGame: registerGame,
-        getGameConfig: getGameConfig,
-        getRegisteredGames: getRegisteredGames,
-        gameRegistry: gameRegistry
-    };
-})();
+export var HexApp = {
+    registerGame: registerGame,
+    getGameConfig: getGameConfig,
+    getRegisteredGames: getRegisteredGames
+};

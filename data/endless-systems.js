@@ -1,4 +1,4 @@
-var EndlessSystems = {
+export var EndlessSystems = {
     "systems": [
         {
             "code": "NE01",

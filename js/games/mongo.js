@@ -1,4 +1,7 @@
-(function() {
+import { registerGame } from '../game-registry.js';
+import { createSeededRng } from '../xorshift.js';
+import { MongoLayout } from '../../data/mongo-layout.js';
+import { MongoTiles } from '../../data/mongo-tiles.js';
 
     var classicColors = {
         oceanic: '#1565C0',
@@ -37,7 +40,7 @@
     }
 
     function buildTilePools(rng) {
-        var tileData = (typeof MongoTiles !== 'undefined') ? MongoTiles : null;
+        var tileData = MongoTiles || null;
         if (!tileData) return null;
         var pools = {};
         for (var i = 0; i < tileData.tiles.length; i++) {
@@ -79,7 +82,7 @@
     }
 
     function generate(size, players, seed) {
-        var layout = (typeof MongoLayout !== 'undefined') ? MongoLayout : null;
+        var layout = MongoLayout || null;
         if (!layout) return [];
 
         var rng = createSeededRng(seed + '_mongo');
@@ -132,7 +135,7 @@
         return hexData;
     }
 
-    HexApp.registerGame('mongo', {
+    registerGame('mongo', {
         label: 'Mongo',
         orientation: 'pointy',
         sizes: [
@@ -190,4 +193,4 @@
             return { hexSize: 22, flat: false };
         }
     });
-})();
+

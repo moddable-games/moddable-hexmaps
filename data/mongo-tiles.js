@@ -1,4 +1,4 @@
-var MongoTiles = {
+export var MongoTiles = {
     tiles: [
         { id: "X01", name: "Central Market", biome: "market", pop: 0, ice: 0, water: 0, food: 0, wood: 0, stone: 0, metal: 0, mrg: 0, gem: 0, special: "Can always trade with anyone. Add two to initiative whilst in control" },
 

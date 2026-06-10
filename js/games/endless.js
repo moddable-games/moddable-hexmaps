@@ -1,4 +1,7 @@
-(function() {
+import { registerGame } from '../game-registry.js';
+import { createSeededRng } from '../xorshift.js';
+import { EndlessSystems } from '../../data/endless-systems.js';
+import { MongoLayout } from '../../data/mongo-layout.js';
 
     var factions = [
         { id: 'republic', label: '1', name: 'Republic', region: 'Near Earth', home: 'Sol' },
@@ -62,7 +65,7 @@
     }
 
     function getSystemImagePath(systemName, base) {
-        var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
+        var systemData = EndlessSystems || null;
         if (!systemData || !systemName) return null;
         var imgPath = systemData.images[systemName];
         if (!imgPath) return null;
@@ -70,8 +73,8 @@
     }
 
     function generate(size, players, seed) {
-        var layout = (typeof MongoLayout !== 'undefined') ? MongoLayout : null;
-        var systemData = (typeof EndlessSystems !== 'undefined') ? EndlessSystems : null;
+        var layout = MongoLayout || null;
+        var systemData = EndlessSystems || null;
         if (!layout) return [];
 
         var rng = createSeededRng(seed + '_endless');
@@ -236,7 +239,7 @@
         return result;
     }
 
-    HexApp.registerGame('endless', {
+    registerGame('endless', {
         label: 'Endless Skies',
         orientation: 'pointy',
         sizes: [
@@ -296,4 +299,4 @@
             return { hexSize: 22, flat: false };
         }
     });
-})();
+

@@ -1,4 +1,14 @@
-(function() {
+import { HexApp, getGameConfig, getRegisteredGames } from './game-registry.js';
+import { HexRenderer } from './hex-renderer.js';
+import { HexSvg } from './hex-svg.js';
+import { HexMath } from './hex-math.js';
+import './games/nukes.js';
+import './games/talisman.js';
+import './games/twilight.js';
+import './games/colony.js';
+import './games/mongo.js';
+import './games/endless.js';
+
     var renderer = null;
     var currentGame = null;
     var currentSeed = null;
@@ -45,7 +55,7 @@
 
         document.getElementById('seed-input').value = seed;
 
-        var config = HexApp.getGameConfig(game);
+        var config = getGameConfig(game);
         if (config && config.styles) {
             if (!currentStyle || config.styles.indexOf(currentStyle) === -1) {
                 currentStyle = config.styles[0];
@@ -174,9 +184,9 @@
         if (!bar) return;
         bar.innerHTML = '';
 
-        var games = HexApp.getRegisteredGames();
+        var games = getRegisteredGames();
         for (var i = 0; i < games.length; i++) {
-            var config = HexApp.getGameConfig(games[i]);
+            var config = getGameConfig(games[i]);
             var btn = document.createElement('button');
             btn.className = 'game-tab';
             btn.setAttribute('data-game', games[i]);
@@ -300,7 +310,7 @@
     }
 
     function loadGame(game, size, players) {
-        var config = HexApp.getGameConfig(game);
+        var config = getGameConfig(game);
         if (!config) return;
 
         var sizeSelect = document.getElementById('size-select');
@@ -381,7 +391,7 @@
             }
         }
 
-        var config = HexApp.getGameConfig(game);
+        var config = getGameConfig(game);
         var editorTab = document.querySelector('[data-tab="editor"]');
         var styleGroup = document.getElementById('style-group');
 
@@ -428,7 +438,7 @@
     }
 
     function regenerateMap() {
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         if (!config) return;
 
         hexData = config.generate(currentSize, currentPlayers, currentSeed, currentLayout);
@@ -474,7 +484,7 @@
     function onHexClick(hex) {
         if (viewOnly) return;
 
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         if (config && config.onHexClick) {
             config.onHexClick(hex);
             HexRenderer.render(renderer);
@@ -488,7 +498,7 @@
             var name = hex.tileName || hex.type;
             var detail = '';
             if (!hex.tileName) {
-                var config = HexApp.getGameConfig(currentGame);
+                var config = getGameConfig(currentGame);
                 if (config && config.getDescriptions) {
                     var descs = config.getDescriptions();
                     if (descs[hex.type]) {
@@ -551,7 +561,7 @@
         var playersGroup = document.getElementById('players-group');
         playersSelect.innerHTML = '';
 
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         var playerOptions = config ? config.playerCounts(currentSize, currentLayout) : [];
         if (playerOptions.length === 0) {
             playersGroup.style.display = 'none';
@@ -576,7 +586,7 @@
         var container = document.getElementById('ring-resets');
         container.innerHTML = '';
 
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         if (config && config.editorPanel) {
             config.editorPanel(container, {
                 size: currentSize,
@@ -594,7 +604,7 @@
 
     function applyStyle() {
         if (!renderer) return;
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         if (!config) return;
 
         renderer.colors = config.getColors(currentStyle);
@@ -631,7 +641,7 @@
     }
 
     function exportMap() {
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         var data;
 
         if (config && config.exportMap) {
@@ -661,7 +671,7 @@
 
     function exportSvg() {
         if (typeof HexSvg === 'undefined') return;
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         var colors = (config && config.getColors) ? config.getColors(currentStyle) : {};
         var images = (config && config.getImages) ? config.getImages(currentStyle) : null;
         var flat = (config && config.orientation === 'flat');
@@ -685,7 +695,7 @@
     }
 
     function renderOffscreen(scale, bgColor) {
-        var config = HexApp.getGameConfig(currentGame);
+        var config = getGameConfig(currentGame);
         var flat = config && config.orientation === 'flat';
         var hexSize = renderer.hexSize;
         var padding = hexSize * 1.2;
@@ -865,7 +875,7 @@
 
         try {
             var data = JSON.parse(json);
-            var config = HexApp.getGameConfig(currentGame);
+            var config = getGameConfig(currentGame);
 
             if (Array.isArray(data) && config && config.importMap) {
                 var result = config.importMap(data, hexData);
@@ -916,7 +926,7 @@
             if (!msg || typeof msg !== 'object' || !msg.type) return;
 
             if (msg.type === 'hexmap:getMap') {
-                var config = HexApp.getGameConfig(currentGame);
+                var config = getGameConfig(currentGame);
                 var response;
 
                 if (config && config.exportForParent) {
@@ -954,7 +964,7 @@
 
             if (msg.type === 'hexmap:exportSvg') {
                 if (typeof HexSvg !== 'undefined' && event.source) {
-                    var config2 = HexApp.getGameConfig(currentGame);
+                    var config2 = getGameConfig(currentGame);
                     var colors2 = (config2 && config2.getColors) ? config2.getColors(currentStyle) : {};
                     var flat2 = (config2 && config2.orientation === 'flat');
                     var svgStr = HexSvg.toSVG(hexData, {
@@ -969,7 +979,7 @@
             }
 
             if (msg.type === 'hexmap:setMap') {
-                var config = HexApp.getGameConfig(currentGame);
+                var config = getGameConfig(currentGame);
                 if (config && config.importFromParent) {
                     var imported = config.importFromParent(msg.data);
                     if (imported && Array.isArray(imported)) {
@@ -1032,7 +1042,4 @@
         window.history.replaceState({}, '', newUrl);
     }
 
-    HexApp.init = init;
-})();
-
-document.addEventListener('DOMContentLoaded', HexApp.init);
+document.addEventListener('DOMContentLoaded', init);

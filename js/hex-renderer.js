@@ -1,7 +1,7 @@
-var HexRenderer = (function() {
+import { HexMath } from './hex-math.js';
 
-    var activeRenderer = null;
-    var imageCache = {};
+var activeRenderer = null;
+var imageCache = {};
 
     function getVersionParam() {
         var link = document.querySelector('link[rel="stylesheet"][href*="?v="]');
@@ -361,12 +361,11 @@ var HexRenderer = (function() {
         return closest;
     }
 
-    return {
-        create: create,
-        setHexes: setHexes,
-        render: render,
-        resize: resize,
-        fitToCanvas: fitToCanvas,
-        preloadImages: preloadImages
-    };
-})();
+export var HexRenderer = {
+    create: create,
+    setHexes: setHexes,
+    render: render,
+    resize: resize,
+    fitToCanvas: fitToCanvas,
+    preloadImages: preloadImages
+};

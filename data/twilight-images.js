@@ -1,4 +1,4 @@
-var TwilightImages = {
+export var TwilightImages = {
     rex: 'rex.webp',
     blue: {
         'Abaddon/Ashtroth/Loki': 'blue/abaddon_ashtroth_loki.webp',

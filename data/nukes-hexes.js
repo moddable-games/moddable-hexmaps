@@ -1,4 +1,4 @@
-var NukesHexData = {
+export var NukesHexData = {
     terrains: [
         "water", "trees", "mount", "grass",
         "water", "trees", "mount", "grass",

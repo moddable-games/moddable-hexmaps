@@ -1,4 +1,4 @@
-function XorShift128(seed) {
+export function XorShift128(seed) {
     this.x = (seed ? seed >>> 0 : 123456789);
     this.y = 362436069;
     this.z = 521288629;
@@ -31,7 +31,7 @@ XorShift128.prototype.reseed = function(seed) {
     this.w = 88675123;
 };
 
-function createSeededRng(seed) {
+export function createSeededRng(seed) {
     var numericSeed = 0;
     if (typeof seed === 'number') {
         numericSeed = seed;
@@ -45,7 +45,7 @@ function createSeededRng(seed) {
     return new XorShift128(numericSeed);
 }
 
-function seededRandom(id, seed, min, max) {
+export function seededRandom(id, seed, min, max) {
     var idStr = String(id);
     var seedStr = String(seed);
     var idNum = 0;

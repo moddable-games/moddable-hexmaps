@@ -1,4 +1,5 @@
-(function() {
+import { registerGame } from '../game-registry.js';
+import { createSeededRng } from '../xorshift.js';
 
     var terrainPool = {
         base: [
@@ -553,7 +554,7 @@
         }
     };
 
-    HexApp.registerGame('colony', {
+    registerGame('colony', {
         label: 'Colony',
         orientation: 'pointy',
         sizes: [
@@ -614,4 +615,3 @@
             return { hexSize: 50, flat: false };
         }
     });
-})();

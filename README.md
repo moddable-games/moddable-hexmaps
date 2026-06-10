@@ -100,6 +100,9 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-10
+- Migrate entire codebase to native ESM (no build step, no bundler)
+- Same source files work in browser (`<script type="module">`) and Node.js/Workers
+- Single entry point: `js/app.js` imports full module graph
 - Add fullscreen button to canvas footer for in-page fullscreen toggle
 - Refactor fullscreen mode: in-place toggle via CSS (no browser Fullscreen API), proper Escape key exit, state restoration
 - Document `mode=fullscreen` in docs index and API reference
