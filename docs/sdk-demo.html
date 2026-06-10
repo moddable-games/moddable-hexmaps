@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../css/variables.css?v=0.8.0">
     <link rel="stylesheet" href="../css/shared.css?v=0.8.0">
     <link rel="stylesheet" href="../css/sdk-demo.css?v=0.8.0">
+    <link rel="stylesheet" href="../css/prism-custom.css?v=0.8.0">
 </head>
 <body>
 
@@ -48,11 +49,57 @@
         <h2 class="demo-section__title">Game Gallery</h2>
         <p class="demo-section__desc">All 6 games rendered simultaneously. Each instance is independent with its own canvas, state, and image cache.</p>
         <div class="demo-gallery" id="gallery"></div>
+        <details class="demo-code">
+            <summary>View source</summary>
+            <pre><code class="language-javascript">import './js/hex-controller-entry.js';
+
+// Mount a map into any container — one line per game
+const map = HexApp.createMapController(
+  document.getElementById('my-container'),
+  { game: 'nukes', seed: 'showcase', size: 4, players: 4, bgColor: '#1a2e1f' }
+);
+
+// Switch styles at runtime
+map.setStyle('kenney');
+
+// Each instance is fully independent — own canvas, state, image cache
+const map2 = HexApp.createMapController(el2, { game: 'twilight', seed: 'showcase' });
+// Destroying one does not affect the other</code></pre>
+        </details>
     </section>
 
     <section class="demo-section">
         <h2 class="demo-section__title">Programmatic Control</h2>
         <p class="demo-section__desc">Seed-based reproducibility, hex editing, highlights, and live event stream.</p>
+        <details class="demo-code demo-code--above">
+            <summary>View source</summary>
+            <pre><code class="language-javascript">const map = HexApp.createMapController(container, {
+  game: 'nukes', seed: 'hello-world', size: 4, players: 4
+});
+
+// Reproducible generation — same seed = same map every time
+map.regenerate({ seed: 'new-seed' });
+
+// Inspect hex data
+const hex = map.getHexAt(1, -1);  // { id, q, r, type, label }
+const all = map.getHexData();      // full hex array copy
+
+// Edit individual hexes
+map.setHexType(0, 0, 'water');
+
+// Highlights (non-destructive overlays)
+const waterHexes = all.filter(h => h.type === 'water');
+map.highlightHexes(waterHexes, { color: '#00bcd4', opacity: 0.35 });
+map.clearHighlights();
+
+// Export
+const svg = map.exportSVG();                          // SVG string
+const blob = await map.exportPNG({ scale: 2 });       // PNG Blob
+
+// Events
+map.on('hexClick', ({ hex }) => console.log(hex));
+map.on('regenerate', ({ hexes, seed }) => { });</code></pre>
+        </details>
         <div class="demo-split">
             <div class="demo-panel demo-panel--wide">
                 <div class="demo-panel__header">
@@ -95,7 +142,32 @@
 
     <section class="demo-section">
         <h2 class="demo-section__title">Render Hooks</h2>
-        <p class="demo-section__desc">Custom rendering via <code>tilePainter</code>, <code>overlayProvider</code>, and <code>afterRender</code> hooks.</p>
+        <p class="demo-section__desc">Custom rendering via <code>tilePainter</code>, <code>overlayProvider</code>, and <code>afterRender</code> hooks. Pass them in the options object at creation time.</p>
+        <details class="demo-code demo-code--above" open>
+            <summary>Hook signatures</summary>
+            <pre><code class="language-javascript">const map = HexApp.createMapController(container, {
+  game: 'nukes',
+  hooks: {
+    // Replace default tile rendering entirely
+    tilePainter: function(ctx, hex, { center, corners, hexSize }) {
+      ctx.fillStyle = myGradient;
+      ctx.fill();
+      return true;  // return true = skip default rendering
+    },
+
+    // Add a translucent colour overlay per hex (non-destructive)
+    overlayProvider: function(hex) {
+      if (hex.type === 'water') return { color: '#00bcd4', opacity: 0.2 };
+      return null;  // null = no overlay
+    },
+
+    // Draw on top of everything after the render pass completes
+    afterRender: function(ctx, hexes, controller) {
+      // Full canvas 2D context — draw tokens, labels, fog, anything
+    }
+  }
+});</code></pre>
+        </details>
         <div class="demo-grid demo-grid--three">
             <div class="demo-panel">
                 <div class="demo-panel__header">
@@ -123,8 +195,20 @@
 
     <section class="demo-section">
         <h2 class="demo-section__title">Multi-Style Comparison</h2>
-        <p class="demo-section__desc">Same seed, same game, different visual styles side by side.</p>
+        <p class="demo-section__desc">Same seed, same game, different visual styles side by side. Styles swap at runtime without regenerating.</p>
         <div class="demo-grid demo-grid--four" id="style-compare"></div>
+        <details class="demo-code">
+            <summary>View source</summary>
+            <pre><code class="language-javascript">// Same seed produces identical terrain layout across all styles
+['artistic', 'classic', 'kenney', 'realistic'].forEach(style => {
+  HexApp.createMapController(container, {
+    game: 'nukes', seed: 'compare', size: 3, players: 3, style
+  });
+});
+
+// Or switch an existing map's style without regenerating
+map.setStyle('kenney');  // re-renders with new tileset, same hexes</code></pre>
+        </details>
     </section>
 
     <footer class="site-footer">
@@ -133,5 +217,7 @@
     </footer>
 
     <script type="module" src="../js/sdk-demo.js"></script>
+    <script src="../js/prism.js?v=0.8.0" data-manual></script>
+    <script src="../js/prism-init.js?v=0.8.0"></script>
 </body>
 </html>

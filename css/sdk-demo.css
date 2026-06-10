@@ -342,6 +342,55 @@ body {
     gap: 16px;
 }
 
+/* Code snippets */
+.demo-code {
+    margin-top: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.demo-code--above {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.demo-code summary {
+    font-family: var(--mg-font-body, 'Barlow', system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    color: #2a5a3a;
+    cursor: pointer;
+    padding: 8px 0;
+    list-style: none;
+}
+
+.demo-code summary::-webkit-details-marker {
+    display: none;
+}
+
+.demo-code summary::before {
+    content: '\25B6';
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 9px;
+    transition: transform 0.15s;
+}
+
+.demo-code[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.demo-code pre[class*="language-"] {
+    margin: 0;
+    border-radius: 0 0 8px 8px;
+    font-size: 12px;
+}
+
+.demo-code[open] pre[class*="language-"] {
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .demo-gallery {
