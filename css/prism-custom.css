@@ -1,0 +1,127 @@
+pre[class*="language-"] {
+  background: #0a1a0d;
+  color: rgba(255, 255, 255, 0.88);
+  border-radius: 8px;
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.75;
+  overflow-x: auto;
+  margin: 12px 0 20px;
+  border: 1px solid rgba(76, 223, 122, 0.12);
+  border-left: 3px solid #4cdf7a;
+  position: relative;
+  tab-size: 2;
+}
+
+code[class*="language-"] {
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: 0;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #f5c542;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #8be9a0;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: #e8a0ff;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #4cdf7a;
+}
+
+.token.function,
+.token.class-name {
+  color: #ffa06b;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #f5c542;
+}
+
+.code-toolbar {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
+}
+
+pre[class*="language-"]:hover .copy-btn {
+  opacity: 1;
+}
+
+.copy-btn:hover {
+  background: rgba(76, 223, 122, 0.15);
+  border-color: #4cdf7a;
+  color: #4cdf7a;
+}
+
+.copy-btn.copied {
+  color: #8be9a0;
+  border-color: #8be9a0;
+  background: rgba(139, 233, 160, 0.1);
+}
+
+@media (max-width: 768px) {
+  pre[class*="language-"] {
+    border-radius: 0;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 16px 20px;
+    border-left: none;
+    border-right: none;
+  }
+
+  .copy-btn {
+    opacity: 1;
+  }
+}

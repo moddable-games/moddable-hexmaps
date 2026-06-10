@@ -135,7 +135,7 @@ p, li { text-wrap: pretty; }
     border-radius: 3px;
 }
 
-.docs pre {
+.docs pre:not([class*="language-"]) {
     background: #0a1a0d;
     color: #4cdf7a;
     padding: 16px 20px;
@@ -146,7 +146,7 @@ p, li { text-wrap: pretty; }
     line-height: 1.6;
 }
 
-.docs pre code {
+.docs pre:not([class*="language-"]) code {
     background: none;
     padding: 0;
     color: inherit;
@@ -218,7 +218,7 @@ p, li { text-wrap: pretty; }
     border-radius: 3px;
 }
 
-.docs-body pre {
+.docs-body pre:not([class*="language-"]) {
     background: #0a1a0d;
     color: #4cdf7a;
     padding: 16px 20px;
@@ -229,7 +229,7 @@ p, li { text-wrap: pretty; }
     line-height: 1.6;
 }
 
-.docs-body pre code {
+.docs-body pre:not([class*="language-"]) code {
     background: none;
     padding: 0;
     color: inherit;
