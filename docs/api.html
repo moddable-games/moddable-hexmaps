@@ -187,10 +187,10 @@ rng.integer(0, 5);  // deterministic result</code></pre>
             <table>
                 <thead><tr><th>Parameter</th><th>Values</th><th>Effect</th></tr></thead>
                 <tbody>
-                    <tr><td><code>game</code></td><td>nukes, talisman, twilight, colony</td><td>Which game config to use</td></tr>
+                    <tr><td><code>game</code></td><td>nukes, talisman, twilight, colony, mongo, endless</td><td>Which game config to use</td></tr>
                     <tr><td><code>seed</code></td><td>any integer or string</td><td>RNG seed for reproducible generation</td></tr>
-                    <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman), 3 (twilight), 3–4 (colony)</td><td>Ring count / map size</td></tr>
-                    <tr><td><code>players</code></td><td>2–6 (varies by game/size)</td><td>Player count for base placement</td></tr>
+                    <tr><td><code>size</code></td><td>2–6 (nukes), 4–5 (talisman), 5 (endless), 6 (mongo)</td><td>Ring count / map size</td></tr>
+                    <tr><td><code>players</code></td><td>2–8 (varies by game/size)</td><td>Player count for base placement</td></tr>
                 </tbody>
             </table>
 
@@ -213,6 +213,8 @@ rng.integer(0, 5);  // deterministic result</code></pre>
                     <tr><td>talisman</td><td>artistic, classic, kenney, realistic</td></tr>
                     <tr><td>twilight</td><td>classic only (no style parameter)</td></tr>
                     <tr><td>colony</td><td>classic, kenney, realistic</td></tr>
+                    <tr><td>mongo</td><td>artistic, classic</td></tr>
+                    <tr><td>endless</td><td>artistic, classic</td></tr>
                 </tbody>
             </table>
 
@@ -518,6 +520,53 @@ const map2 = HexApp.createMapController(el2, { game: 'twilight', seed: 'b' });
 // Both render independently; destroying one does not affect the other</code></pre>
 
             <p><a href="sdk-demo.html">Live SDK demo</a> — two maps with hooks, events, and programmatic control.</p>
+        </section>
+
+        <section id="mcp-server">
+            <h2>MCP Server</h2>
+            <p>The engine is available as an MCP (Model Context Protocol) server for use with Claude Code, Claude Desktop, or any MCP-compatible client. Six tools expose the full generation and analysis pipeline.</p>
+
+            <h3>Setup</h3>
+            <pre><code># Run standalone
+node mcp/server.js
+
+# Add to Claude Code
+claude mcp add --transport stdio moddable-hexmaps node mcp/server.js</code></pre>
+
+            <h3>Available tools</h3>
+            <table>
+                <thead><tr><th>Tool</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>hex_list_games</code></td><td>All available games with map types, layouts, styles, and player counts</td></tr>
+                    <tr><td><code>hex_generate_map</code></td><td>Generate a complete hex grid for any game, seed, size, and player count</td></tr>
+                    <tr><td><code>hex_get_info</code></td><td>Look up a hex by coordinates: terrain, adjacency list, distances to other hexes</td></tr>
+                    <tr><td><code>hex_compute_fov</code></td><td>Compute visible hexes from a position within a given range (with terrain blocking)</td></tr>
+                    <tr><td><code>hex_export_svg</code></td><td>Export any generated map as a standalone SVG string</td></tr>
+                    <tr><td><code>hex_pathfind</code></td><td>Find the shortest path between two hexes through terrain</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Example: generate and export</h3>
+            <pre><code>// hex_generate_map
+{ "game": "nukes", "seed": "42", "size": 4, "players": 4 }
+// Returns: { hexes: [...], meta: { game, seed, size, players } }
+
+// hex_export_svg
+{ "game": "nukes", "seed": "42", "size": 4, "style": "classic" }
+// Returns: { svg: "&lt;svg ...&gt;...&lt;/svg&gt;" }</code></pre>
+
+            <h3>Example: analysis</h3>
+            <pre><code>// hex_get_info
+{ "game": "nukes", "seed": "42", "size": 4, "q": 1, "r": -1 }
+// Returns: { hex: {...}, neighbors: [...], distances: {...} }
+
+// hex_compute_fov
+{ "game": "nukes", "seed": "42", "size": 4, "q": 0, "r": 0, "range": 2 }
+// Returns: { visible: [...], blocked: [...] }
+
+// hex_pathfind
+{ "game": "nukes", "seed": "42", "size": 4, "fromQ": 0, "fromR": 0, "toQ": 2, "toR": -1 }
+// Returns: { path: [...], cost: 2 }</code></pre>
         </section>
 </div>
 </div>

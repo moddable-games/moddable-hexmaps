@@ -46,6 +46,7 @@
         <section id="overview">
             <h2>Overview</h2>
             <p>Moddable Hexmaps is a shared hex map rendering engine and randomiser framework. It supports six board games out of the box and can be extended with custom game configs.</p>
+            <p>Three ways to integrate: embed via iframe (<a href="#embedding">Embedding</a>), mount directly via JavaScript (<a href="#consumer-sdk">Consumer SDK</a>), or query from an AI assistant (<a href="#mcp-server">MCP Server</a>).</p>
         </section>
 
         <section id="url-params">
@@ -142,22 +143,36 @@ map.on('hexClick', (e) => console.log(e.hex));</code></pre>
             <p>4X space exploration galaxy generator based on the Endless Sky video game. 8 asymmetric factions with home systems, faction regions, wormhole networks (4 types), asteroid fields, and nebulae. Three layout sizes: compact (4 rings, 2-3 players), standard (5 rings, 4-6 players), grand (6 rings, 7-8 players). System types: homeworld, core, frontier, rim, contested, nebula, asteroid, wormhole, void.</p>
         </section>
 
+        <section id="mcp-server">
+            <h2>MCP Server</h2>
+            <p>The engine is available as an MCP (Model Context Protocol) server for AI assistants. Six tools expose generation, analysis, and SVG export.</p>
+            <pre><code>node mcp/server.js                    # standalone stdio server
+claude mcp add moddable-hexmaps node mcp/server.js  # Claude Code</code></pre>
+            <p>Tools: <code>hex_list_games</code>, <code>hex_generate_map</code>, <code>hex_get_info</code>, <code>hex_compute_fov</code>, <code>hex_export_svg</code>, <code>hex_pathfind</code></p>
+            <p>Full reference: <a href="api.html#mcp-server">API docs</a></p>
+        </section>
+
         <section id="architecture">
             <h2>Architecture</h2>
-            <pre><code>js/game-registry.js  — Plugin registry (HexApp.registerGame API)
-js/app.js            — Framework controller (sidebar, tabs, URL, embed bridge)
-js/hex-controller.js — Consumer SDK (createMapController factory)
-js/games/            — Game plugins (one file per game)
-  nukes.js           — Nukes: terrain gen, editor, ring-format export
-  talisman.js        — Talisman: ring-based terrain pools
-  twilight.js        — Twilight Imperium: multi-layout tile draw
-  colony.js          — Colony: terrain + number tokens with constraints
-js/xorshift.js       — Seeded PRNG (XorShift128)
-js/hex-math.js       — Axial coordinate math, grid generation
-js/hex-renderer.js   — Canvas-based hex rendering
-js/hex-svg.js        — SVG serialiser (export, postMessage, annotations)
-data/                — Game data files (coordinate maps, tile pools)
-img/tiles/           — Committed tile images per game and style</code></pre>
+            <pre><code>js/game-registry.js      — Plugin registry (HexApp.registerGame API)
+js/app.js                — Framework controller (sidebar, tabs, URL, embed bridge)
+js/hex-controller.js     — Consumer SDK (createMapController factory)
+js/hex-controller-entry.js — Convenience bundle (all games + window.HexApp)
+js/games/                — Game plugins (one file per game)
+  nukes.js               — Nukes: terrain gen, editor, ring-format export
+  talisman.js            — Talisman: ring-based terrain pools
+  twilight.js            — Twilight Imperium: multi-layout tile draw
+  colony.js              — Colony: terrain + number tokens with constraints
+  mongo.js               — Planet Mongo: fixed 127-hex faction board
+  endless.js             — Endless Skies: sector-based galaxy generator
+js/xorshift.js           — Seeded PRNG (XorShift128)
+js/hex-math.js           — Axial coordinate math, grid generation
+js/hex-renderer.js       — Canvas-based hex rendering
+js/hex-svg.js            — SVG serialiser (export, postMessage, annotations)
+mcp/tools.js             — MCP tool definitions + handler
+mcp/server.js            — Standalone stdio JSON-RPC server
+data/                    — Game data files (coordinate maps, tile pools)
+img/tiles/               — Committed tile images per game and style</code></pre>
             <p>Each game is a self-contained plugin file that calls <code>HexApp.registerGame(key, config)</code>. The framework auto-generates the game selector tabs from the registry and delegates all game-specific behaviour to plugin hooks.</p>
         </section>
 
