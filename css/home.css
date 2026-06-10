@@ -445,5 +445,7 @@ a { color: inherit; text-decoration: none; }
     .hx-dev { padding: 48px 16px; }
     .hx-ai { padding: 48px 16px; }
     .hx-ai__grid { grid-template-columns: 1fr; }
+    .hx-ai__code-block code { word-break: break-all; }
+    .hx-ai__btns { flex-direction: column; align-items: center; }
     .hx-sister { padding: 48px 16px 60px; }
 }
