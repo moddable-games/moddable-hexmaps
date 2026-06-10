@@ -118,26 +118,30 @@
 <section class="hx-dev">
     <div class="hx-dev__inner">
         <div class="hx-dev__eyebrow">FOR DEVELOPERS</div>
-        <h2 class="hx-dev__title">Load. Register. Generate.</h2>
-        <p class="hx-dev__text">Load the scripts, register a game, and generate maps. Or embed a board-only iframe in any page — no setup needed.</p>
+        <h2 class="hx-dev__title">Import. Register. Generate.</h2>
+        <p class="hx-dev__text">Native ES modules, zero build tools. Import what you need, register a game plugin, and generate maps. Or embed a board-only iframe in any page.</p>
 
         <div class="dev-tabs">
             <div class="dev-tabs__bar">
-                <button class="dev-tabs__tab active" data-tab="0">Script loading</button>
+                <button class="dev-tabs__tab active" data-tab="0">ESM imports</button>
                 <button class="dev-tabs__tab" data-tab="1">Register a game</button>
                 <button class="dev-tabs__tab" data-tab="2">Embed via iframe</button>
             </div>
             <div class="dev-tabs__panel active" data-panel="0">
                 <div class="hx-dev__code">
-&lt;script src="https://hex.moddable.games/js/xorshift.js"&gt;&lt;/script&gt;<br>
-&lt;script src="https://hex.moddable.games/js/hex-math.js"&gt;&lt;/script&gt;<br>
-&lt;script src="https://hex.moddable.games/js/hex-renderer.js"&gt;&lt;/script&gt;<br>
-&lt;script src="https://hex.moddable.games/js/game-registry.js"&gt;&lt;/script&gt;
+&lt;script type="module"&gt;<br>
+&nbsp;&nbsp;import { HexApp } from './js/game-registry.js';<br>
+&nbsp;&nbsp;import './js/hex-renderer.js';<br>
+&nbsp;&nbsp;import './js/hex-controller.js';<br>
+&nbsp;&nbsp;import './js/games/nukes.js';<br>
+&lt;/script&gt;
                 </div>
             </div>
             <div class="dev-tabs__panel" data-panel="1">
                 <div class="hx-dev__code">
-HexApp.registerGame('mygame', {<br>
+import { registerGame } from './js/game-registry.js';<br>
+<br>
+registerGame('mygame', {<br>
 &nbsp;&nbsp;label: 'My Game',<br>
 &nbsp;&nbsp;orientation: 'pointy',<br>
 &nbsp;&nbsp;sizes: [{ value: 3, label: '3 Rings' }],<br>
@@ -158,6 +162,7 @@ HexApp.registerGame('mygame', {<br>
 
         <div class="hx-dev__btns">
             <a href="docs/" class="hx-btn hx-btn--primary">Read the docs</a>
+            <a href="docs/sdk-demo.html" class="hx-btn hx-btn--outline">SDK demo</a>
             <a href="docs/api.html" class="hx-btn hx-btn--outline">API reference</a>
         </div>
     </div>
