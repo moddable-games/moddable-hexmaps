@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDK Demo — Moddable Hexmaps</title>
-    <meta name="description" content="Live demo of the Moddable Hexmaps Consumer SDK. Two independent map controllers with hooks, events, and programmatic control.">
+    <meta name="description" content="Live demo of the Moddable Hexmaps Consumer SDK. Interactive maps, custom rendering hooks, export, and programmatic control.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Moddable Hexmaps">
     <meta property="og:title" content="SDK Demo — Moddable Hexmaps">
-    <meta property="og:description" content="Live demo of the Consumer SDK: two independent map controllers with hooks, events, and programmatic control.">
+    <meta property="og:description" content="Live demo of the Consumer SDK: interactive maps, custom rendering, export, and programmatic control.">
     <meta property="og:url" content="https://hex.moddable.games/docs/sdk-demo.html">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SDK Demo — Moddable Hexmaps">
@@ -41,36 +41,91 @@
     <div class="page-header">
         <p class="page-header__breadcrumb"><a href="api.html#consumer-sdk">API Reference</a> / Consumer SDK</p>
         <h1>Consumer SDK Demo</h1>
-        <p>Two independent map controllers on one page, with hooks and events</p>
+        <p>Everything <code>createMapController</code> can do, demonstrated live</p>
     </div>
 
-    <div class="demo-grid">
-        <div class="demo-panel">
-            <div class="demo-panel__header">
-                <h3>Nukes (interactive + overlayProvider)</h3>
-                <div class="demo-controls">
-                    <button class="demo-btn" id="btn-regen-1">Regenerate</button>
-                    <button class="demo-btn" id="btn-style-1">Toggle Style</button>
-                    <button class="demo-btn" id="btn-destroy-1">Destroy</button>
-                </div>
-            </div>
-            <div class="demo-panel__canvas" id="map-1"></div>
-            <div class="demo-panel__log" id="log-1">Ready.</div>
-        </div>
+    <section class="demo-section">
+        <h2 class="demo-section__title">Game Gallery</h2>
+        <p class="demo-section__desc">All 6 games rendered simultaneously. Each instance is independent with its own canvas, state, and image cache.</p>
+        <div class="demo-gallery" id="gallery"></div>
+    </section>
 
-        <div class="demo-panel">
-            <div class="demo-panel__header">
-                <h3>Twilight (afterRender hook)</h3>
-                <div class="demo-controls">
-                    <button class="demo-btn" id="btn-regen-2">Regenerate</button>
-                    <button class="demo-btn" id="btn-highlight-2">Highlight Ring 1</button>
-                    <button class="demo-btn" id="btn-clear-2">Clear</button>
+    <section class="demo-section">
+        <h2 class="demo-section__title">Programmatic Control</h2>
+        <p class="demo-section__desc">Seed-based reproducibility, hex editing, highlights, and live event stream.</p>
+        <div class="demo-split">
+            <div class="demo-panel demo-panel--wide">
+                <div class="demo-panel__header">
+                    <h3>Interactive Map</h3>
+                    <div class="demo-controls">
+                        <input type="text" class="demo-input" id="seed-input" placeholder="Enter seed..." value="hello-world">
+                        <button class="demo-btn" id="btn-seed">Apply Seed</button>
+                        <button class="demo-btn" id="btn-randomise">Random</button>
+                    </div>
+                </div>
+                <div class="demo-panel__canvas" id="control-map"></div>
+                <div class="demo-panel__header demo-panel__header--bottom">
+                    <div class="demo-controls">
+                        <button class="demo-btn" id="btn-highlight">Highlight Water</button>
+                        <button class="demo-btn" id="btn-clear-hl">Clear Highlights</button>
+                        <button class="demo-btn" id="btn-edit-mode">Edit Mode: Off</button>
+                    </div>
+                    <div class="demo-controls">
+                        <button class="demo-btn demo-btn--accent" id="btn-export-svg">Export SVG</button>
+                        <button class="demo-btn demo-btn--accent" id="btn-export-png">Export PNG</button>
+                    </div>
                 </div>
             </div>
-            <div class="demo-panel__canvas" id="map-2"></div>
-            <div class="demo-panel__log" id="log-2">Ready.</div>
+            <div class="demo-sidebar">
+                <div class="demo-info-panel">
+                    <h4>Hex Info</h4>
+                    <div id="hex-info" class="demo-info-content">Click a hex to inspect</div>
+                </div>
+                <div class="demo-info-panel">
+                    <h4>Event Log</h4>
+                    <div id="event-log" class="demo-log">Ready.</div>
+                </div>
+                <div class="demo-info-panel">
+                    <h4>Map Data</h4>
+                    <div id="map-stats" class="demo-info-content">—</div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section class="demo-section">
+        <h2 class="demo-section__title">Render Hooks</h2>
+        <p class="demo-section__desc">Custom rendering via <code>tilePainter</code>, <code>overlayProvider</code>, and <code>afterRender</code> hooks.</p>
+        <div class="demo-grid demo-grid--three">
+            <div class="demo-panel">
+                <div class="demo-panel__header">
+                    <h3>tilePainter</h3>
+                </div>
+                <div class="demo-panel__canvas demo-panel__canvas--short" id="hook-painter"></div>
+                <p class="demo-panel__caption">Gradient fills replacing default colours. Returned <code>true</code> prevents default rendering.</p>
+            </div>
+            <div class="demo-panel">
+                <div class="demo-panel__header">
+                    <h3>overlayProvider</h3>
+                </div>
+                <div class="demo-panel__canvas demo-panel__canvas--short" id="hook-overlay"></div>
+                <p class="demo-panel__caption">Per-hex colour tinting based on terrain type. Non-destructive overlay.</p>
+            </div>
+            <div class="demo-panel">
+                <div class="demo-panel__header">
+                    <h3>afterRender</h3>
+                </div>
+                <div class="demo-panel__canvas demo-panel__canvas--short" id="hook-after"></div>
+                <p class="demo-panel__caption">Drawing custom markers on top of rendered hexes. Full canvas context access.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <h2 class="demo-section__title">Multi-Style Comparison</h2>
+        <p class="demo-section__desc">Same seed, same game, different visual styles side by side.</p>
+        <div class="demo-grid demo-grid--four" id="style-compare"></div>
+    </section>
 
     <footer class="site-footer">
         <a href="https://moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>

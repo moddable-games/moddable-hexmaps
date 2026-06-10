@@ -344,22 +344,42 @@ export function createMapController(container, opts) {
         emit('regenerate', { hexes: hexes, seed: seed, size: size, players: players, layout: layout });
     }
 
+    function resolveImagePaths(imgMap) {
+        if (!basePath || basePath === defaultBasePath) return imgMap;
+        var resolved = {};
+        for (var key in imgMap) {
+            if (key === '_perHex') { resolved[key] = imgMap[key]; continue; }
+            var p = imgMap[key];
+            if (p && typeof p === 'string' && !p.match(/^https?:\/\//) && !p.match(/^\//)) {
+                resolved[key] = basePath + p;
+            } else {
+                resolved[key] = p;
+            }
+        }
+        return resolved;
+    }
+
     function loadImagesAndRender() {
         if (config.getImages) {
             var imgMap = config.getImages(style);
             if (imgMap && imgMap._perHex) {
-                images = imgMap;
+                images = resolveImagePaths(imgMap);
                 var perHexPaths = {};
                 for (var i = 0; i < hexes.length; i++) {
-                    if (hexes[i].imagePath) perHexPaths[hexes[i].imagePath] = hexes[i].imagePath;
+                    var hp = hexes[i].imagePath;
+                    if (hp) {
+                        var resolved = (basePath && basePath !== defaultBasePath && !hp.match(/^https?:\/\//) && !hp.match(/^\//)) ? basePath + hp : hp;
+                        hexes[i].imagePath = resolved;
+                        perHexPaths[resolved] = resolved;
+                    }
                 }
                 preloadImages(perHexPaths, function() {
                     fitToCanvas();
                     render();
                 });
             } else if (imgMap) {
-                images = imgMap;
-                preloadImages(imgMap, function() {
+                images = resolveImagePaths(imgMap);
+                preloadImages(images, function() {
                     fitToCanvas();
                     render();
                 });
