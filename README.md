@@ -42,11 +42,18 @@ js/                 — Engine source
   xorshift.js       — Seeded PRNG (XorShift128)
   hex-math.js       — Axial coordinate math, grid generation
   hex-renderer.js   — Canvas-based hex rendering
+  hex-svg.js        — SVG serialiser (toSVG, toAnnotatedSVG)
+  hex-svg-node.js   — Node.js entry point re-exporting engine modules
   games/            — Game plugins (one file per game)
     nukes.js        — Nukes: terrain gen, editor, ring-format export
     talisman.js     — Talisman: ring-based terrain pools
     twilight.js     — Twilight Imperium: multi-layout tile draw
     colony.js       — Colony: terrain + number tokens with constraints
+    mongo.js        — Planet Mongo: fixed 127-hex layout
+    endless.js      — Endless Skies: sector-based system assignment
+mcp/                — MCP (Model Context Protocol) server
+  tools.js          — Tool definitions + handleToolCall(name, args)
+  server.js         — Standalone stdio JSON-RPC server
 css/                — Stylesheets
   shared.css        — Shared nav/footer (matches moddable-chess)
   home.css          — Landing page styles (green theme)
@@ -81,11 +88,38 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 
 ---
 
+### MCP Server
+
+The engine is available as an MCP (Model Context Protocol) server for use with Claude Code, Claude Desktop, or any MCP-compatible client.
+
+**Local stdio server:**
+```bash
+node mcp/server.js
+```
+
+**Add to Claude Code:**
+```bash
+claude mcp add --transport stdio moddable-hexmaps node mcp/server.js
+```
+
+**Available tools:**
+
+| Tool | Description |
+|------|-------------|
+| `hex_list_games` | All available games with map types and layouts |
+| `hex_generate_map` | Game + seed → full hex grid with terrain data |
+| `hex_get_info` | Coord → terrain, adjacency, distances |
+| `hex_compute_fov` | Position + range → visible hexes (with blocking) |
+| `hex_export_svg` | Map → SVG string for rendering or embedding |
+| `hex_pathfind` | Start + end → shortest path through terrain |
+
+---
+
 ### URL Parameters
 
 | Param | Values | Description |
 |-------|--------|-------------|
-| `game` | nukes, talisman, twilight, colony | Game to generate |
+| `game` | nukes, talisman, twilight, colony, mongo, endless | Game to generate |
 | `seed` | any string | RNG seed for reproducible maps |
 | `size` | 2–6 | Ring count (hidden when layouts used) |
 | `players` | 2–8 | Player count for base placement |
@@ -100,6 +134,8 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 ### Changelog
 
 #### 2026-06-10
+- Add MCP server: 6 tools (list games, generate map, hex info, field-of-view, export SVG, pathfind)
+- Standalone stdio server at `mcp/server.js` for local use with Claude Code/Desktop
 - Migrate entire codebase to native ESM (no build step, no bundler)
 - Same source files work in browser (`<script type="module">`) and Node.js/Workers
 - Single entry point: `js/app.js` imports full module graph
