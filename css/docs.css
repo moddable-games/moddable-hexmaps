@@ -76,6 +76,22 @@ p, li { text-wrap: pretty; }
     margin-bottom: 8px;
 }
 
+.docs-body .docs-breadcrumb {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+}
+
+.docs-body .docs-breadcrumb a {
+    color: #2a5a3a;
+    text-decoration: none;
+}
+
+.docs-body .docs-breadcrumb a:hover {
+    color: #4cdf7a;
+}
+
 .docs-body .docs-lede {
     font-size: 1.05rem;
     color: #555;
