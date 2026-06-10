@@ -13,15 +13,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SVG Integration Guide — Moddable Hexmaps">
 <meta name="twitter:description" content="Export hex maps as SVG for docs, rulebooks, and external projects.">
-<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.1">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.1">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.8.0">
-<link rel="stylesheet" href="../css/shared.css?v=0.8.0">
-<link rel="stylesheet" href="../css/docs.css?v=0.8.0">
-<link rel="stylesheet" href="../css/prism-custom.css?v=0.8.0">
+<link rel="stylesheet" href="../css/variables.css?v=0.8.1">
+<link rel="stylesheet" href="../css/shared.css?v=0.8.1">
+<link rel="stylesheet" href="../css/docs.css?v=0.8.1">
+<link rel="stylesheet" href="../css/prism-custom.css?v=0.8.1">
 </head>
 <body>
 
@@ -166,7 +166,7 @@ var svg = HexSvg.toAnnotatedSVG(hexes, annotations, {
 
     <section id="print-pdf">
         <h2>Print and PDF Considerations</h2>
-        <p>SVG viewBox is auto-calculated from hex positions. Some PDF renderers (wkhtmltopdf, older Puppeteer) ignore viewBox and require explicit width/height attributes — these are included by default.</p>
+        <p>SVG viewBox is auto-calculated from hex positions. Some PDF renderers (wkhtmltopdf, older Puppeteer) ignore viewBox and require explicit width/height attributes. These are included by default.</p>
         <p>Tips for PDF output:</p>
         <ul>
             <li>Use <code>imageMode: 'embed'</code> so tiles render without network access</li>
@@ -193,7 +193,7 @@ var svg = HexSvg.toAnnotatedSVG(hexes, annotations, {
             <li>SVG markup is inserted into the rulebook page at the designated container</li>
             <li>Puppeteer renders the full page (including SVG maps) to PDF</li>
         </ol>
-        <p>This gives map illustrations that automatically update when the generator improves — no manual re-export needed. The seed guarantees the same board layout every time.</p>
+        <p>This gives map illustrations that automatically update when the generator improves. No manual re-export needed. The seed guarantees the same board layout every time.</p>
         <pre><code>// In the rulebook page
 var maps = document.querySelectorAll('[data-hexmap]');
 maps.forEach(function(container) {
@@ -240,10 +240,10 @@ maps.forEach(function(container) {
 
 <footer class="site-footer">
     <a href="https://moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.8.0</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.8.1</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.8.0"></script>
-<script src="../js/prism.js?v=0.8.0" data-manual></script>
-<script src="../js/prism-init.js?v=0.8.0"></script>
+<script src="../js/docs-toc.js?v=0.8.1"></script>
+<script src="../js/prism.js?v=0.8.1" data-manual></script>
+<script src="../js/prism-init.js?v=0.8.1"></script>
 </body>
 </html>

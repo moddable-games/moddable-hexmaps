@@ -13,15 +13,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="API Reference — Moddable Hexmaps">
 <meta name="twitter:description" content="Complete API reference for the Moddable Hexmaps engine.">
-<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.1">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.1">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.8.0">
-<link rel="stylesheet" href="../css/shared.css?v=0.8.0">
-<link rel="stylesheet" href="../css/docs.css?v=0.8.0">
-<link rel="stylesheet" href="../css/prism-custom.css?v=0.8.0">
+<link rel="stylesheet" href="../css/variables.css?v=0.8.1">
+<link rel="stylesheet" href="../css/shared.css?v=0.8.1">
+<link rel="stylesheet" href="../css/docs.css?v=0.8.1">
+<link rel="stylesheet" href="../css/prism-custom.css?v=0.8.1">
 </head>
 <body>
 
@@ -51,7 +51,7 @@
             <p>Canvas-based hexagonal grid renderer. All methods are on the <code>HexRenderer</code> global object.</p>
 
             <h3>HexRenderer.create(canvasId, options)</h3>
-            <p>Creates a renderer instance bound to a canvas element. Only one renderer can be active at a time — creating a new one cleans up the previous.</p>
+            <p>Creates a renderer instance bound to a canvas element. Only one renderer can be active at a time. Creating a new one cleans up the previous.</p>
             <pre><code>var renderer = HexRenderer.create('hex-canvas', {
   hexSize: 40,
   flat: false,
@@ -89,7 +89,7 @@
             <p>Recalculates hex size and offset to fit all hexes within the current canvas dimensions. Called automatically by <code>setHexes</code> and <code>resize</code>.</p>
 
             <h3>HexRenderer.preloadImages(imagePaths, callback)</h3>
-            <p>Preloads tile images for artistic rendering. <code>imagePaths</code> is an object mapping keys to URL strings. Callback fires when all images are loaded (or failed). Images are cached globally — calling twice with the same paths is a no-op.</p>
+            <p>Preloads tile images for artistic rendering. <code>imagePaths</code> is an object mapping keys to URL strings. Callback fires when all images are loaded (or failed). Images are cached globally; calling twice with the same paths is a no-op.</p>
             <pre><code>HexRenderer.preloadImages({
   water: 'img/tiles/nukes/water.png',
   trees: 'img/tiles/nukes/trees.png'
@@ -239,7 +239,7 @@ rng.integer(0, 5);  // deterministic result</code></pre>
   width="500" height="400" style="border:none"
 &gt;&lt;/iframe&gt;</code></pre>
 
-            <p>Full UI link (no embed — opens the generator directly):</p>
+            <p>Full UI link (opens the generator directly, no embed):</p>
             <pre><code>https://hex.moddable.games/generate/?game=talisman&amp;size=5&amp;seed=999</code></pre>
         </section>
 
@@ -344,7 +344,7 @@ iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
 
         <section id="hex-svg">
             <h2>HexSvg</h2>
-            <p>SVG serialiser for hex maps. Produces standalone SVG documents from hex data arrays — used by the Export SVG button and the <code>hexmap:exportSvg</code> postMessage command.</p>
+            <p>SVG serialiser for hex maps. Produces standalone SVG documents from hex data arrays. Used by the Export SVG button and the <code>hexmap:exportSvg</code> postMessage command.</p>
 
             <h3>HexSvg.toSVG(hexes, options)</h3>
             <p>Render a hex map to an SVG string.</p>
@@ -516,7 +516,7 @@ const map = HexApp.createMapController(container, { game: 'nukes' });</code></pr
 });</code></pre>
 
             <h3>Multi-instance</h3>
-            <p>Each controller is fully independent — own canvas, own state, own image cache. Multiple maps on one page work without interference.</p>
+            <p>Each controller is fully independent: own canvas, own state, own image cache. Multiple maps on one page work without interference.</p>
             <pre><code>const map1 = HexApp.createMapController(el1, { game: 'nukes', seed: 'a' });
 const map2 = HexApp.createMapController(el2, { game: 'twilight', seed: 'b' });
 // Both render independently; destroying one does not affect the other</code></pre>
@@ -575,10 +575,10 @@ claude mcp add --transport stdio moddable-hexmaps node mcp/server.js</code></pre
 
 <footer class="site-footer">
     <a href="https://moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.8.0</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.8.1</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.8.0"></script>
-<script src="../js/prism.js?v=0.8.0" data-manual></script>
-<script src="../js/prism-init.js?v=0.8.0"></script>
+<script src="../js/docs-toc.js?v=0.8.1"></script>
+<script src="../js/prism.js?v=0.8.1" data-manual></script>
+<script src="../js/prism-init.js?v=0.8.1"></script>
 </body>
 </html>

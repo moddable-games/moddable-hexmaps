@@ -1,8 +1,13 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
     font-family: var(--mg-font-body, 'Barlow', system-ui, sans-serif);
     background: #fafaf8;
     color: #14161c;
     overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .site-footer {
@@ -63,6 +68,7 @@ body {
 
 .demo-section:last-of-type {
     padding-bottom: 48px;
+    flex-grow: 1;
 }
 
 .demo-section__title {
