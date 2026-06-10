@@ -337,9 +337,113 @@ a { color: inherit; text-decoration: none; }
     line-height: 1.5;
 }
 
+/* AI Integration section */
+.hx-ai {
+    background: #030b1a;
+    padding: 80px 24px;
+    border-top: 1px solid rgba(58,153,40,0.15);
+}
+.hx-ai__inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+.hx-ai__eyebrow {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--hx-glow, #3a9928);
+    margin-bottom: 12px;
+}
+.hx-ai__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+}
+.hx-ai__text {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 32px;
+}
+.hx-ai__connect {
+    margin-bottom: 40px;
+}
+.hx-ai__code-block {
+    position: relative;
+    background: #0a1520;
+    border: 1px solid rgba(58,153,40,0.25);
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-align: left;
+    overflow-x: auto;
+}
+.hx-ai__code-block code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #3a9928;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+.hx-ai__copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #3a9928;
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    padding: 5px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.hx-ai__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    text-align: left;
+    margin-bottom: 32px;
+}
+.hx-ai-card {
+    background: #0a1520;
+    border: 1px solid rgba(58,153,40,0.12);
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color 0.2s;
+}
+.hx-ai-card:hover {
+    border-color: rgba(58,153,40,0.4);
+}
+.hx-ai-card__icon {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+}
+.hx-ai-card__name {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+.hx-ai-card__desc {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+}
+.hx-ai__btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 @media (max-width: 640px) {
     .hx-hero { padding: 80px 16px 60px; }
     .hx-games { padding: 48px 16px; }
     .hx-dev { padding: 48px 16px; }
+    .hx-ai { padding: 48px 16px; }
+    .hx-ai__grid { grid-template-columns: 1fr; }
     .hx-sister { padding: 48px 16px 60px; }
 }

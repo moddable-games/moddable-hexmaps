@@ -163,6 +163,49 @@ HexApp.registerGame('mygame', {<br>
     </div>
 </section>
 
+<section class="hx-ai">
+    <div class="hx-ai__inner">
+        <div class="hx-ai__eyebrow">AI INTEGRATION</div>
+        <h2 class="hx-ai__title">Generate maps with Claude.</h2>
+        <p class="hx-ai__text">Connect in one command. Claude can generate hex maps, compute field-of-view, find paths, export SVGs, and inspect terrain for any supported game.</p>
+
+        <div class="hx-ai__connect">
+            <div class="hx-ai__code-block">
+                <code>claude mcp add --transport http moddable-tools https://tools.moddable.games/mcp</code>
+                <button class="hx-ai__copy" onclick="navigator.clipboard.writeText('claude mcp add --transport http moddable-tools https://tools.moddable.games/mcp');this.textContent='Copied';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+            </div>
+        </div>
+
+        <div class="hx-ai__grid">
+            <div class="hx-ai-card">
+                <div class="hx-ai-card__icon">&#127758;</div>
+                <div class="hx-ai-card__name">Map Generation</div>
+                <p class="hx-ai-card__desc">Generate seeded hex maps for any game with configurable size, players, and layout.</p>
+            </div>
+            <div class="hx-ai-card">
+                <div class="hx-ai-card__icon">&#128065;</div>
+                <div class="hx-ai-card__name">Field of View</div>
+                <p class="hx-ai-card__desc">Compute line-of-sight from any position with terrain blocking.</p>
+            </div>
+            <div class="hx-ai-card">
+                <div class="hx-ai-card__icon">&#128204;</div>
+                <div class="hx-ai-card__name">Pathfinding</div>
+                <p class="hx-ai-card__desc">Find shortest paths between hexes avoiding impassable terrain.</p>
+            </div>
+            <div class="hx-ai-card">
+                <div class="hx-ai-card__icon">&#128444;</div>
+                <div class="hx-ai-card__name">SVG Export</div>
+                <p class="hx-ai-card__desc">Render maps as SVG strings for embedding in bots, docs, or web apps.</p>
+            </div>
+        </div>
+
+        <div class="hx-ai__btns">
+            <a href="https://tools.moddable.games/" target="_blank" rel="noopener" class="hx-btn hx-btn--primary">View API Docs</a>
+            <a href="https://web.moddable.games/developers/" target="_blank" rel="noopener" class="hx-btn hx-btn--outline">Developer Guide</a>
+        </div>
+    </div>
+</section>
+
 <section class="hx-sister">
     <div class="hx-sister__inner">
         <div class="hx-sister__eyebrow">MODDABLE ENGINES</div>
