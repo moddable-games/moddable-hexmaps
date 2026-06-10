@@ -18,7 +18,7 @@
     Prism.highlightAll();
   }
 
-  document.querySelectorAll('pre[class*="language-"]').forEach(function(pre) {
+  document.querySelectorAll('pre[class*="language-"]').forEach(function(pre, index) {
     var btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.textContent = 'Copy';
@@ -27,6 +27,10 @@
       var code = pre.querySelector('code');
       var text = code ? code.textContent : pre.textContent;
       navigator.clipboard.writeText(text).then(function() {
+        if (typeof window.gtag === 'function') {
+          var page = window.location.pathname.split('/').pop() || 'index';
+          window.gtag('event', 'code_copy', { page: page, snippet_index: index });
+        }
         btn.textContent = 'Copied';
         btn.classList.add('copied');
         setTimeout(function() {

@@ -1,6 +1,18 @@
 'use strict';
 (function() {
 
+var fromPage = window.location.pathname.split('/').pop() || 'index';
+document.addEventListener('click', function(e) {
+  var link = e.target.closest('a[href]');
+  if (!link) return;
+  var href = link.getAttribute('href');
+  if (!href || href.startsWith('#') || href.startsWith('http')) return;
+  var toPage = href.split('/').pop().split('?')[0].split('#')[0] || 'index';
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'docs_navigate', { from_page: fromPage, to_page: toPage });
+  }
+});
+
 var tocEl = document.getElementById('docs-toc');
 var body = document.querySelector('.docs-body');
 if (!tocEl || !body) return;

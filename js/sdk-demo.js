@@ -7,6 +7,10 @@ import './games/colony.js';
 import './games/mongo.js';
 import './games/endless.js';
 
+function track(action) {
+    if (typeof window.gtag === 'function') window.gtag('event', 'sdk_demo_interact', { action: action });
+}
+
 var GAMES = [
     { key: 'nukes', label: 'Nukes', bg: '#1a2e1f', size: 4, players: 4 },
     { key: 'talisman', label: 'Talisman Worlds', bg: '#1a1e2e', size: 4, players: 0 },
@@ -49,6 +53,7 @@ function buildGallery() {
                 btn.addEventListener('click', function() {
                     bar.querySelectorAll('.demo-style-btn').forEach(function(b) { b.classList.remove('active'); });
                     btn.classList.add('active');
+                    track('gallery_style_' + s);
                     galleryMaps[g.key].setStyle(s);
                 });
                 bar.appendChild(btn);
@@ -114,12 +119,14 @@ function buildControlMap() {
 
     document.getElementById('btn-seed').addEventListener('click', function() {
         var seed = document.getElementById('seed-input').value || 'default';
+        track('set_seed');
         controlMap.regenerate({ seed: seed });
     });
 
     document.getElementById('btn-randomise').addEventListener('click', function() {
         var seed = 'rng-' + Date.now();
         document.getElementById('seed-input').value = seed;
+        track('randomise');
         controlMap.regenerate({ seed: seed });
     });
 
@@ -127,11 +134,13 @@ function buildControlMap() {
         var hexes = controlMap.getHexData();
         var water = hexes.filter(function(h) { return h.type === 'water'; });
         controlMap.highlightHexes(water, { color: '#00bcd4', opacity: 0.35 });
+        track('highlight');
         logEvent('highlighted ' + water.length + ' water hexes');
     });
 
     document.getElementById('btn-clear-hl').addEventListener('click', function() {
         controlMap.clearHighlights();
+        track('clear_highlights');
         logEvent('highlights cleared');
     });
 
@@ -140,6 +149,7 @@ function buildControlMap() {
         var btn = document.getElementById('btn-edit-mode');
         btn.textContent = 'Edit Mode: ' + (editMode ? 'On' : 'Off');
         btn.classList.toggle('demo-btn--active', editMode);
+        track('toggle_edit_mode');
         logEvent('edit mode ' + (editMode ? 'enabled' : 'disabled'));
     });
 
@@ -147,12 +157,14 @@ function buildControlMap() {
         var svg = controlMap.exportSVG();
         var blob = new Blob([svg], { type: 'image/svg+xml' });
         downloadBlob(blob, 'hexmap.svg');
+        track('export_svg');
         logEvent('exported SVG (' + svg.length + ' bytes)');
     });
 
     document.getElementById('btn-export-png').addEventListener('click', function() {
         controlMap.exportPNG({ scale: 2, bgColor: '#1a2e1f' }).then(function(blob) {
             downloadBlob(blob, 'hexmap.png');
+            track('export_png');
             logEvent('exported PNG');
         });
     });

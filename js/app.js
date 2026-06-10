@@ -9,6 +9,10 @@ import './games/colony.js';
 import './games/mongo.js';
 import './games/endless.js';
 
+function track(event, params) {
+    if (typeof window.gtag === 'function') window.gtag('event', event, params || {});
+}
+
 var renderer = null;
 var currentGame = null;
 var currentSeed = null;
@@ -205,6 +209,7 @@ function setupControls() {
     var seedInput = document.getElementById('seed-input');
     seedInput.addEventListener('input', function() {
         currentSeed = this.value || String(Math.floor(Date.now() / 9876));
+        track('map_generate', { game_name: currentGame, seed: currentSeed, ring_count: currentSize });
         regenerateMap();
         updateUrl();
     });
@@ -229,6 +234,7 @@ function setupControls() {
     var layoutSelect = document.getElementById('layout-select');
     layoutSelect.addEventListener('change', function() {
         currentLayout = this.value;
+        track('layout_select', { game_name: currentGame, layout_name: currentLayout });
         updatePlayersForSize();
         regenerateMap();
         updateUrl();
@@ -239,6 +245,7 @@ function setupControls() {
     styleSelect.addEventListener('change', function() {
         currentStyle = this.value;
         gameStyles[currentGame] = currentStyle;
+        track('style_change', { style_name: currentStyle, game_name: currentGame });
         applyStyle();
         updateUrl();
     });
@@ -247,26 +254,39 @@ function setupControls() {
     randomBtn.addEventListener('click', function() {
         currentSeed = String(Date.now());
         document.getElementById('seed-input').value = currentSeed;
+        track('map_generate', { game_name: currentGame, seed: currentSeed, ring_count: currentSize });
         regenerateMap();
         updateUrl();
     });
 
     var exportBtn = document.getElementById('export-btn');
-    exportBtn.addEventListener('click', function() { exportMap(); });
+    exportBtn.addEventListener('click', function() {
+        track('export_json', { game_name: currentGame, seed: currentSeed });
+        exportMap();
+    });
 
     var exportSvgBtn = document.getElementById('export-svg-btn');
     if (exportSvgBtn) {
-        exportSvgBtn.addEventListener('click', function() { exportSvg(); });
+        exportSvgBtn.addEventListener('click', function() {
+            track('export_svg', { game_name: currentGame, seed: currentSeed });
+            exportSvg();
+        });
     }
 
     var exportPngBtn = document.getElementById('export-png-btn');
     if (exportPngBtn) {
-        exportPngBtn.addEventListener('click', function() { exportPng(); });
+        exportPngBtn.addEventListener('click', function() {
+            track('export_png', { game_name: currentGame, seed: currentSeed });
+            exportPng();
+        });
     }
 
     var exportPdfBtn = document.getElementById('export-pdf-btn');
     if (exportPdfBtn) {
-        exportPdfBtn.addEventListener('click', function() { exportPdf(); });
+        exportPdfBtn.addEventListener('click', function() {
+            track('export_pdf', { game_name: currentGame, seed: currentSeed });
+            exportPdf();
+        });
     }
 
     var importBtn = document.getElementById('import-btn');
@@ -380,6 +400,7 @@ function loadGame(game, size, players) {
 }
 
 function switchGame(game) {
+    track('game_select', { game_name: game });
     currentGame = game;
     currentPlayers = 0;
 
@@ -486,6 +507,7 @@ function onHexClick(hex) {
 
     var config = getGameConfig(currentGame);
     if (config && config.onHexClick) {
+        track('hex_edit', { game_name: currentGame });
         config.onHexClick(hex);
         HexRenderer.render(renderer);
     }

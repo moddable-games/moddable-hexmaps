@@ -161,6 +161,7 @@ Full API reference: [docs/api.html](docs/api.html#consumer-sdk) | Live demo: [do
 ### Changelog
 
 #### 2026-06-10
+- Add GA4 event tracking to all user interactions (game select, style, generate, exports, hex edit, layout, docs nav, code copy, SDK demo, outbound clicks)
 - Fix SDK demo page layout (missing CSS reset caused nav/footer white space)
 - Add `text-wrap: balance` to homepage hero, section intros, and card descriptions
 - Remove em dashes from paragraph text across all docs pages
