@@ -13,14 +13,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="API Reference — Moddable Hexmaps">
 <meta name="twitter:description" content="Complete API reference for the Moddable Hexmaps engine.">
-<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.7.0">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.7.0">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.7.0">
-<link rel="stylesheet" href="../css/shared.css?v=0.7.0">
-<link rel="stylesheet" href="../css/docs.css?v=0.7.0">
+<link rel="stylesheet" href="../css/variables.css?v=0.8.0">
+<link rel="stylesheet" href="../css/shared.css?v=0.8.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.8.0">
 </head>
 <body>
 
@@ -413,13 +413,119 @@ iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
 }</code></pre>
             <p>Currently used by Talisman (55 terrain descriptions). Other games can add descriptions using the same interface.</p>
         </section>
+
+        <section id="consumer-sdk">
+            <h2>Consumer SDK</h2>
+            <p>Embed and control hex maps programmatically without iframes. Mount a fully interactive map controller into any DOM container.</p>
+
+            <h3>Quick start</h3>
+            <pre><code>&lt;div id="my-map" style="width:600px;height:400px"&gt;&lt;/div&gt;
+&lt;script type="module"&gt;
+import './js/hex-controller-entry.js';
+
+const map = HexApp.createMapController(
+  document.getElementById('my-map'),
+  { game: 'nukes', seed: '42', size: 4, players: 4 }
+);
+&lt;/script&gt;</code></pre>
+            <p>Or import selectively (only the games you need):</p>
+            <pre><code>import { HexApp } from './js/game-registry.js';
+import './js/hex-controller.js';
+import './js/games/nukes.js';
+
+const map = HexApp.createMapController(container, { game: 'nukes' });</code></pre>
+
+            <h3>HexApp.createMapController(container, options)</h3>
+            <p>Factory function. Creates a canvas inside the container, generates the initial map, and returns a controller object.</p>
+            <table>
+                <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>game</code></td><td>string</td><td>(required)</td><td>Registered game key</td></tr>
+                    <tr><td><code>seed</code></td><td>string|number</td><td>Date.now()</td><td>RNG seed for reproducible generation</td></tr>
+                    <tr><td><code>size</code></td><td>number</td><td>game default</td><td>Ring count / map size</td></tr>
+                    <tr><td><code>players</code></td><td>number</td><td>game default</td><td>Player count</td></tr>
+                    <tr><td><code>layout</code></td><td>string</td><td>game default</td><td>Layout variant (for games with layouts)</td></tr>
+                    <tr><td><code>style</code></td><td>string</td><td>first available</td><td>Visual style (classic, kenney, etc.)</td></tr>
+                    <tr><td><code>interactive</code></td><td>boolean</td><td>true</td><td>Enable hover/click interaction</td></tr>
+                    <tr><td><code>bgColor</code></td><td>string</td><td>null</td><td>Canvas background colour</td></tr>
+                    <tr><td><code>hooks</code></td><td>object</td><td>{}</td><td>Render hooks (see below)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Controller methods</h3>
+            <table>
+                <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>regenerate(opts)</code></td><td>void</td><td>Regenerate with new seed/size/players/layout</td></tr>
+                    <tr><td><code>setStyle(style)</code></td><td>void</td><td>Switch visual style and re-render</td></tr>
+                    <tr><td><code>getHexData()</code></td><td>array</td><td>Returns a copy of the hex array</td></tr>
+                    <tr><td><code>getHexAt(q, r)</code></td><td>object|null</td><td>Look up a single hex by coordinates</td></tr>
+                    <tr><td><code>setHexType(q, r, type)</code></td><td>void</td><td>Change a hex's terrain type and re-render</td></tr>
+                    <tr><td><code>highlightHexes(coords, opts)</code></td><td>void</td><td>Add translucent overlays. opts: { color, opacity }</td></tr>
+                    <tr><td><code>clearHighlights()</code></td><td>void</td><td>Remove all highlights</td></tr>
+                    <tr><td><code>exportSVG(opts)</code></td><td>string</td><td>Export current map as SVG markup</td></tr>
+                    <tr><td><code>exportPNG(opts)</code></td><td>Promise&lt;Blob&gt;</td><td>Export as PNG blob. opts: { scale, bgColor }</td></tr>
+                    <tr><td><code>on(event, fn)</code></td><td>void</td><td>Subscribe to an event</td></tr>
+                    <tr><td><code>off(event, fn)</code></td><td>void</td><td>Unsubscribe from an event</td></tr>
+                    <tr><td><code>resize()</code></td><td>void</td><td>Force resize (auto via ResizeObserver)</td></tr>
+                    <tr><td><code>render()</code></td><td>void</td><td>Force a re-render</td></tr>
+                    <tr><td><code>destroy()</code></td><td>void</td><td>Remove canvas, detach listeners, free memory</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Events</h3>
+            <table>
+                <thead><tr><th>Event</th><th>Payload</th></tr></thead>
+                <tbody>
+                    <tr><td><code>hexClick</code></td><td><code>{ hex, event }</code></td></tr>
+                    <tr><td><code>hexHover</code></td><td><code>{ hex, event }</code></td></tr>
+                    <tr><td><code>hexLeave</code></td><td><code>{}</code></td></tr>
+                    <tr><td><code>regenerate</code></td><td><code>{ hexes, seed, size, players, layout }</code></td></tr>
+                    <tr><td><code>styleChange</code></td><td><code>{ style }</code></td></tr>
+                    <tr><td><code>destroy</code></td><td><code>{}</code></td></tr>
+                </tbody>
+            </table>
+
+            <h3>Render hooks</h3>
+            <p>Hooks receive the canvas 2D context and are called during the render loop.</p>
+            <pre><code>const map = HexApp.createMapController(container, {
+  game: 'nukes',
+  hooks: {
+    tilePainter: function(ctx, hex, bounds) {
+      // Return true to replace default rendering
+      if (hex.type === 'base') {
+        ctx.fillStyle = '#ff0';
+        ctx.fill();
+        return true;
+      }
+      return false;
+    },
+    overlayProvider: function(hex) {
+      // Return { color, opacity } to tint a hex
+      if (hex.type === 'water') return { color: '#00bcd4', opacity: 0.2 };
+      return null;
+    },
+    afterRender: function(ctx, hexes, controller) {
+      // Draw tokens, labels, or any custom overlay
+    }
+  }
+});</code></pre>
+
+            <h3>Multi-instance</h3>
+            <p>Each controller is fully independent — own canvas, own state, own image cache. Multiple maps on one page work without interference.</p>
+            <pre><code>const map1 = HexApp.createMapController(el1, { game: 'nukes', seed: 'a' });
+const map2 = HexApp.createMapController(el2, { game: 'twilight', seed: 'b' });
+// Both render independently; destroying one does not affect the other</code></pre>
+
+            <p><a href="sdk-demo.html">Live SDK demo</a> — two maps with hooks, events, and programmatic control.</p>
+        </section>
 </div>
 </div>
 
 <footer class="site-footer">
     <a href="https://moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.7.0</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.8.0</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.7.0"></script>
+<script src="../js/docs-toc.js?v=0.8.0"></script>
 </body>
 </html>

@@ -39,6 +39,8 @@ docs/               — Documentation
 js/                 — Engine source
   game-registry.js  — Plugin registry (HexApp.registerGame API)
   app.js            — Framework controller (sidebar, tabs, URL, embed bridge)
+  hex-controller.js — Consumer SDK (createMapController factory)
+  hex-controller-entry.js — Convenience entry (imports all games + exposes window.HexApp)
   xorshift.js       — Seeded PRNG (XorShift128)
   hex-math.js       — Axial coordinate math, grid generation
   hex-renderer.js   — Canvas-based hex rendering
@@ -115,6 +117,31 @@ claude mcp add --transport stdio moddable-hexmaps node mcp/server.js
 
 ---
 
+### Consumer SDK
+
+Embed and control hex maps programmatically without iframes:
+
+```html
+<div id="map" style="width:600px;height:400px"></div>
+<script type="module">
+import './js/hex-controller-entry.js';
+
+const map = HexApp.createMapController(
+  document.getElementById('map'),
+  { game: 'nukes', seed: '42', size: 4, players: 4 }
+);
+
+map.on('hexClick', (e) => console.log(e.hex));
+map.regenerate({ seed: 'new' });
+map.exportSVG();
+map.destroy();
+</script>
+```
+
+Full API reference: [docs/api.html](docs/api.html#consumer-sdk) | Live demo: [docs/sdk-demo.html](docs/sdk-demo.html)
+
+---
+
 ### URL Parameters
 
 | Param | Values | Description |
@@ -134,6 +161,12 @@ claude mcp add --transport stdio moddable-hexmaps node mcp/server.js
 ### Changelog
 
 #### 2026-06-10
+- Consumer SDK: `HexApp.createMapController(container, opts)` for embedding maps without iframes
+- Render hooks: `afterRender`, `tilePainter`, `overlayProvider` for custom drawing
+- Events: `hexClick`, `hexHover`, `hexLeave`, `regenerate`, `styleChange`, `destroy`
+- Multi-instance support: independent canvas, state, and image cache per controller
+- SDK demo page with two interactive maps demonstrating hooks and events
+- API docs: full Consumer SDK section (options, methods, events, hooks)
 - Add MCP server: 6 tools (list games, generate map, hex info, field-of-view, export SVG, pathfind)
 - Standalone stdio server at `mcp/server.js` for local use with Claude Code/Desktop
 - Migrate entire codebase to native ESM (no build step, no bundler)

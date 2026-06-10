@@ -13,14 +13,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Docs — Moddable Hexmaps">
 <meta name="twitter:description" content="Documentation for the Moddable Hexmaps engine. URL parameters, game configs, embedding.">
-<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.7.0">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.7.0">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.8.0">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.7.0">
-<link rel="stylesheet" href="../css/shared.css?v=0.7.0">
-<link rel="stylesheet" href="../css/docs.css?v=0.7.0">
+<link rel="stylesheet" href="../css/variables.css?v=0.8.0">
+<link rel="stylesheet" href="../css/shared.css?v=0.8.0">
+<link rel="stylesheet" href="../css/docs.css?v=0.8.0">
 </head>
 <body>
 
@@ -108,6 +108,18 @@
             <pre><code>https://hex.moddable.games/generate/?game=twilight&amp;mode=fullscreen&amp;players=6</code></pre>
         </section>
 
+        <section id="consumer-sdk">
+            <h2>Consumer SDK</h2>
+            <p>Embed and control hex maps programmatically without iframes. The SDK provides a <code>createMapController</code> factory that mounts an interactive canvas into any container element.</p>
+            <pre><code>import './js/hex-controller-entry.js';
+
+const map = HexApp.createMapController(container, {
+  game: 'nukes', seed: '42', size: 4, players: 4
+});
+map.on('hexClick', (e) => console.log(e.hex));</code></pre>
+            <p>Full reference: <a href="api.html#consumer-sdk">API docs</a> | <a href="sdk-demo.html">Live demo</a></p>
+        </section>
+
         <section id="games">
             <h2>Games</h2>
 
@@ -134,6 +146,7 @@
             <h2>Architecture</h2>
             <pre><code>js/game-registry.js  — Plugin registry (HexApp.registerGame API)
 js/app.js            — Framework controller (sidebar, tabs, URL, embed bridge)
+js/hex-controller.js — Consumer SDK (createMapController factory)
 js/games/            — Game plugins (one file per game)
   nukes.js           — Nukes: terrain gen, editor, ring-format export
   talisman.js        — Talisman: ring-based terrain pools
@@ -237,8 +250,8 @@ img/tiles/           — Committed tile images per game and style</code></pre>
 
 <footer class="site-footer">
     <a href="https://moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.7.0</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.8.0</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.7.0"></script>
+<script src="../js/docs-toc.js?v=0.8.0"></script>
 </body>
 </html>

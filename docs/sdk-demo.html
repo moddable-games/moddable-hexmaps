@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDK Demo — Moddable Hexmaps</title>
+    <link rel="stylesheet" href="../css/variables.css?v=0.8.0">
+    <link rel="stylesheet" href="../css/shared.css?v=0.8.0">
+    <link rel="stylesheet" href="../css/sdk-demo.css?v=0.8.0">
+</head>
+<body>
+
+<nav class="site-nav">
+    <a href="../" class="site-nav__brand">
+        <img src="../assets/cube.svg" class="site-nav__cube" alt="">
+        <span class="site-nav__wordmark">Moddable Hexmaps</span>
+    </a>
+    <div class="site-nav__links">
+        <a href="../generate/">Generate</a>
+        <a href="./">Docs</a>
+        <a href="api.html">API</a>
+        <a href="guide.html">Guides</a>
+        <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</nav>
+
+    <div class="page-header">
+        <h1>Consumer SDK Demo</h1>
+        <p>Two independent map controllers on one page, with hooks and events</p>
+    </div>
+
+    <div class="demo-grid">
+        <div class="demo-panel">
+            <div class="demo-panel__header">
+                <h3>Nukes (interactive + overlayProvider)</h3>
+                <div class="demo-controls">
+                    <button class="demo-btn" id="btn-regen-1">Regenerate</button>
+                    <button class="demo-btn" id="btn-style-1">Toggle Style</button>
+                    <button class="demo-btn" id="btn-destroy-1">Destroy</button>
+                </div>
+            </div>
+            <div class="demo-panel__canvas" id="map-1"></div>
+            <div class="demo-panel__log" id="log-1">Ready.</div>
+        </div>
+
+        <div class="demo-panel">
+            <div class="demo-panel__header">
+                <h3>Twilight (afterRender hook)</h3>
+                <div class="demo-controls">
+                    <button class="demo-btn" id="btn-regen-2">Regenerate</button>
+                    <button class="demo-btn" id="btn-highlight-2">Highlight Ring 1</button>
+                    <button class="demo-btn" id="btn-clear-2">Clear</button>
+                </div>
+            </div>
+            <div class="demo-panel__canvas" id="map-2"></div>
+            <div class="demo-panel__log" id="log-2">Ready.</div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/sdk-demo.js"></script>
+</body>
+</html>
