@@ -84,7 +84,7 @@ Or open `index.html` directly.
 
 GitHub Pages at `hex.moddable.games`
 
-Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see also: [Moddable Chess](https://chess.moddable.games))
+Part of the [Moddable Engines](https://moddable.games/engines/) family (see also: [Moddable Chess](https://chess.moddable.games))
 
 ---
 
