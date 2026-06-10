@@ -89,6 +89,24 @@ h1, h2, h3, p, li { text-wrap: pretty; }
     overflow: hidden;
 }
 
+.canvas-footer__fullscreen {
+    background: none;
+    border: 1px solid var(--hx-border);
+    border-radius: 4px;
+    color: var(--hx-text-mute);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: var(--hx-font-body, sans-serif);
+    padding: 3px 8px;
+    margin-left: 12px;
+    line-height: 1;
+    transition: color 0.2s, border-color 0.2s;
+}
+.canvas-footer__fullscreen:hover {
+    color: var(--hx-accent);
+    border-color: var(--hx-accent);
+}
+
 .canvas-footer #hex-info {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -348,6 +366,16 @@ body.embed-mode .canvas-wrap canvas {
     top: 0;
     left: 0;
     cursor: default;
+}
+
+.fullscreen-mode {
+    overflow: hidden;
+}
+.fullscreen-mode .canvas-area {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--hx-bg, #1a1a2e);
 }
 
 .fullscreen-exit {

@@ -10,6 +10,7 @@
     var hexData = [];
 
     var embedMode = false;
+    var fullscreenMode = false;
     var viewOnly = false;
     var embedBgColor = null;
 
@@ -27,7 +28,7 @@
         var bgColor = params.get('bg');
         var mode = params.get('mode');
 
-        var fullscreenMode = mode === 'fullscreen';
+        fullscreenMode = mode === 'fullscreen';
         embedMode = boardOnly || fullscreenMode;
         viewOnly = mode === 'view' || mode === 'fullscreen' || (boardOnly && mode !== 'edit');
 
@@ -118,35 +119,54 @@
 
     function applyFullscreenMode() {
         document.body.classList.add('fullscreen-mode');
-        var wrap = document.querySelector('.canvas-wrap');
-        if (wrap) {
-            wrap.style.position = 'fixed';
-            wrap.style.inset = '0';
-            wrap.style.zIndex = '9999';
-        }
+
+        document.querySelectorAll('.site-nav, .sidebar, .site-footer, .game-tabs-bar, .canvas-footer').forEach(function(el) {
+            el.style.display = 'none';
+        });
+
         var exitBtn = document.createElement('button');
         exitBtn.className = 'fullscreen-exit';
         exitBtn.textContent = 'Exit';
-        exitBtn.addEventListener('click', function() {
-            if (document.fullscreenElement) document.exitFullscreen();
-            var url = new URL(window.location.href);
-            url.searchParams.delete('mode');
-            window.location.href = url.toString();
-        });
+        exitBtn.addEventListener('click', exitFullscreenMode);
         document.body.appendChild(exitBtn);
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                if (document.fullscreenElement) document.exitFullscreen();
-                var url = new URL(window.location.href);
-                url.searchParams.delete('mode');
-                window.location.href = url.toString();
-            }
+
+        document.addEventListener('keydown', fullscreenEscHandler);
+
+        if (renderer) {
+            renderer.fitScale = 0.98;
+            renderer.useViewport = true;
+            setTimeout(function() { HexRenderer.resize(renderer); }, 50);
+            setTimeout(function() { HexRenderer.resize(renderer); }, 200);
+        }
+    }
+
+    function exitFullscreenMode() {
+        fullscreenMode = false;
+        embedMode = false;
+        viewOnly = false;
+        document.body.classList.remove('fullscreen-mode');
+
+        document.querySelectorAll('.site-nav, .sidebar, .site-footer, .game-tabs-bar, .canvas-footer').forEach(function(el) {
+            el.style.display = '';
         });
-        setTimeout(function() {
-            var el = document.documentElement;
-            if (el.requestFullscreen) el.requestFullscreen();
-            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        }, 300);
+
+        var btn = document.querySelector('.fullscreen-exit');
+        if (btn) btn.remove();
+
+        document.removeEventListener('keydown', fullscreenEscHandler);
+
+        renderer.fitScale = 0.9;
+        renderer.useViewport = false;
+
+        var url = new URL(window.location.href);
+        url.searchParams.delete('mode');
+        history.replaceState(null, '', url);
+
+        HexRenderer.resize(renderer);
+    }
+
+    function fullscreenEscHandler(e) {
+        if (e.key === 'Escape') exitFullscreenMode();
     }
 
     function setupGameSelector(activeGame) {
@@ -249,6 +269,19 @@
                 navigator.clipboard.writeText(textarea.value);
             }
         });
+
+        var fullscreenBtn = document.getElementById('fullscreen-btn');
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', function() {
+                fullscreenMode = true;
+                embedMode = true;
+                viewOnly = true;
+                var url = new URL(window.location.href);
+                url.searchParams.set('mode', 'fullscreen');
+                history.replaceState(null, '', url);
+                applyFullscreenMode();
+            });
+        }
     }
 
     function setupSidebarTabs() {

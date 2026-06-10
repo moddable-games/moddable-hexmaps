@@ -13,14 +13,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="API Reference — Moddable Hexmaps">
 <meta name="twitter:description" content="Complete API reference for the Moddable Hexmaps engine.">
-<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.6.1">
+<meta property="og:image" content="https://hex.moddable.games/assets/og-image.png?v=0.6.2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.6.1">
+<meta name="twitter:image" content="https://hex.moddable.games/assets/og-image.png?v=0.6.2">
 <link rel="icon" href="../assets/cube.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/variables.css?v=0.6.1">
-<link rel="stylesheet" href="../css/shared.css?v=0.6.1">
-<link rel="stylesheet" href="../css/docs.css?v=0.6.1">
+<link rel="stylesheet" href="../css/variables.css?v=0.6.2">
+<link rel="stylesheet" href="../css/shared.css?v=0.6.2">
+<link rel="stylesheet" href="../css/docs.css?v=0.6.2">
 </head>
 <body>
 
@@ -201,7 +201,7 @@ rng.integer(0, 5);  // deterministic result</code></pre>
                     <tr><td><code>boardonly</code></td><td><code>1</code></td><td>Hide all UI chrome (nav, sidebar, footer, tabs). Map canvas fills the iframe</td></tr>
                     <tr><td><code>bg</code></td><td>hex colour (e.g. <code>1a1a2e</code> or <code>#1a1a2e</code>)</td><td>Background colour for canvas area. Omit <code>#</code> for cleaner URLs</td></tr>
                     <tr><td><code>theme</code></td><td>see table below</td><td>Visual style (availability varies by game). Alias: <code>style</code></td></tr>
-                    <tr><td><code>mode</code></td><td>view, edit</td><td>view = read-only (default for boardonly); edit = click-to-cycle terrain</td></tr>
+                    <tr><td><code>mode</code></td><td>view, edit, fullscreen</td><td>view = read-only (default for boardonly); edit = click-to-cycle terrain; fullscreen = full-viewport map with hidden chrome (Exit button + Escape to return)</td></tr>
                 </tbody>
             </table>
 
@@ -418,8 +418,8 @@ iframe.contentWindow.postMessage({ type: 'hexmap:exportSvg' }, '*');
 
 <footer class="site-footer">
     <a href="https://web.moddable.games/engines/" target="_blank" rel="noopener"><img src="../assets/moddable-logo-white.png" alt="Moddable Games" class="site-footer__logo"></a>
-    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.6.1</p>
+    <p>MIT License · <a href="https://github.com/Moddable-Games/moddable-hexmaps" target="_blank" rel="noopener">GitHub</a> · v0.6.2</p>
 </footer>
-<script src="../js/docs-toc.js?v=0.6.1"></script>
+<script src="../js/docs-toc.js?v=0.6.2"></script>
 </body>
 </html>

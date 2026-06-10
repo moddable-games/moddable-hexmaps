@@ -99,6 +99,11 @@ Part of the [Moddable Engines](https://web.moddable.games/engines/) family (see 
 
 ### Changelog
 
+#### 2026-06-10
+- Add fullscreen button to canvas footer for in-page fullscreen toggle
+- Refactor fullscreen mode: in-place toggle via CSS (no browser Fullscreen API), proper Escape key exit, state restoration
+- Document `mode=fullscreen` in docs index and API reference
+
 #### 2026-06-04
 - Fix corrupted mongo-tiles.js: all 127 tiles rebuilt from verified rulebook source
 - Mongo hover: special abilities and wood commodity now shown in tooltips
