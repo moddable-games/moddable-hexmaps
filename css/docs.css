@@ -1,5 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: var(--mg-font-body, 'Barlow', system-ui, sans-serif); background: #fafaf8; color: #14161c; }
+body { font-family: var(--mg-font-body, 'Barlow', system-ui, sans-serif); background: #fafaf8; color: #14161c; overflow-x: hidden; }
 h1, h2, h3 { font-family: var(--mg-font-display, 'Rajdhani', system-ui, sans-serif); text-wrap: pretty; }
 p, li { text-wrap: pretty; }
 
@@ -282,19 +282,27 @@ p, li { text-wrap: pretty; }
     }
 
     .docs-toc {
-        position: static;
-        width: 100%;
-        max-height: none;
-        padding: 16px 0;
-        border-bottom: 1px solid #e6e3d8;
+        display: none;
     }
 
     .docs-body {
         padding: 32px 0 60px;
+        overflow-x: hidden;
+    }
+
+    .docs-body pre:not([class*="language-"]),
+    .docs-body table {
+        overflow-x: auto;
+        max-width: 100%;
     }
 }
 
 @media (max-width: 640px) {
     .docs { padding: 32px 16px 60px; }
     .docs h1 { font-size: 1.8rem; }
+    .docs pre:not([class*="language-"]),
+    .docs table {
+        overflow-x: auto;
+        max-width: 100%;
+    }
 }

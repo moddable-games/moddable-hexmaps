@@ -455,4 +455,11 @@ a { color: inherit; text-decoration: none; }
     .hx-ai__code-block code { word-break: break-all; }
     .hx-ai__btns { flex-direction: column; align-items: center; }
     .hx-sister { padding: 48px 16px 60px; }
+
+    .hx-game-card { text-align: center; }
+    .hx-game-card__stats { justify-content: center; }
+
+    .hx-ai-card { text-align: center; }
+
+    .hx-sister__grid { text-align: center; }
 }

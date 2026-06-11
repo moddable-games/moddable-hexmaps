@@ -411,13 +411,19 @@ body.embed-mode .canvas-wrap canvas {
         width: 100%;
         border-left: none;
         border-top: 1px solid var(--hx-border);
-        flex-direction: row;
-        flex-wrap: wrap;
-        padding: 12px;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .sidebar-tabs {
+        width: 100%;
+    }
+
+    .sidebar-panel {
+        padding: 16px;
     }
 
     .control-group {
-        flex: 1;
-        min-width: 120px;
+        width: 100%;
     }
 }

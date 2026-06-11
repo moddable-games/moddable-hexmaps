@@ -114,11 +114,12 @@ pre[class*="language-"]:hover .copy-btn {
 @media (max-width: 768px) {
   pre[class*="language-"] {
     border-radius: 0;
-    margin-left: -20px;
-    margin-right: -20px;
-    padding: 16px 20px;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 16px 16px;
     border-left: none;
     border-right: none;
+    max-width: calc(100% + 32px);
   }
 
   .copy-btn {
