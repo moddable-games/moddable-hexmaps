@@ -1,6 +1,9 @@
-const { createCanvas } = require('canvas');
-const fs = require('fs');
-const path = require('path');
+import { createCanvas } from 'canvas';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -93,11 +96,12 @@ ctx.fillText('One engine.', WIDTH * 0.55, HEIGHT * 0.48);
 
 ctx.fillStyle = '#4cdf7a';
 ctx.font = '700 52px sans-serif';
-ctx.fillText('Three worlds.', WIDTH * 0.55, HEIGHT * 0.56 + 20);
+ctx.fillText('Six worlds.', WIDTH * 0.55, HEIGHT * 0.56 + 20);
 
 ctx.fillStyle = 'rgba(255,255,255,0.6)';
-ctx.font = '400 18px sans-serif';
-ctx.fillText('Nukes · Talisman · Twilight Imperium', WIDTH * 0.55, HEIGHT * 0.72);
+ctx.font = '400 16px sans-serif';
+ctx.fillText('Nukes · Talisman · Twilight Imperium', WIDTH * 0.55, HEIGHT * 0.68);
+ctx.fillText('Colony · Planet Mongo · Endless Skies', WIDTH * 0.55, HEIGHT * 0.73);
 
 ctx.fillStyle = 'rgba(255,255,255,0.35)';
 ctx.font = '400 14px sans-serif';
