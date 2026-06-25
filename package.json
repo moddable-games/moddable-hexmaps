@@ -1,22 +1,23 @@
 {
   "name": "moddable-hexmaps",
   "version": "1.0.0",
-  "description": "**A shared hexagonal map framework for board game tools.**",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "A shared hexagonal map framework for board game tools.",
+  "type": "module",
+  "main": "./js/hex-svg.js",
+  "exports": {
+    ".": "./js/hex-svg.js",
+    "./svg": "./js/hex-svg.js",
+    "./math": "./js/hex-math.js",
+    "./node": "./js/hex-svg-node.js",
+    "./renderer": "./js/hex-renderer.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Moddable-Games/moddable-hexmaps.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["hexmap", "board-game", "svg", "hex-grid"],
+  "author": "Moddable Games",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/Moddable-Games/moddable-hexmaps/issues"
   },
